@@ -1,0 +1,73 @@
+=head1 NAME
+
+B<glodBuildObject> - Compile the geometry created by glodInsertArrays()/glodInsertElements() into a LOD hierarchy.
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodBuildObject>(I<GLuint> name)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name> 
+
+The name of the object to be built.
+
+=back 
+
+
+=head1 DESCRIPTION
+
+This call takes the patch geometry that you placed into GLOD using
+the glodInsertArrays() and glodInsertElements() calls and builds a
+hierarchy of the format specified.
+
+
+=head1 CONFIGURATION OPTIONS
+
+A number of configuration parameters are supported that control the
+way in which an object is simplified. These are set and documented in
+the B<glodObjectParameter>I<if> interface. Possible configuration values are:
+
+=over
+
+=item * 
+
+GLOD_BUILD_QUEUE_MODE
+
+=item * 
+
+GLOD_BUILD_OPERATOR
+
+=item * 
+
+GLOD_BUILD_BORDER_MODE
+
+=item * 
+
+GLOD_SHARE_TOLERANCE
+
+=back
+
+See the B<glodObjectParameter> documentation for more information on these
+parameters and what they do.
+
+=head1 ERRORS
+
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if if the object named C<name> doesn't exist
+
+=item B<GLOD_INVALID_STATE> if generated if the object has already been "built"
+
+=item TODO: What is set when the simplifier fails?
+
+=back
+
+=cut

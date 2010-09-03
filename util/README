@@ -1,0 +1,118 @@
+##############################################################################
+# Copyright 2003 Jonathan Cohen, Nat Duca, David Luebke, Brenden Schubert    #
+#                Johns Hopkins University and University of Virginia         #
+##############################################################################
+# This file is distributed as part of the GLOD library, and as such, falls   #
+# under the terms of the GLOD public license. GLOD is distributed without    #
+# any warranty, implied or otherwise. See the GLOD license for more details. #
+#                                                                            #
+# You should have recieved a copy of the GLOD Open-Source License with this  #
+# copy of GLOD; if not, please visit the GLOD web page,                      #
+# http://www.cs.jhu.edu/~graphics/GLOD/license for more information          #
+##############################################################################
+
+GLOD 1.0pre2                                      10/21/03
+             http://www.cs.jhu.edu/~graphics/GLOD
+==========================================================
+
+Thank you for downloading this prerelease version of GLOD.
+We have provided this code as a way to become familiar
+with the GLOD API and what can be done with it.
+
+Development continues on GLOD: this release still lacks:
+  > Memory management features
+  > Adaptation speed controls
+  > User attributes
+  > Geomorph capability
+  > Speed optimizations
+
+The GLOD web page will be kept up to date with progress
+information. Please feel free to contact us via this
+site with any bugs/suggestions/feature requests.
+
+==========================================================
+                 Installation Notes
+
+This distribution contains precompiled binaries for your 
+platform of choice. For Windows, this contains:
+  > glod.dll --- the redistributable GLOD library
+  > glod.h   --- the header file for GLOD
+  > glod.lib --- symbols necessary to link against GLOD
+You will probably want to put glod.h and glod.lib into 
+your Developer Studio VC/include and vc/lib directories. 
+Alternatively, you may want to point developer studio at
+some directory containing these files.
+
+For linux, you will have:
+  > libGLOD.so --- the runtime for GLOD
+  > glod.h     --- the GLOD header file 
+Again, for linux, you have a couple of options. First, 
+put glod.h and libGLOD.so into /usr/include and /usr/lib, 
+or point your LD_LIBRARY_PATH and compilers at some 
+customized place. Chances are, if you're in Linux, you 
+can probably figure something out that suits you. :)
+
+==============  Documentation Installation ===============
+With linux, you have the option of using the included man 
+pages. Either copy the contents of ./man/man3 to 
+/usr/man/man3 or set MANPATH to point at the man directory.
+
+==========================================================
+                      Samples
+You've also got a samples directory which might help you
+understand what is going on with GLOD. Given the 
+still-young age of GLOD, making these programs compile 
+and run might be a bit tricky. They are all command line 
+driven, so in Windows, you're going to have to either run 
+them from a command line, or add command-line arguments 
+to project settings as appropriate.
+
+For windows, you've got a samples/glodlib.dsw to help you 
+run and compile the programs. YOu're probably going to have 
+to hack around with settings to get Visual C find GLOD.
+
+For linux, there's a top level makefile in ./samples that 
+you can run to get things compiling. If you need to modify 
+the gcc link or compile flags, open up samples.conf and 
+add things there. That will affect all of your samples.
+
+======================== DATA ===========================
+You're going to need some ply files to give to these 
+programs. YOu can use your own, or download a package of
+data files that are available off the download page on 
+the GLOD web site.
+
+=================== What they Do ========================
+There are three sample programs for GLOD. Run them with 
+--help to see any runtime flags that they take.
+
+Simple:   loads a specified ply file, simplifies it with
+          GLOD, and then displays it.
+
+readback/read_cut:  loads a ply file, simplifies it,
+                    and allows you to write out a ply file
+                    corresponding to what is on your
+                    screen at that moment.
+
+
+readback/read_model:  loads a ply file, simplifies it,
+                      and reads it back into a binary
+                      file. This demonstrates how you can
+                      split the simplification and
+                      rendering process across application
+                      invocations.
+
+scene/ :  a flaky scene graph tool that demonstrates how
+          to manage multiple objects within a single scene
+          using GLOD. Scene graphs for this tool are
+          stored in ./scene/scenes
+          Make sure to run this program with -glod
+
+By default, these tools produce only discrete hierarchies. 
+The -c flag will create discrete output instead.
+
+==========================================================
+Email n@jhu.edu with getting-this-working issues and bugs.
+==========================================================
+             http://www.cs.jhu.edu/~graphics/GLOD
+GLOD 1.0pre2                                      10/21/03

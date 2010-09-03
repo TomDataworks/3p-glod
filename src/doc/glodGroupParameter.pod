@@ -1,0 +1,75 @@
+=head1 NAME
+
+B<glodGroupParameteri>, B<glodGroupParameterf> - Sets a named group parameter to some value.
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodGroupParameteri>(I<GLuint> name, I<GLenum pname>, I<GLint param>)
+
+void B<glodGroupParameteri>(I<GLuint> name, I<GLenum pname>, I<GLfloat param>)        
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item name, pname, param
+
+The parameter C<pname> of the group named C<name> is set to the value C<param>.
+
+=back
+
+=head1 POSSIBLE PNAME/PARAM COMBINATIONS
+
+=over
+
+=item GLOD_ADAPT_MODE
+
+C<param> can be either B<GLOD_ERROR_THRESHOLD>
+or B<GLOD_TRIANGLE_BUDGET>.
+
+=item GLOD_ERROR_MODE
+
+C<param> can be either B<GLOD_OBJECT_SPACE_ERROR> or
+B<GLOD_SCREEN_SPACE_ERROR>.
+
+=item GLOD_OBJECT_SPACE_ERROR_THRESHOLD
+
+C<param> is the threshold to be set, in object space units. This
+parameter is only interpreted if B<GLOD_ADAPT_MODE> ==
+B<GLOD_ERROR_THRESHOLD> and B<GLOD_ERROR_MODE> ==
+B<GLOD_OBJECT_SPACE_ERROR>.
+
+=item GLOD_SCREEN_SPACE_ERROR_THRESHOLD
+
+C<param> is the thresshold to be set, in the percentage of the viewport width. This parameter
+is only interpreted if B<GLOD_ADAPT_MODE> == B<GLOD_ERROR_THRESHOLD>
+and B<GLOD_ERROR_MODE> == B<GLOD_SCREEN_SPACE_ERROR>. Setting this to .05 with a 800 pixel-wide viewport allows a 40 pixel error in the adaptation.
+
+=item GLOD_MAX_TRIANGLES
+
+If B<GLOD_ADAPT_MODE> is set to B<GLOD_TRIANGLE_BUDGET>, C<param> sets
+the maximum number of triangles to be generated when glodAdaptGroup()
+is called. Choice of best set of triangles is made with respect to
+screen-space or object-space error, according to the setting of
+B<GLOD_ERROR_MODE>.
+
+=back
+
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if a group of the specified name does not exist.
+
+=item B<GLOD_UNKNOWN_PROPERTY> is generated if the parameter name is not recognized.
+
+=item B<GLOD_UNSUPPORTED_PROPERTY> is generated if the data type you chose for this parameter is not supported.
+
+=back
+
+=cut

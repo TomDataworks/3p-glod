@@ -1,0 +1,54 @@
+To release, you've got to make 7 files
+
+release_notes:
+   from any os, copy release/README whomever@grad_network:/users/graphics/public_html/GLOD/releases/glod_1.0pre_readme.txt
+
+glod_1.0pre1_win.zip:
+
+   Login in duca on splat
+   press bash button (green & black)
+   cd /c/GLOD/vds
+   cvs update
+   cd /c/GLOD/glod
+   cvs update
+   explorer .
+   
+   double click glodlib.dsw
+
+   set glodlib.dsw as active project
+   build/rebuild all
+
+   close dev studio and go back to bash
+
+   cd doc
+   make clean; make; make npp
+   
+   cd ../release
+   make
+
+   go to the release/win directory in explorer
+   and check it for any ickies
+
+   create the zip of the above name
+   scp *.zip    whomever@grad_network:/users/graphics/public_html/GLOD/releases/
+
+glod_1.0pre1_src.zip:
+
+   on windows
+   remove all the cvs directories
+   make a zip of the code
+   turn that into the above filename
+   put it in the grad network directory like above
+
+
+glod_1.0pre1_data.zip
+   on windows
+   pick a few good data files
+   zip 'em up
+   put them on the grad network with this filename
+
+
+
+NOW YOU DO LINUX... on any host, I think will work
+
+

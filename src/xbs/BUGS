@@ -1,0 +1,21 @@
+edge collapse
+sphere error metric
+greedy queue
+discrete hierarchy
+no border lock
+patchsphere.small.ply
+2nd LOD (19 tris) has a crack
+(no apparent cracks when using big patchsphere.ply -- perhaps there's
+ a problem with the input model that needs a larger tolerance
+ sharing?)
+
+
+half edge collapse
+sphere error metric
+greedy queue
+discrete hierarchy
+no border lock
+patchsphere.small.ply (or probably any model)
+segmentation fault when writing discrete hierarchy
+(may have something to do with the new format for storing half edge
+ collapse discrete hierarchies?)

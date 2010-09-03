@@ -1,0 +1,27 @@
+Current VDS Model Data Format
+
+Preprocess input: .ply/.poly file
+	-list of vertices:
+		-position [color] [normal] [(tex coords) x n]
+	-list of triangles:
+		-(vertex index) x 3
+
+Preprocess output: .vds file
+	-list of vertices:
+		-position [color] [normal] [(tex coords) x n]
+		-tree connectivity (parent, first child, left/right sibling vertex indices)
+		-spatial extent of all vertices in subtree rooted at vertex (conservative estimate of bounding sphere)
+		-triangles introduced when vertex is split (list of triangle indices)
+	-list of triangles:
+		-(vertex index) x 3
+	-for each tree:
+		-Flag for whether tree is a merge tree (full-edge collapses) or cluster tree (half-edge collapses)
+		-Flag for whether the vertices include color information
+		-Flag for whether the vertices include normal information
+		-Number of sets of texture coordinates each vertex has
+		-Total number of vertices in hierarchy
+		-Total number of triangles
+
+The preprocess is currently a program that links to the VDSlib library and uses its exact data structures when building the hierarchy.  It reads raw ascii ply/poly files which must have at minimum vertex positions and triangles.  It can also handle vertex colors, normals, and any number of texture coordinates per vertex.  It then uses a recursive octree spatial subdivision to group all vertices into a tree, which is represented by storing at each vertex the indices of its parent vertex, first child vertex, and left and right sibling vertices.  Also stored at each vertex is the spacial extent of all vertices in the subtree below it; this is currently stored as simply the radius of a sphere centered at the vertex which contains all vertices in the subtree.  Finally, each vertex stores the indices of the triangles which are introduced when the vertex is split, activating its children vertices.
+
+The VDSlib runtime reads a .vds file and requires all of the information it contains.  For each tree (~patch) it requires flags indicating whether the tree is a merge or cluster tree (full or half edge collapses) and whether vertex colors or normals are present, the number of sets of texture coordinates present at each vertex, the total number of vertices in the hierarchy, and the total number of triangles (in the full model).

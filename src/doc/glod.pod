@@ -1,0 +1,212 @@
+=head1 NAME
+
+B<GLOD> - OpenGL-level creation, management, and rendering of
+multiresolution geometry.
+
+=head1 LEVEL OF DETAIL OVERVIEW (GLOD TERMINOLOGY)
+
+The level of detail pipeline consists of three basic stages: geometric
+I<simplification>, I<adaptation>, and I<rendering>. The simplification
+process takes in "flat" geometry and produces from it a
+multiresolution I<hierarchy>. There are several types of
+mulresolution hierarchies. I<Discrete> hierarchies are a list of
+ever-simplified versions of your input model, and can be thought of as
+a close analog to mip-maps for texturing. Discrete hierarchies are
+extremely computationally efficient as far as rendering goes, but
+have limited efficiency for close-up viewing of large-scale
+geometry. I<Continuous> hierarchies, while more computationally
+complex during rendering, address many of the limitations of discrete
+level of detail.
+
+Before render this hierarchy, GLOD must pick a level within that hierarchy
+which cooresponds to how much detail you want in your rendered
+output. This process is called I<adaptation>. You can adapt a
+hierarchy to a variety of goals --- a triangle budget for
+instance, or an error threshhold. Error thresholds are used to produce
+a lower-triangle version of your model that differs by at most a
+certain amount of visual detail from the original object. Error is
+computed with respect either (A) to screen space, meaning the number
+of pixels of error on your screen, or (B) to object space, meaning the
+number of units of error in your object's coordinate space. Usually,
+you don't actually adapt a single object blindly. Instead, you usually
+adapt a group of objects together so that you meet some global goal.
+
+=head1 GLOD OVERVIEW
+
+GLOD represents an extremely lightweight approach to Geometric Level
+of Detail toolkits. You will find that GLOD is not another scene graph
+library. Instead, GLOD is designed to closely mesh with the standard
+OpenGL programming model in such a way that using GLOD should be just
+like using standard OpenGL vertex arrays.
+
+The most primitive element of GLOD is a B<patch>, which represents
+the smallest drawable element within GLOD. GLOD performs
+simplification on B<objects> -- collections of
+patches. Creating an object with multiple patches gives you the
+opportunity to change your OpenGL drawing state multiple times while
+drawing an object.
+
+GLOD does not actually provide a mechanism to adapt a single
+object. Instead, you adapt a B<group> of objects. This is motivated by the
+idea that you can always place an object in its own group and that the
+adaptation of groups of objects to some metric is usually quite a bit
+more complicated than it is to adapt a single object. Accordingly,
+objects are placed in groups when you first create an object. You can
+set a group of objects to various standard refinement modes,
+including triangle budgets and error budgets.
+
+Drawing a GLOD object is a relatively straightforward process once its
+group has been adapted. Importantly, GLOD follows the same assumptions
+that OpenGL vertex arrays follow. GLOD does not modify your OpenGL
+state when you draw a patch. This allows you full control over object
+rendering. Some small exceptions to this rule are noted in the
+documentation.
+
+This release of GLOD provides a number of facilities that make working
+with GLOD better match traditional LOD workflows, including
+B<readback> and B<memory management>. GLOD readback facilities are
+designed to allow a few additional things. I<Hierarchy readback>
+allows you to perform simplification as an pre-process, making it
+possible to load up multiresolution objects in an efficient manner for
+scenarios like level-loading. In addition, GLOD supports I<draw
+readback>, which allows you to read back "what glod would draw". This
+facility is provided to allow you to draw the output of GLOD objects
+yourself. 
+
+Memory management is not fully-implemented in the pre-release of GLOD, but
+will be supported by the final stable release. When this is
+complete, you will be able to restrict and customize GLOD's usage of
+video memory, for example. Some facilities may be provided to manage
+GLOD's usage of main memory as well.
+
+=head1 API SUMMARY (see also...)
+
+=head2 General Calls
+
+=over
+
+=item  glodInit
+
+Initializes GLOD. This call is mandatory.
+
+=item  glodShutdown
+
+Shuts down GLOD, freeing up memory, etc.
+
+=item glodGetError
+
+Reports the current error and resets the error flag.
+
+=back
+
+=head2 Object Creation
+
+=over
+
+=item glodNewObject
+
+Creates and names an object in GLOD
+
+=item glodInstanceObject
+
+Creates an additional named instance of a GLOD object, allowing multiple
+adaptations of the same hierarchy
+
+=item glodInsertElements
+
+Inserts geometry into a GLOD object's patch using the same calling
+conventions as glDrawElements()
+
+=item glodInsertArrays
+
+Inserts geometry into a GLOD object's patch using the same calling
+conventions as glDrawArrays()
+
+=item glodBuildObject
+
+Performs the simplification process that transforms the inserted
+geometry into a specific type of multiresolution hierarchy
+
+=item glodDeleteObject
+
+Deletes a particular object instance
+
+=back
+
+=head2 Readback
+
+=over
+
+=item glodReadbackObject
+
+Reads an already-simplified object into a specified buffer
+
+=item glodLoadObject
+
+Loads an object from a specified buffer that was previously created
+using glodReadbackObject()
+
+=item glodFillElements
+
+Reads the current geometry of an object into the current OpenGL vertex
+arrays and additionally a specified index array
+
+=item glodFillArrays
+
+Reads the current geometry of an object into the current OpenGL vertex
+arrays
+
+=back 
+
+=head2 Adaptation
+
+=over
+
+=item glodNewGroup
+
+Creates a new group of a specified name
+
+=item glodBindObjectXform
+
+=item glodObjectXform
+
+When you have set a group to screen-space-aware adaptation, GLOD will
+need to know I<where> the objects in that group are located. This call
+binds the current OpenGL viewport and matrix states to a particular
+object so that, when you do call glodAdaptGroup() , this adapation
+becomes possible.
+
+=item glodAdaptGroup
+
+Causes a particular group of objects to be adapted using your current
+adaptation settings
+
+=back
+
+=head2 Parameter Control
+
+=over
+
+=item glodObjectParameter[if]
+
+=item glodGetObjectParameter[if]v
+
+=item glodGroupParameter[if]
+
+=item glodGetGroupParameter[if]v
+
+Set and get object and group parameter settings
+
+
+=back
+
+=head1 AUTHORS 
+
+Last updated by Nat Duca, n@jhu.edu, June 2003
+
+=head1 MORE INFORMATION
+
+For more information, visit the GLOD web site:
+http://www.cs.jhu.edu/~graphics/GLOD
+
+

@@ -1,0 +1,54 @@
+=head1 NAME
+
+B<glodInstanceObject> - Creates a new instance of an existing GLOD object.
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodInstanceObject>(I<GLuint> name, I<GLuint> instancename, I<GLuint> groupname)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name> 
+
+The source object to be duplicated
+
+=item I<instancename> 
+
+The new object name. Keep in mind, object names are global, and cannot be repeated, even if the object will be in a different group.
+
+
+=item I<groupname> 
+
+The name of the group in which this object will reside. If groupname does not yet exist, it will be created with default parameters. See glodNewGroup for more details.
+
+=back 
+
+
+=head1 DESCRIPTION
+
+This call allows you to create a copy of an existing object without
+duplicating the memory it uses for geometry storage. This is useful
+for those cases where you want to independently adapt an object depending on
+its position in your scene.
+
+Keep in mind, an instanced object has its own adaptation state. That means that 
+calling glodAdaptGroup will affect only the instances in that particular group.
+
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if C<name> doesn't exist, or if C<instancename> already exists.
+
+=item B<GLOD_INVALID_STATE> if generated if the object named C<name> has not been compiled using glodBuildObject() or loaded with glodLoadObject()
+
+=back
+
+=cut

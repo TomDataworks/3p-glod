@@ -1,0 +1,138 @@
+=head1 NAME
+
+B<glodInsertElements> - A direct analog of the OpenGL vertex array
+mechanism, this takes your current GL vertex array state and uses it
+as a particular patch within GLOD.
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodInsertElements>(I<GLuint> name, I<GLuint patchname>,
+                        I<GLenum> mode, I<GLuint> count, 
+                        I<GLenum> type, I<GLvoid*> indices,
+                        I<GLuint> level, I<GLfloat> geometric_error)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name> 
+
+The name of the object to insert this patch into
+
+=item I<patchname> 
+
+The name of this patch. Note that patch names B<do not have to be
+sequential>.
+
+=item I<mode> 
+
+Type of primitives described by the elements. Currently supported is GL_TRIANGLES. Other triangle and polygon formats can be added given demand.
+
+=item I<count> 
+
+The number of B<vertices> to draw.
+
+=item I<type> 
+
+The data type of the vertices in the elements array. All standard GL types are supported.
+
+=item I<indices>
+
+An array of the indices to be imported, in the format specified by type.
+
+=item I<level> 
+
+If you are manually creating a Discrete LOD object, then this
+parameter specifies the discrete LOD level for this patch. The finest
+level of a discrete object is 0. For hierarchy build types besides
+B<GLOD_DISCRETE_MANUAL>, this should be set to 0.
+
+=item I<geometric_error> 
+
+When manually creating a Discrete LOD object, this paramater specifies
+the error associated with this patch. For hierarchy build types besides
+B<GLOD_DISCRETE_MANUAL>, this should be set to 0.
+
+=back 
+
+
+=head1 DESCRIPTION
+
+As described in the GLOD overview, GLOD objects consist of
+multiple patches. These patches are inserted into GLOD using
+either this call or the InsertArrays call. This call behaves
+identically to glDrawArrays except that rather than drawing all of
+the enabled pointers, they are copied into GLOD for later
+simplification.
+
+Following a call to this function, you can modify or delete the
+contents of the your pointers as you wish.
+
+B<Note that:>
+
+=over
+
+=item *
+
+You must glEnable B<GL_VERTEX_ARRAYS> for this to function properly
+
+=item *
+
+For every pointer that you enable, including the vertex pointer, you must both
+
+=over
+
+=item *
+
+Enable the corresponding B<GL_<type>_> state, using B<glEnableClientState>
+
+=item * 
+
+Call the correct B<gl<type>Pointer> function to set the
+pointer data and stride information
+
+=back
+
+=back
+
+=head1 USAGE
+
+Imagine we have tighly packed arrays of C<3*num_tris>
+C<indices>, C<vertices>, and C<normals>. We insert them into
+GLOD in the following manner:
+
+  // provided before
+  int num_tris;
+  GLint* indices;
+  GLfloat* vertices;
+  GLfloat* normals;
+
+  // initialize vertex arrays
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_NORMAL_ARRAY);
+  glVertexPointer(3, GL_FLOAT, 0, vertices);
+  glNormalPointer(GL_FLOAT, 0, normals);
+
+  // add them to GLOD
+  glodNewObject(MY_OBJ_NAME, MY_GROUP_NAME);
+  glodInsertElements(MY_OBJ_NAME, 0,
+                   GL_TRIANGLES, 3*num_tris, GL_INT, indices,
+                   0,0.0);
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if an object of the specified \c name does not exist
+
+=item B<GLOD_INVALID_STATE> is generated if this object has already been built into a hierarchy
+
+=item B<GLOD_INVALID_DATA_FORMAT> is generated if the current vertex array is in an unacceptable or unsupported format for GLOD to import from.
+
+=back
+
+=cut

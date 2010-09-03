@@ -1,0 +1,73 @@
+=head1 NAME
+
+B<glodDrawPatch> - Draws a specific patch in a GLOD object
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodDrawPatch>(I<GLuint> name, I<GLuint> patchname)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name> 
+
+The name of the object to draw
+
+=item I<patchname>
+
+The name of the patch to draw within this object
+
+=back 
+
+
+=head1 DESCRIPTION
+
+This call draws a patch in a GLOD object based on the current OpenGL
+vertex array state. Only those vertex arrays that are enabled are issued for drawing.
+This means that to issue the normals of your GLOD Object, you must have GL_NORMAL_ARRAY enabled.
+Having GLOD_VERTEX_ARRAY disabled will disable any GLOD drawing.
+
+This call will not modify your OpenGL state beyond what is listed below:
+
+=over
+
+=item *
+ All issued array pointers and associated configurations may change
+
+=back
+
+GLOD does not provide a DrawObject function. This is because you
+can duplicate this functionality by performing a DrawPatch
+for each patch that you have in your object. This
+provides fine-grained control of rendering parameters,
+including but not limited to texture and lighting modes.
+
+=head2 Drawing an entire object
+
+If you don't need to change your rendering state between patches of your object,
+the following utility code may be useful to you:
+
+  int num_patches; 
+  int *patches;
+  glodGetObjectIntegerv(MY_OBJ_NUM, GLOD_NUM_PATCHES, &num_patches);
+  patches = malloc(sizeof(int) * num_patches);
+  glodGetObjectIntegerv(MY_OBJ_NUM, GLOD_PATCH_NAMES, patches);
+  for(int i = 0; i < num_patches; i++)
+    glodDrawPatch(MY_OBJ_NUM, patches[i]);
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if the object specified does not exist.
+
+=item B<GLOD_INVALID_PATCH> is generated if the patch specified does not exist within this object.
+
+=back
+
+=cut

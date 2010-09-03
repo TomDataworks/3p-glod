@@ -1,0 +1,42 @@
+=head1 NAME
+
+B<glodDeleteObject> - Deletes an object, removing it from its group.
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodDeleteObject>(I<GLuint> name)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name> 
+
+The name of the object to delete
+
+=back 
+
+
+=head1 DESCRIPTION
+
+This deletes a specified instance of an object. It
+removes it from the group in which the instance belongs. If this
+is the last remaining instance of the object in any group, then
+the memory used by the object is freed. This call never deletes
+the group in which the object belongs. This can be called at any
+point in your code, even before building an object.
+
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if an object of this C<name> does not exist
+
+=back
+
+=cut

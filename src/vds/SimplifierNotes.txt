@@ -1,0 +1,46 @@
+Simplifier functions:
+
+public:
+-add given cut
+-remove given cut (?)
+-update node errors
+-simplify cuts to given threshold
+-simplify cuts to given budget
+-simplify cuts to given budget or threshold, whichever you get to first
+-set error function pointer
+-
+
+private:
+-unfold given node
+-fold given node
+-
+
+debug:
+-unfold highlighted node
+-fold highlighted node
+-fully unfold highlighted node
+-fully unfold given node
+-fully fold highlighted node
+-fully fold given node
+-display node queues
+-
+
+
+Simplifier data:
+
+public:
+-pointer to error function callback
+-threshold for threshold simplification
+-sin2 of threshold
+-flag for whether simplififier is valid (capable of simplification operations) or not
+-
+
+
+private:
+-array of pointers to cuts being simplified
+-number of cuts being simplified
+-index of current cut being simplified
+-pointer to forest of current cut
+-queue of nodes above boundary
+-queue of nodes on boundary
+-

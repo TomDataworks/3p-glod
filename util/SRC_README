@@ -1,0 +1,85 @@
+##############################################################################
+# Copyright 2003 Jonathan Cohen, Nat Duca, David Luebke, Brenden Schubert    #
+#                Johns Hopkins University and University of Virginia         #
+##############################################################################
+# This file is distributed as part of the GLOD library, and as such, falls   #
+# under the terms of the GLOD public license. GLOD is distributed without    #
+# any warranty, implied or otherwise. See the GLOD license for more details. #
+#                                                                            #
+# You should have recieved a copy of the GLOD Open-Source License with this  #
+# copy of GLOD; if not, please visit the GLOD web page,                      #
+# http://www.cs.jhu.edu/~graphics/GLOD/license for more information          #
+##############################################################################
+
+GLOD 1.0pre2                                      10/21/03
+             http://www.cs.jhu.edu/~graphics/GLOD
+==========================================================
+
+Thank you for downloading this prerelease version of GLOD.
+We have provided this code as a way to become familiar
+with the GLOD API and what can be done with it.
+
+Development continues on GLOD: this release still lacks:
+  > Memory management features
+  > Adaptation speed controls
+  > User attributes
+  > Geomorph capability
+  > Speed optimizations
+
+The GLOD web page will be kept up to date with progress
+information. Please feel free to contact us via this
+site with any bugs/suggestions/feature requests.
+
+==========================================================
+                    Source Organization
+./
+ |- glod/   --- contains the main makefile
+ \- vds/    --- contains VDS, a fast-rendering library used by GLOD
+
+===========================================================
+                    Compilation in Linux
+To make GLOD compile, you must first compile VDS:
+    make -C ./vds/ release            (eliminate release to get debug)
+
+Then compile GLOD
+    make -C ./glod/ release           (eliminate release to get debug)
+
+This produces:
+    ./glod/include/glod.h
+    ./glod/lib/libGLOD.so
+with duplicate copies of these in:
+    ./glod/samples/lib
+    ./glod/samples/include
+for portability reasons.
+
+You can point LD_LIBRARY_PATH and GCC at these directories or install
+these files in some convenient location for yourself.
+
+Use any of the programs in ./glod/samples/ to test GLOD.
+
+==========================================================
+                    Compilation on Win32
+
+Open ./glod/glodlib.dsw in Developer Studio. Make sure you
+download the ZIP file of the source, as Developer Studio
+cannot work with Unix newlines for some reason. Set glodlib
+as your active project and build.
+
+This produces:
+    ./glod/lib/GLOD.dll
+    ./glod/include/glod.h
+with duplicate copies of these in:
+    ./glod/samples/lib
+    ./glod/samples/include
+for portability reasons.
+
+You will need to put these DLLs either in your application directory
+or your Windows\System directory to make them visible to general applications.
+
+Use any of the programs in ./glod/samples/ to test GLOD.
+
+==========================================================
+Email n@jhu.edu with getting-this-working issues and bugs.
+==========================================================
+             http://www.cs.jhu.edu/~graphics/GLOD
+GLOD 1.0pre2                                      10/21/03

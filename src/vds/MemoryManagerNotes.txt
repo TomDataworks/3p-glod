@@ -1,0 +1,30 @@
+Manager is only in charge of memory used when rendering - i.e. memory that could be video/AGP memory.
+
+MemoryManager functions:
+
+public:
+-free all memory allocated
+-allocate renderdata memory for given number of vertices and tris for given renderer
+-add renderer to memory manager
+-remove renderer from memory manager
+-
+
+private:
+-initialize nvidia extensions
+-initialize ati extensions
+-
+
+
+MemoryManager data:
+
+public:
+-number of renderers for whom this manager is currently handling memory
+-flag for each renderer representing in which type of memory renderer's renderdata is allocated (system memory, video memory, AGP memory, VAR memory, etc..)
+-base address of allocation for each renderer
+-size of allocation for each renderer
+-hardware suggested limit to number of vertices per vertex array
+-
+
+private:
+-flag for if nvidia extensions are enabled, if ati extensions are enabled, if both are disabled, or if both haven't been tested yet
+-

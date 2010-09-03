@@ -1,0 +1,598 @@
+drawMT.C
+1,348d0
+< #include <stdlib.h>
+< #include "mt.h"
+< #include <GL/gl.h>
+< 
+< // used for special coloring options
+< #define NEW_FRAME_COUNT    10
+< 
+< // histogram of points of different screen-space sizes
+< static int pointsPerSize[MAX_POINT_SIZE];
+< 
+< // some variables from the cut that I don't want to bother passing to all
+< // the low-level rendering routines
+< static mtCut emptyCut;
+< static char gDrawMode;
+< static gStat *gCutStat = &emptyCut.stat;
+< 
+< /*****************************************************************************
+< 
+<   Low-level triangle and point rendering methods
+< 
+< *****************************************************************************/
+< void mtVertex::draw()
+< {
+<     glVertex3fv(this->coord.data);
+< }
+< 
+< void mtCVertex::draw()
+< {
+<     if (!gDrawMode) glColor3ubv(this->color.data);
+<     glVertex3fv(this->coord.data);
+< }
+< 
+< void mtNVertex::draw()
+< {
+<     glNormal3fv(this->normal.data);
+<     glVertex3fv(this->coord.data);
+< }
+< 
+< void mtTVertex::draw()
+< {
+<     glTexCoord2fv(this->texcoord.data);
+<     glVertex3fv(this->coord.data);
+< }
+< 
+< void mtTriangle::draw(MT *mt)
+< {
+<    gCutStat->gNumTris ++;
+< 
+<    glNormal3fv(normal.data);
+<    mt->getVert(verts[0])->draw();
+<    mt->getVert(verts[1])->draw();
+<    mt->getVert(verts[2])->draw();
+< }
+< 
+< void mtPoint::draw(mtView *view)
+< {
+<     mtReal pointSize = 1.0;
+<     
+<     gCutStat->gNumPoints ++;
+< 
+<     if (view != NULL)
+<     {
+<         // project object-space radius to screen-space radius (size)
+<         mtVec3 v = sample->coord - view->eye;
+<         mtReal d = v.dot(view->viewd);
+<         d = view->zp / d;
+<         pointSize = d * 2*radius;
+<         int ipsize = (int)(pointSize+0.5);
+<         pointsPerSize[ipsize]++;
+<     }
+<     glDisable(GL_LIGHTING);
+<     //glPointSize(pointSize);
+<     glPointSize((int)(pointSize+0.5));
+<     glBegin(GL_POINTS);
+<       sample->draw();
+<     glEnd();
+<     glEnable(GL_LIGHTING);
+< }
+< 
+< 
+< /*****************************************************************************
+< 
+<   This is the main rendering routine. It renders all the tris in the arc
+<   and/or all the points in the arc.
+< 
+< *****************************************************************************/
+< void mtArc::drawReal(MT *mt, mtView *view)
+< {
+<    int *ltris = tris;
+<    int  lnumTris=numTris;
+< #ifndef OPTIMIZERENDER
+<    glBegin(GL_TRIANGLES);
+< #endif
+<    while(lnumTris--)
+<    {
+<       mt->getTri(*ltris)->draw(mt); ltris++;
+<    }
+< #ifndef OPTIMIZERENDER
+<    glEnd();
+< 
+<    int *lpoints = points;
+<    int  lnumPoints = numPoints;
+<    while (lnumPoints--)
+<    {    
+<       mt->getPoint(*lpoints)->draw(view); lpoints++;
+<    }
+< #endif
+< }
+< 
+< 
+< /*****************************************************************************
+< 
+<   For this arc, setup any special coloring options (gArcRandom) and then
+<   call either the display lists or drawReal().
+< 
+< *****************************************************************************/
+< void mtArc::draw(MT *mt, mtCut *cut, float d)
+< { 
+< #ifdef OPTIMIZERENDER
+< 
+<    // for optimized rendering, ignore gArcRandom variable
+<    glColor3ub(0, 0, 255);
+< 
+<    
+<    cut->stat.gNewArcStat = -1;
+<    cut->stat.gArcStat ++;
+< 
+<    if (mt->getRetainedMode())
+<    {
+<        cut->stat.gNumTris += numTris;
+<        glCallList(getdlistID(mt));
+<    }
+<    else
+<    {
+<        int *ltris = tris;
+<        int  lnumTris = numTris;
+<        mtTriangle *tri;
+<        while(lnumTris--)
+<        {
+< 	   tri = mt->getTri(*ltris);
+< 	   glNormal3fv(tri->normal.data);
+< 	   mt->getVert(tri->verts[0])->draw();
+< 	   mt->getVert(tri->verts[1])->draw();
+< 	   mt->getVert(tri->verts[2])->draw();
+< 	   
+< 	   ltris++;
+< 	   cut->stat.gNumTris ++;
+<        }
+<    }
+<    
+<    int *lpoints = points;
+<    int  lnumPoints = numPoints;
+<    while (lnumPoints--)
+<    {    
+<       mtPoint *pt = mt->getPoint(*lpoints);
+<       mt->cachePoint(pt, (int)((d*2.0*pt->radius) + 0.5));
+< 
+<       lpoints++;
+<       cut->stat.gNumPoints ++;
+<    }
+< 
+< #else
+< 
+<    int thisframeno = cut->getView()->frameno;
+< 
+<    // Assign color. If gArcRandom == 1, then if the arc has
+<    // been rendered less than NEW_FRAME_COUNT frames, it will be
+<    // rendered in red, otherwise in green. If gArcRandom == 2,
+<    // a random color will be assigned. If gArcRandom == 0, blue will
+<    // be used.
+<    if(frameno < thisframeno-1)
+<    {
+<       // First time for this arc. Reset Keep count.
+<       keepcolor = 0; 
+<       cut->stat.gNewArcStat ++;
+<    }
+<    cut->stat.gArcStat ++;
+< 
+<    keepcolor ++;
+<    frameno = thisframeno;
+< 
+<    if (gDrawMode) // If 0 don't bother with colors here.
+<    {
+<       if (gDrawMode == 2) {
+<          glColor3ub(rand()&255, rand()&255, rand()&255);
+<       } else {
+<          if (keepcolor < NEW_FRAME_COUNT) 
+<             glColor3ub(200,0,0); // Use new color
+<          else
+<             glColor3ub(0,200,0); // Use regular color
+<       }
+<    } else {
+<       glColor3ub(0, 0, 255);
+<    }
+< 
+<    if (mt->getRetainedMode())
+<    {
+<        cut->stat.gNumPoints += numPoints;
+<        cut->stat.gNumTris += numTris;
+<        glCallList(getdlistID(mt));
+<    }
+<    
+<    else
+<       drawReal(mt, cut->getView());
+< #endif
+< }
+< 
+< 
+< /*****************************************************************************
+< 
+<   For this cut of the given TM, draw all arcs.
+< 
+< *****************************************************************************/
+< void mtCut::draw(MT *mt)
+< { 
+<    // We know arcs tris do not get changes from underneath us
+<    int *larcs = arcs;
+<    int i = 0, lnumArcs = numArcs;
+< 
+<    stat.start.getTime();
+< 
+<    stat.gNumTris = 0;
+<    stat.gNumPoints = 0;
+<    stat.gArcStat = 0;
+<    stat.gNewArcStat = 0;
+<    stat.gStripStat = 0;
+<    stat.gVertStat = 0;
+<    
+<    gDrawMode = renderMode;
+<    gCutStat = &stat;
+<    
+< #ifdef OPTIMIZERENDER
+<    // first render only tris and cache points
+<    glBegin(GL_TRIANGLES);
+< #endif
+<    while(lnumArcs--)
+<    {
+<       mt->getArc(*larcs)->draw(mt, this, depths[i++]); larcs++;
+<    }
+< #ifdef OPTIMIZERENDER
+<    glEnd();
+<    stat.gTimeDrawTris = stat.start.since();
+< #else
+<    stat.gTimeDrawTris = stat.start.since();
+<    stat.gTimeDrawPts   = stat.gTimeDrawTris;
+< #endif
+< 
+<    if (dumpMode) {
+<       printf("Drawn a cut with %d triangles and %d points\n", 
+<              stat.gNumTris, stat.gNumPoints);
+<       for (i=0; i<MAX_POINT_SIZE; i++) {
+<          printf("points of size %i = %i\n", i, pointsPerSize[i]);
+<          pointsPerSize[i] = 0;
+<       }
+<    }
+< }
+< 
+< 
+< /*****************************************************************************
+< *****************************************************************************/
+< void mtTriangle::print(MT *mt)
+< {
+<     printf("Triangle compriding vert nos. %d, %d and %d:\n  ",
+<            verts[0], verts[1], verts[3]);
+<     mt->getVert(verts[0])->print();
+<     mt->getVert(verts[1])->print();
+<     mt->getVert(verts[2])->print();
+<     printf("\n");
+< };
+< 
+< 
+< /*****************************************************************************
+< *****************************************************************************/
+< void MT::buildDL()
+< {
+<    unsigned int list0;
+<    if (!(list0 = glGenLists(numArcs)))
+<    {
+<       printf("Display list creation failed numArcs=%d\n", numArcs);
+<       exit(1);
+<    }
+<    dlistBase = list0;
+< 
+<    // it would be nice to free up the triangles and vertices here as they
+<    // are retained, but their current allocation would only allow freeing
+<    // all at once (when it's really too late anyway)
+<    
+<    for(int i=0; i<numArcs; i++,list0++)
+<    {
+<       glNewList(list0, GL_COMPILE);
+<       arcs[i].drawReal(this);
+<       glEndList();
+<    }
+< }
+< 
+< 
+< /*****************************************************************************
+< *****************************************************************************/
+< void MT::flushPointCaches()
+< {
+< 	memset(numPointsInCache, 0, MAX_POINT_SIZE*sizeof(int));
+< }
+< 
+< 
+< /*****************************************************************************
+< *****************************************************************************/
+< void MT::cachePoint(mtPoint *pt, int pointSize)
+< {
+<    if (pointSize < 0 || pointSize >= MAX_POINT_SIZE) {
+<       fprintf(stderr, "Unsupported point size for cache (%i)\n", pointSize);
+<       return;
+<    }
+< 
+<    if (numPointsInCache[pointSize] == maxPointsInCache[pointSize]) {
+<       mtPoint **oldcache = pointCache[pointSize];
+<       maxPointsInCache[pointSize] *= 2;
+<       pointCache[pointSize] = new mtPoint *[maxPointsInCache[pointSize]];
+<       memcpy(pointCache[pointSize], oldcache, 
+<              sizeof(mtPoint *)*numPointsInCache[pointSize]);
+<       delete oldcache;
+<    }
+< 
+<    pointsPerSize[pointSize]++;
+<    pointCache[pointSize][numPointsInCache[pointSize]] = pt;
+<    numPointsInCache[pointSize]++;
+< }
+< 
+< 
+< /*****************************************************************************
+< *****************************************************************************/
+< void MT::drawPointCaches()
+< {
+<    int s, i;
+< 
+<    glDisable(GL_LIGHTING);
+<    for (s=0; s<MAX_POINT_SIZE; s++) {
+<       if (numPointsInCache[s] > 0) {
+<          glPointSize(s);
+<          glBegin(GL_POINTS);
+<          for (i=0; i<numPointsInCache[s]; i++)
+<             pointCache[s][i]->sample->draw();
+<          glEnd();
+<       }
+<    }
+<    glEnable(GL_LIGHTING);
+< }
+< 
+< 
+mt.C
+4d3
+< #pragma implementation
+5a5
+> #include "glob.h"
+665c665
+<     if(cut->errorMode == SCRERROR)
+---
+>     if(gErrMethod == SCRERROR)
+689c689
+<     if(cut->dumpMode==2)
+---
+>     if(gDump==2)
+807c807
+<     stat.gNodeStat ++;
+---
+>     gFrameStats->gNodeStat ++;
+832c832
+< 	    if(dumpMode==2) printf("ERROR: Visit Down .. \n");
+---
+> 	    if(gDump==2) printf("ERROR: Visit Down .. \n");
+837c837
+< 	    if(dumpMode==2) printf("ARC OK: Add Arc .. \n");
+---
+> 	    if(gDump==2) printf("ARC OK: Add Arc .. \n");
+863c863
+<     stat.gNodeStat ++;
+---
+>     gFrameStats->gNodeStat ++;
+893c893
+< 	    if(dumpMode==2) printf("ERROR: Cannot raise cut ..\n");
+---
+> 	    if(gDump==2) printf("ERROR: Cannot raise cut ..\n");
+896c896
+<         } else { if(dumpMode==2) printf("ARC OK: Raise cut now ..\n"); }
+---
+>         } else { if(gDump==2) printf("ARC OK: Raise cut now ..\n"); }
+999c999
+< 	   if(dumpMode==2) printf("ERROR: Lower ..\n");
+---
+> 	   if(gDump==2) printf("ERROR: Lower ..\n");
+1002c1002
+< 	else { if(dumpMode==2) printf("ARC OK: Don't lower..\n"); }
+---
+> 	else { if(gDump==2) printf("ARC OK: Don't lower..\n"); }
+1052,1054d1051
+<     stat.start.getTime();
+<     stat.gNodeStat = 0;
+<     
+1057,1059d1053
+<     
+<     stat.gTimeUpdate = stat.start.since();
+<     
+mt.h
+5,6d4
+< #pragma interface
+< 
+422c420
+<     };
+---
+>     }
+462a461
+> #ifdef ALIAGA
+464a464,467
+> #else
+>     virtual mtNVertex *makeNew() const { return new mtNVertex; };
+>     virtual mtNVertex *makeNew(int num) const { return new mtNVertex[num]; };
+> #endif
+468c471
+<     };
+---
+>     }
+502a506
+> #ifdef ALIAGA
+504a509,512
+> #else
+>     virtual mtTVertex *makeNew() const { return new mtTVertex; };
+>     virtual mtTVertex *makeNew(int num) const { return new mtTVertex[num]; };
+> #endif
+508c516
+<     };
+---
+>     }
+542a551
+> #ifdef ALIAGA
+544a554,557
+> #else
+>     virtual mtCVertex *makeNew() const { return new mtCVertex; };
+>     virtual mtCVertex *makeNew(int num) const { return new mtCVertex[num]; };
+> #endif
+548c561
+<     };
+---
+>     }
+775,822d787
+< 
+< #define OBJERROR 0
+< #define SCRERROR 1
+< 
+< #include <time.h>
+< #include <sys/time.h>
+< 
+< /*****************************************************************************
+< 
+<  Time is in milliseconds
+< 
+< *****************************************************************************/
+< class mtTime
+< {
+<    public:
+<       struct timeval mtclock;
+< 
+<       mtTime()       { mtclock.tv_sec = 0; mtclock.tv_usec = 0; }
+<       void zero()    { mtclock.tv_sec = 0; mtclock.tv_usec = 0;}
+<       void getTime() { gettimeofday(&mtclock, NULL); };
+<       int  operator- (const mtTime &t1)
+<       {
+<          double a = double(mtclock.tv_sec)+double(mtclock.tv_usec)/1.0E6;
+<          double b = double(t1.mtclock.tv_sec)+double(t1.mtclock.tv_usec)/1.0E6;
+<          return (int)((a-b)*1000.0);
+<       };
+<       int since()
+<       { 
+< 	      mtTime now;
+<          now.getTime();
+<          return now - *this;
+<       };
+< };
+< 
+< typedef struct _gtStat {
+<    mtTime  start;
+<    int     gTimeUpdate;
+<    int     gTimeDrawTris;
+<    int     gTimeDrawPts;
+<    int     gStripStat;
+<    int     gVertStat;
+<    int     gNewArcStat;
+<    int     gArcStat;
+<    int     gNodeStat;
+<    int     gNumPoints;
+<    int     gNumTris;
+< } gStat;
+< 
+841,845d805
+<     char    dumpMode;
+<     char    errorMode;
+<     char    renderMode;
+<     gStat   stat;
+<     
+853,855d812
+< 	dumpMode = 0;
+< 	errorMode = OBJERROR;
+< 	renderMode = 0;
+935d891
+<     char    retainedMode;
+942d897
+<     void buildDL();
+961d915
+< 	retainedMode = 0;
+975d928
+<     char getRetainedMode() {return retainedMode;};
+1013a967
+>     void buildDL();
+1029d982
+<     void enableRetainedMode() { buildDL(); retainedMode = 1; };
+1033a987,991
+> 
+> 
+> 
+> 
+> 
+plyMT.C
+275c275
+<     Boolean node_has[1], arc_has[4];//, bvnode_has[1];
+---
+>     Boolean node_has[1], arc_has[4], bvnode_has[1];
+plycollapses.C
+269,306d268
+< /*****************************************************************************
+< *****************************************************************************/
+< inline void updatebox(float *min, float *max, float *data)
+< {
+<    if(min[0] > data[0]) min[0] = data[0];
+<    if(min[1] > data[1]) min[1] = data[1];
+<    if(min[2] > data[2]) min[2] = data[2];
+<    if(max[0] < data[0]) max[0] = data[0];
+<    if(max[1] < data[1]) max[1] = data[1];
+<    if(max[2] < data[2]) max[2] = data[2];
+< }
+< 
+< 
+< /*****************************************************************************
+< *****************************************************************************/
+< void findMTextent(MT *mt, float *min, float *max)
+< {
+<    static int mtSink = 0;
+<    min[0] = min[1] = min[2] = +MAXFLOAT;
+<    max[0] = max[1] = max[2] = -MAXFLOAT;
+< 
+<    mtNode *mtSnode = mt->getNode(mtSink);
+< 
+<    for(int i=0; i<mtSnode->getNumParents(); i++)
+<    {
+<       mtArc *larc = mt->getArc(mtSnode->getParent(i));
+<       for(int j=0; j<larc->getNumTris(); j++)
+<       {
+<          updatebox(min, max,
+< 	       mt->getVert(mt->getTri(larc->getTri(j))->verts[0])->coord.data);
+<          updatebox(min, max,
+< 	       mt->getVert(mt->getTri(larc->getTri(j))->verts[1])->coord.data);
+<          updatebox(min, max,
+< 	       mt->getVert(mt->getTri(larc->getTri(j))->verts[2])->coord.data);
+<       }
+<    }
+< }
+< 
+399,403d360
+< 
+< 	// This really needs to be multiplied by bbox_diagonal / 100.0.
+< 	// Plycollapses files were written out with
+< 	// cost = deviation / bbox_diagonal * 100
+< 	// we now do this after the whole MT is build
+1022,1040d978
+< void scaleErrors(MT *mt)
+< {
+<     // plycollapses stores error as percent of bounding box diagonal,
+<     // whereas MT stores as absolute error. Now that we've loaded the whole
+<     // file, compute diagonal and scale errors to absolute errors
+<     float min[3], max[3];
+<     findMTextent(mt, min, max);
+<     float diag =  (max[0]-min[0])*(max[0]-min[0]);
+<     diag += (max[1]-min[1])*(max[1]-min[1]);
+<     diag += (max[2]-min[2])*(max[2]-min[2]);
+<     diag = sqrtf(diag);
+<     
+<     for (int i=0; i<mt->getNumNodes(); i++)
+<     {
+< 	mtNode *node = mt->getNode(i);
+< 	node->setError(node->getError()*diag/100.0);
+<     }
+< }
+< 
+1051d988
+<     scaleErrors(this);
+sphMT.C
+tmesh.C
+tmesh.h
+triMT.C

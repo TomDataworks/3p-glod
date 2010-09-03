@@ -1,0 +1,25 @@
+=head1 NAME
+
+B<glodShutdown> - Cleans up all the memory by the GLOD library and shuts it down.
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodShutdown>(void)
+
+=cut
+
+=head1 DESCRIPTION
+
+This call cleans up any still-existing hierarchies and memory buffers
+that are being used by GLOD and shuts it down. This call is not
+mandatory.
+
+=head1 ERRORS
+
+This function should not fail. If it does, something is pretty badly
+wrong anyhow, and you probably won't care that this function failed,
+too.
+
+=cut

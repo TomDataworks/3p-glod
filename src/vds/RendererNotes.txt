@@ -1,0 +1,64 @@
+Renderer functions:
+
+public:
+-render
+-set render function pointer
+-add given cut
+-remove given cut (?)
+-add vertexrenderdatum
+-remove vertexrenderdatum
+-add trirenderdatum
+-remove trirenderdatum
+-get vertex renderdatum index
+-get (implicit) vertex render data array backref
+-increase vertex render data capacity to given 
+-reallocate tri render data memory to new capacity
+-allocate given amount of memory for vertex and tri render data
+-free memory allocated for vertex and tri render data
+-get proxy given tri index and proxy index (0, 1, or 2)
+-get proxy given trirenderdatum address and proxy index (0, 1, or 2)
+-
+
+private:
+-populate vertex free slots cache
+-populate tri free slots cache
+-cache vertex (given free location in array)
+-
+
+
+Renderer data:
+
+public:
+-flag for whether renderer is valid (can have vertices/tris added or can be rendered)
+-render function pointer
+-vertex render data (vertex positions, normals, and 'others' array)
+-number of vertices being rendered
+-vertex active flags
+-vertex above boundary flags
+-vertex node ids (for debugging only)
+-vertex render data stride
+-tri render data (proxies indices only)
+-number of tris being rendered
+-tri backrefs
+-pointer to memory manager
+-slack bytes allocated
+-vertex render data memory allocated
+-number of vertices that can fit in vertex render data memory allocted
+-tri render data memory allocated
+-number of tris that can fit in tri render data memory allocated
+-vertex index size limit due to size (bytes) of type used for tri proxies array
+-
+
+
+private:
+-flag whether vertex normals present
+-flag whether vertex colors present
+-list of cuts being rendered
+-number of cuts being rendered
+-cache of vertex render data array free slots
+-cache of tri render data array free slots
+-number of vertex slots cached
+-number of tri slots cached
+-number of vertex slots free
+-number of tri slots free
+-

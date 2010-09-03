@@ -1,0 +1,40 @@
+class GLOD_Hierarchy 
+{
+    // notice that even when you adapt to a triangle budget, you can do it
+    // according to object-space or screen-space error.
+    
+    void setErrorMode(enum);     // object-space or screen-space
+    void setThresholdMode(enum); // triangle budget or error budget
+    void setThreshold(float);    // could be an error or a budget
+    void setView(View);          // set viewing parameters for distance
+				 // computations and possibly view frustum
+				 // culling
+    void adapt();                // adapts to threshold
+
+    
+    void draw();
+    void drawPatch(int patchNum);
+    
+    // When multiple hierarchies will be managed by some higher-level
+    // manager, we need to expose individual refinements and coarsenings
+    float getNextRefinement();
+    float getNextCoarsening();
+    void applyNextRefinement();
+    void applyNextCoarsening();
+    float getCurrentError();
+    int getCurrentTriCount();
+};
+
+class GLOD_MT_Hierarchy : public GLOD_Hierarchy
+{
+    MT *mt;
+};
+
+class GLOD_VDS_Hierarchy : public GLOD_Hierarchy
+{
+    VDS *vds;
+};
+
+class GLOD_Discrete_Hierarchy : public GLOD_Hierarchy
+{
+};

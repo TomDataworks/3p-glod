@@ -1,0 +1,45 @@
+Cut functions:
+
+public:
+-give contents of cut to another cut (i.e. make another cut a duplicate of this cut)
+-set cut's renderer to given renderer
+-set cut's simplifier to given simplifier
+-set cut's forest to given forest
+-set transformation matrix to given matrix
+-update view parameters (from internally stored transformation matrix)
+-
+
+private:
+-update view frustum plane equations
+-
+
+debug:
+-
+
+
+Cut data:
+
+public:
+-pointer to forest on which cut is instantiated
+-pointer to renderer which is used to render cut
+-pointer to simplifier which is used to adjust cut to a threshold or budget constraint
+-flag for whether cut is valid (is able to be adapted or rendered)
+-number of active nodes contained in cut
+-number of active tris contained in cut
+-total bytes of memory taken up by cut's nodes (in simplifier queues and renderer renderdata arrays) and tris (in renderer renderdata arrays)
+-bytes of memory taken up by a single tri in cut
+-bytes of memory taken up by a single node in cut
+-transformation matrix (object->eye)
+-view information:
+	-viewpoint
+	-forward vector
+	-up vector
+	-right vector
+	-plane equations of view frustum
+	-fov
+	-inverse tangent of fov
+	-display aspect ratio
+	-display resolution
+
+private:
+-

@@ -1,0 +1,37 @@
+#!/usr/local/bin/perl -w
+if(scalar(@ARGV) == 0) {
+	print "Usage: is_binary <filename>\n\n";
+	exit 1;
+}
+$loud = 0;
+if($ARGV[0] eq "-i") {
+	shift @ARGV;
+}
+
+no utf8;
+
+if(-d $ARGV[0]) { exit 2; }
+
+open(IN, $ARGV[0]) || die($!);
+$t = 0;
+while(1) {
+	undef $b;	
+	if(sysread(IN,$b,1) == 0) {
+		last;
+	} else {
+		next if(ord($b) > 127);
+		if($b eq "\n") {$t = 1;}
+		if($b =~ /\p{IsPrint}/ || $b =~ /[\r\n\t ]/) {
+			next;
+		} else {
+			print "Binary:	$ARGV[0]\n" if($loud);
+			exit 1;
+		}
+	}
+}
+if($t == 1) {
+	print "Text:	$ARGV[0]\n" if($loud);
+} else {
+	print "Text!LB:	$ARGV[0]\n" if($loud);;
+}
+exit 0;

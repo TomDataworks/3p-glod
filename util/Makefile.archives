@@ -1,0 +1,111 @@
+##############################################################################
+# Copyright 2003 Jonathan Cohen, Nat Duca, David Luebke, Brenden Schubert    #
+#                Johns Hopkins University and University of Virginia         #
+##############################################################################
+# This file is distributed as part of the GLOD library, and as such, falls   #
+# under the terms of the GLOD public license. GLOD is distributed without    #
+# any warranty, implied or otherwise. See the GLOD license for more details. #
+#                                                                            #
+# You should have recieved a copy of the GLOD Open-Source License with this  #
+# copy of GLOD; if not, please visit the GLOD web page,                      #
+# http://www.cs.jhu.edu/~graphics/GLOD/license for more information          #
+##############################################################################
+WDIR=win
+LDIR=linux
+
+
+ifdef OS
+	ifeq ($(OS), Windows_NT)
+		TARGET=windows	
+	else
+		TARGET=linux
+	endif
+else
+	TARGET=linux
+endif
+
+all: $(TARGET)
+	@echo ----------------------------------------------------
+	@echo - BUILD COMPLETE: Create an archive now for $(TARGET)
+	@echo ----------------------------------------------------
+
+md:
+	if test -d $(WDIR); then rm -r -f $(WDIR); mkdir $(WDIR); else mkdir $(WDIR); fi
+	if test -d $(LDIR); then rm -r -f $(LDIR); mkdir $(LDIR); else mkdir $(LDIR); fi
+
+npp:
+	@if ! test -e ../doc/npp_html/index.html; then echo Warning! You forgot to build NPP. I will now build it for you.; echo ***************************; make -C ../doc/ npp; fi
+
+man:
+	@if ! test -d ../doc/man; then make -C ../doc/; fi
+
+commonW: TDIR=$(WDIR)
+commonL: TDIR=$(LDIR)
+commonW: common
+commonL: common
+common: npp
+	cp ../include/glod.h ./$(TDIR)
+	mkdir ./$(TDIR)/docs
+	cp ../doc/npp_html/*.html ./$(TDIR)/docs/
+	cp -r ../doc/npp_html/images ./$(TDIR)/docs/
+	rm -r -f ./$(TDIR)/docs/images/CVS
+	####### the samples
+	make -C ../samples/ clean
+	cp -r ../samples ./$(TDIR)/	
+	rm -r -f ./$(TDIR)/samples/CVS
+	rm -r -f ./$(TDIR)/samples/data/CVS
+	rm -r -f ./$(TDIR)/samples/include/CVS
+	rm -r -f ./$(TDIR)/samples/lib/CVS
+	rm -r -f ./$(TDIR)/samples/readback/CVS
+	rm -r -f ./$(TDIR)/samples/scene/CVS
+	rm -r -f ./$(TDIR)/samples/scene/scenes/CVS
+	rm -r -f ./$(TDIR)/samples/simple/CVS
+	rm -r -f ./$(TDIR)/samples/data   ### this shrinks the distribution bigly
+	rm -r -f ./$(TDIR)/samples/readback/*.rbk
+
+windows: md commonW
+	cp ../lib/glod.dll ./$(WDIR)
+	cp ../lib/glod.lib ./$(WDIR)
+	cp ../LICENSE ./$(WDIR)/LICENSE.txt
+	cp README ./$(WDIR)/README.txt
+	rm -r -f ./$(WDIR)/samples/lib/glod.dll
+	rm -r -f ./$(WDIR)/samples/lib/glod.lib
+	rm -r -f ./$(WDIR)/samples/readback/glod.dll
+	rm -r -f ./$(WDIR)/samples/scene/glod.dll
+	rm -r -f ./$(WDIR)/samples/simple/glod.dll
+
+linux: md man commonL
+	cp ../lib/libGLOD.so ./$(LDIR)
+	cp -r ../doc/man ./$(LDIR)
+	cp ../LICENSE ./$(LDIR)
+	cp README ./$(LDIR)/README
+	rm -r -f ./$(LDIR)/samples/lib/libGLOD.so
+
+###############################################################
+# Source release
+source_release:
+	make -C ./ clean
+	rm -r -f $(LDIR) $(WDIR)
+	rm -r -f /tmp/glod
+	rm -r -f ./glod
+	mkdir /tmp/glod
+	mkdir /tmp/glod/glod
+	cp -r ../ /tmp/glod/glod/
+	cp -r ../../vds/ /tmp/glod
+	make -C /tmp/glod/glod source_release
+	make -C /tmp/glod/vds/ source_release
+	cp SRC_README /tmp/glod/README
+	find /tmp/glod -name .\#\* -exec rm -f \{\} \;
+	find /tmp/glod -name \*\~ -exec rm -f \{\} \;
+	tar cf /tmp/glod_src.tar /tmp/glod/
+	gzip /tmp/glod_src.tar
+	mv /tmp/glod_src.tar.gz ./
+	find /tmp/glod/ -exec perl u2d_cond \{\} \;
+	mv /tmp/glod ./
+	zip -r glod_src.zip glod/
+	@echo ----------------------------------------------------
+	@echo - There is still a ./glod/ left around for your perusal.
+	@echo ----------------------------------------------------
+
+clean:
+	rm -r -f $(WDIR) $(LDIR) glod glod_src.tar.gz glod_src.zip

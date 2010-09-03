@@ -1,0 +1,200 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "ReadCut"=.\SAMPLES\READBACK\ReadCut.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name glodlib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ReadModel"=.\samples\readback\ReadModel.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name glodlib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Scene"=.\samples\Scene\Scene.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name glodlib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name vdslib_glod
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name xbs
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Simple"=.\samples\simple\Simple.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name glodlib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "glodlib"=.\src\api\glodlib.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ply
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name xbs
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mt
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name vdslib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mesh"=.\samples\mesh\mesh.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name glodlib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mt"=.\src\mt\mt.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ply
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "pgvis"=.\SAMPLES\pgvis\pgvis.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ply"=.\src\ply\ply.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "simplify"=.\samples\simplify\Simplify.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "vdslib"=.\src\vds\vdslib_glod.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "xbs"=.\src\xbs\xbs.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name vdslib_glod
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

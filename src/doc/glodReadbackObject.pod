@@ -1,0 +1,65 @@
+=head1 NAME
+
+B<glodReadbackObject> - Packs an object's LOD Hierarchy into a user specified buffer for later use.
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodReadbackObject>(I<GLuint> name, I<GLvoid*> data)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name> 
+
+The name of the object to read back.
+
+=item I<data>
+
+A pointer to the data buffer that will recieve the readback object.
+
+=back 
+
+=head1 DESCRIPTION
+
+Readback facilities are provided in GLOD to compensate for the fact
+that simplification is a slow process. This call allows you to, in an
+advance pre-process, create and simplify an object, then read it back
+and save it for later use.
+
+GLOD reads back these objects in a binary format. This readback
+mechanism stores only the hierarchy data, including geometry and patch
+identification numbers. B<It does not> store the object number nor the
+group identifier for the object, nor the current adapted state of the
+object. These must be recreated by the user in subsequent
+glodLoadObject() and glodAdaptGroup() calls.
+
+=head1 USAGE
+
+One must allocate the data pointer before calling
+glodReadbackObject. Determine the size of the object to be readback
+using the glodGetObjectParameteriv() call using B<GLOD_READBACK_SIZE>
+as the parameter name to get. You can then allocate the readback
+buffer and call glodReadbackObject().
+
+For example: 
+
+  void* data; int data_size;
+  glodGetObjectParameteriv(MY_OBJ_NAME, GLOD_READBACK_SIZE,
+                           &data_size);
+  data = malloc(data_size);
+  glodReadbackObject(MY_OBJ_NAME, data);
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if an object of the given name does not exist.
+
+=back
+
+=cut

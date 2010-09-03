@@ -1,0 +1,58 @@
+=head1 NAME
+
+B<glodBindObjectXform> - Tell GLOD to use the current OpenGL modelview
+and projection matrices when it performs view-dependent refinement
+(e.g. when its group's B<GLOD_ERROR_MODE> is set to B<GLOD_SCREEN_SPACE_ERROR>).
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodBindObjectXform>(I<GLuint> objectname, I<GLenum> what)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<objectname>
+
+The name of the object to bind to.
+
+=item I<what>
+
+Which GL matrices to bind against. Can be B<GL_MODELVIEW_MATRIX> or B<GL_PROJECTION_MATRIX>. If set to zero, this call binds against the identity matrix.
+
+=back 
+
+
+=head1 DESCRIPTION
+
+Adapation of objects in GLOD is done at a group level using the
+glodAdaptGroup() call. When you are adapting a group according to
+the screen-space size of objects, you must specify to GLOD the
+camera and current position of your object using homogenous 
+matrices using either the glodBindObjectXform() or glodObjectXform() calls.
+
+Either function can be called at any point after loading or building an
+object. The bound transform will persist indefinitely across this
+GLOD session. It is not saved with a glodReadbackObject() .
+
+Note that binding a transformation to an object does not actually
+move it during the glodDraw process. As always, the OpenGL rendering 
+state is not changed by GLOD. It is up to you to set
+this same transformation before calling C<glodDrawPatch()> to ensure
+the adaptation and the rendered position are consistent.
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if an object of this C<objectname> already exists.
+
+=item B<GLOD_INVALID_STATE> is generated if the object name has not been built or loaded.
+
+=back
+
+=cut

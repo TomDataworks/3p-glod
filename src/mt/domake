@@ -1,0 +1,8 @@
+#!/bin/bash
+cd ./mt/ > /dev/null
+echo Building MT in $PWD
+g++ -O2 -I. -I../ply -c *.C
+ar ruv ../lib/libMT.a *.o
+
+#if ! test -d ../lib; then mkdir ../lib; fi
+#g++ -shared -o ../lib/libMT.so *.o

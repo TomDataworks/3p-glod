@@ -1,0 +1,143 @@
+#ifndef ZTIMING
+#define ZTIMING
+/******************************************************************************/
+/* ZTiming Library Interface
+/*
+/* Written by:    John Thornley
+/* Last modified: 9 February 2000
+/* Language:      C++
+/*
+/* The ZTiming namespace containing declarations of classes intended for
+/* timing program execution.
+/*
+/* Copyright (c) John Thornley, 1998-2000.
+/******************************************************************************/
+
+//==============================================================================
+// ZTiming namespace
+//==============================================================================
+
+namespace ZTiming {
+
+//==============================================================================
+// Exceptions
+//
+// The following exceptions are thrown by operations of the ZTiming library.
+// No other exceptions are thrown by or passed out of operations of the ZTiming
+// library.  Exceptions are divided into "failure" and "error" exceptions.
+// IMPORTANT: Operations that terminate exceptionally are guaranteed not to
+// have altered the state of the system or any object.
+//==============================================================================
+
+class ztTimingException {};
+
+//------------------------------------------------------------------------------
+// Failure exceptions are thrown in response to exhaustion or failure of
+// system resources.
+//------------------------------------------------------------------------------
+
+class ztTimingFailureException : public ztTimingException {};
+
+class ztStopwatchConstructionFailure : public ztTimingFailureException {};
+// Attempt to construct a stopwatch failed, e.g., memory allocation failure.
+
+//------------------------------------------------------------------------------
+// Error exceptions are thrown in response to erroneous use of the ZTiming 
+// operations.
+///------------------------------------------------------------------------------
+
+class ztTimingErrorException : public ztTimingException {};
+
+class ztDestructActiveStopwatchError : public ztTimingErrorException {};
+// Destructor on active stopwatch.
+
+class ztStartActiveStopwatchError : public ztTimingErrorException {};
+// Start operation on active stopwatch.
+
+class ztStopInactiveStopwatchError : public ztTimingErrorException {};
+// Stop operation on inactive stopwatch.
+
+class ztResetActiveStopwatchError : public ztTimingErrorException {};
+// Reset operation on active stopwatch.
+
+class ztQueryActiveStopwatchError : public ztTimingErrorException {};
+// Query operation on active stopwatch.
+
+class ztStopwatchOverflowError : public ztTimingFailureException {};
+// Numeric overflow on stopwatch.
+
+//==============================================================================
+// ztStopwatch class
+// Description:
+// - A ztStopwatch object accumulates elapsed wallclock time between Start and
+//   Stop operations.  Reset sets the accumulated time back to zero.
+// Atomicity:
+// - Concurrent operations must not be performed on a ztStopwatch object.
+//
+// watch.ztStopwatch() (constructor)
+// Description:
+// - Constructs watch, sets watch.active to false, and sets watch.value to zero.
+// Failure Exceptions:
+// - If watch cannot be constructed, throws ztStopwatchConstructionFailure.
+//
+// watch.~ztStopwatch() (destructor)
+// Description:
+// - Destructs watch.
+// Error Exceptions:
+// - If watch.active is true, throws ztDestructActiveStopwatchError.
+//
+// watch.Start()
+// Description:
+// - Sets watch.active to true and starts accumulating elapsed wallclock time.
+// Error Exceptions:
+// - If watch.active is true, throws ztStartActiveStopwatchError.
+//
+// watch.Stop()
+// Description:
+// - Sets watch.active to false and increments watch.value by elapsed
+//   wallclock time since previous watch.Start().
+// Error Exceptions:
+// - If watch.active is false, throws ztStopInactiveStopwatchError.
+// - If watch.value would overflow, throws ztStopwatchOverflowError.
+//
+// watch.Reset()
+// Description:
+// - Sets watch.value back to zero.
+// Error Exceptions:
+// - If watch.active is true, throws ztResetActiveStopwatchError.
+//
+// watch.AccumulatedTime()
+// Description:
+// - Returns watch.value (in milliseconds).
+// Error Exceptions:
+// - If watch.active is true, throws ztQueryActiveStopwatchError.
+//==============================================================================
+
+struct ztStopwatchImpl; // hidden implementation
+
+class ztStopwatch {
+public:
+
+	ztStopwatch( void ) throw (ztStopwatchConstructionFailure);  // constructor
+	~ztStopwatch( void ) throw (ztDestructActiveStopwatchError); // destructor
+
+	void Start( void ) throw (ztStartActiveStopwatchError);
+	void Stop( void ) throw (ztStopInactiveStopwatchError,
+		                     ztStopwatchOverflowError);
+	void Reset( void ) throw (ztResetActiveStopwatchError);
+	unsigned int Time( void ) throw (ztQueryActiveStopwatchError);
+
+private:
+
+	ztStopwatch( const ztStopwatch& ); // copying not permitted	
+	ztStopwatch& operator=( const ztStopwatch& ); // assignment not permitted
+
+	ztStopwatchImpl* impl; // pointer to hidden implementation
+};
+
+//==============================================================================
+
+}
+
+/******************************************************************************/
+#endif // !ZTIMING

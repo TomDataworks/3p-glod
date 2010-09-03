@@ -1,0 +1,149 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "ply2vds"=".\ply2vds\ply2vds.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name vdslib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ply2vif"=".\ply2vif\ply2vif.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name vdslib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "stderror"=".\stderror\stderror.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "stdrender"=".\stdrender\stdrender.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "vds2vif"=".\vds2vif\vds2vif.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name vdslib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "vdsimple"=".\vdsimple\vdsimple.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name vdslib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "vdslib"=".\vdslib.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "vdsview"=".\vdsview\vdsview.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name vdslib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name stderror
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name stdrender
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "vif2vds"=".\vif2vds\vif2vds.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name vdslib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

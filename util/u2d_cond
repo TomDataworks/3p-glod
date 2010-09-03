@@ -1,0 +1,32 @@
+#!/usr/local/bin/perl -w
+if(scalar(@ARGV) == 0) {
+	print "Usage: d2u_cond <filename>\n\n";
+	exit 1;
+}
+
+@a = ("\/usr\/local\/bin\/perl", "-w", "./is_binary", $ARGV[0]);
+system(@a);
+$val = $? >> 8;
+
+if($val == 0) {
+	$x = (stat($ARGV[0]))[2] & 07777;
+	$o = sprintf("%o", $x);
+	print "Dos2unix -> $ARGV[0] ($o)\n";
+	#`unix2dos -q -n \"$ARGV[0]\" ./foo`;
+	unix2dos($ARGV[0], "./foo");
+	`mv ./foo \"$ARGV[0]\"`;
+	`chmod $o \"$ARGV[0]\"`;
+} else {
+}
+
+sub unix2dos {
+	($src,$dst) = @_;
+	undef $/;
+	open(FIN, $src) || die($!);
+	$_ = <FIN>;
+	s/\n/\r\n/g;
+	close(FIN);
+	open(OUT,">$dst") || die($!, ": $dst");
+	print OUT $_;
+	close(OUT);
+}

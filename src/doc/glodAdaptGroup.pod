@@ -1,0 +1,88 @@
+=head1 NAME
+
+B<glodAdaptGroup> - Adapts a group to a particular LOD based on the bound transform matrices and group settings.
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodAdaptGroup>(I<GLuint> name)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name>
+
+The name of the group to adapt
+
+=back 
+
+
+=head1 DESCRIPTION
+
+
+Adaptation of a group is governed using the
+B<glodGroupParameter>I<[if]> interface. This takes a configuration tag
+and a value. The configuration options that affect group adaptation
+are explained below. 
+
+The main configuraiton option for a group is its adaption
+mode. Acceptable values for B<GLOD_ADAPT_MODE> are B<GLOD_ERROR_THRESHOLD>
+or B<GLOD_TRIANGLE_BUDGET>.
+
+=head1 GLOD_ERROR_THRESHOLD parameters
+
+Error threshold mode refines all fo the emmbers of your group to
+within a certain constant amount of error. The metric for
+determining this error, as well as the constant error amount, is
+selectable through the glodGroupParameter interface.
+
+The B<GLOD_ERROR_MODE> setting selects how geometric error is
+interpreted for this group. Possible error modes are
+B<GLOD_OBJECT_SPACE_ERROR> or B<GLOD_SCREEN_SPACE_ERROR>. Depending on
+whether you chose object or screen space error mode, you must also
+specify the amount of acceptable error for refinement using
+B<GLOD_OBJECT_SPACE_ERROR_THRESHOLD> or
+B<GLOD_SCREEN_SPACE_ERROR_THRESHOLD>, depending on your choice of the
+error mode.
+
+The following code sets group C<0> to adapt all of its
+member objects to a screen-space error of no more than 3 pixels.
+
+  glodGroupParameteri(0, GLOD_ADAPT_MODE, GLOD_ERROR_THRESHOLD);
+  glodGroupParameteri(0, GLOD_ERROR_THRESHOLD, 
+                         GLOD_SCREEN_SPACE_ERROR);
+  glodGroupParameterf(0, GLOD_SCREEN_SPACE_ERROR_THRESHOLD, 3.0f);
+
+
+=head1 GLOD_TRIANGLE_BUDGET parameters
+
+If you set the group to B<GLOD_TRIANGLE_BUDGET>, you must also set the
+number of triangles that you want the group to contain after
+adaptation. This is set using B<GLOD_MAX_TRIANGLES>. Additionally, you
+must set the way in which triangles will be chosen --- with respect to
+screen space or object space. This is done by setting
+B<GLOD_ERROR_MODE> to B<GLOD_OBJECT_SPACE_ERROR> or
+B<GLOD_SCREEN_SPACE_ERROR>.
+
+The following code sets a group to refine to C<int num_tris> triangles
+using the screen-space appearance of the object as a guide.
+
+  glodGroupParameteri(0, GLOD_ADAPT_MODE, GLOD_TRIANGLE_BUDGET);
+  glodGroupParameteri(0, GLOD_ERROR_MODE, GLOD_SCREEN_SPACE_ERROR_MODE);
+  glodGroupParameteri(0, GLOD_MAX_TRIANGLES, num_tris);
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if a group of this name does not exist in the system.
+
+=item B<GLOD_INVALID_STATE> is generated if the adaptation parameters are not set properly.
+
+=back
+
+=cut

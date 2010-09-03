@@ -1,0 +1,3 @@
+g++ -g -I. -I../../ply -c *.C
+ar ruv libMT.a *.o
+g++ -shared -o libMT.so *.o

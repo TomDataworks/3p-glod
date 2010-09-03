@@ -1,0 +1,26 @@
+can we let different patches have different numbers of textures?  that
+would mean that the different patches' vertexpositions would have to be
+differently sized, and thus in separate arrays (and also separated out
+and the patch to which they belonged given in VIF files)
+-No, force them to have the same number of texture coordinates for now,
+but document this and how you would go about implementing different number
+of textures, or, more generally, different sizes of combined vertex
+attributes
+
+
+
+*make things that don't change const
+*try removing nodes above boundary from fold queue and only insert them back into fold queue when all their children are folded
+	-need some way to store budgetitems that have been removed from fold queue such that they can be easily accessed when needed to be readded to fold queue
+
+TODO: move tri functions to simplifier for more efficiency and to keep forest nodes/noderefs/tris/triresfs pointers persistent throughout multiple folds/unfolds
+
+
+disallowing cluster trees allows us to 
+-GET RID OF Proxy BackRefs:
+	+when unfolding don't need to check if node being unfolded's livetri proxy is actually a corner of a livetri
+	+when folding don't need to check if 1 or 2 proxies of livetri of parent are children and not move them up to parent if they are
+	-when folding can remove subtris by just checking which livetris of children have two children as proxies
+	-use temp proxy backrefs to initialize proxies and live tris
+	-pass proxy/corner into AddToLiveTriList/UsingCorners instead of having to get it from proxy backrefs
+

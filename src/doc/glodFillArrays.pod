@@ -1,0 +1,99 @@
+=head1 NAME
+
+B<glodFillArrays> - Rather than drawing a patch, this places what
+would be drawn into the current OpenGL vertex/normal/color/texcoord arrays.
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodFillArrays>(I<GLuint> object_name, I<GLuint patch_name>)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<object_name>, I<patch_name>
+
+Selects the object and patch to read back. 
+
+=back 
+
+=head1 DESCRIPTION
+
+glodFillArrays() is used to "see" what GLOD will draw if you were to
+call glodDrawPatch() . To read back the current state of an object using
+glodFillArrays() , you usually:
+
+=over
+
+=item *
+
+Call C<glodGetObjectParameteriv(obj, patch, GLOD_PATCH_SIZES, dst_arry)>
+to obtain the number of vertices and indices (=triangles*3) that
+glodFillArrays() or glodDrawPatch() will issue for this patch.
+
+=item *
+
+Allocate buffers for the vertices and any other data that you want to
+read back. B<You must allocate space for 3*num_indices vertices>. If
+you want to achieve better space utilization, consider using the
+glodFillElements() call.
+
+=item *
+
+Set the vertex array state (glVertexPointer etc) to match your allocated
+buffers.
+
+=item *
+
+Call glodFillArrays()
+
+=back
+
+When this call returns, the currently set array pointers will have
+been filled in with the current GLOD cut. B<It is critical that the
+buffers to which the pointers refer are large enough to accomodate the
+cut. Otherwise, memory corruption will occur>.
+
+=head1 EXAMPLE
+
+The following code reads back the zero-th patch in C<object 0>. It is
+assumed that the object consists of 1 patch and that the zero-th patch
+is named zero. If these assumptions do not hold, you will need an
+extra layer of indirection that uses the glodGetObjectParamiv
+GLOD_NUM_PATCHES and GLOD_PATCH_NAMES feature to make this code fully generic.
+
+  // get the size of this patch
+  GLfloat* vert_buf, *normal_buf;
+  int numIndices,numVerts;
+  int dims[2];
+  glodGetObjectParamiv(0, GLOD_PATCH_SIZES, dims);
+  numIndices = dims[0];
+  numVerts   = dims[1]; // we ignore this value for glodFillArrays
+
+  vert_buf = malloc(sizeof(float) * (numIndices*3));
+  normal_buf = malloc(sizeof(float) * (numIndices*3));
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_NORMAL_ARRAY);
+  glVertexPointer(3, GL_FLOAT, 0, vert_buf);
+  glNormalPointer(GL_FLOAT, 0, normal_buf);
+  glFillArrays(0, 0);
+  // now, vert_buf and normal_buf contain a copy of 
+  // object 0, patch 0's current geometry
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if an object of the specified name does not exist
+
+=item B<GLOD_INVALID_STATE> is generated if the object has not been built yet.
+
+=item B<GLOD_INVALID_PATCH> is generated if the object does not have a patch of the specified name.
+
+=back
+
+=cut

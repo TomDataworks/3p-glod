@@ -1,0 +1,77 @@
+=head1 NAME
+
+B<glodLoadObject> - Loads an object that was previously read with glodReadbackObject()
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodLoadObject>(I<GLuint name> , I<GLuint groupname> , I<const GLvoid*> data)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name>
+
+The name of the object to create from the loaded hierarchy. B<Object
+name must not already exist.>
+
+=item I<groupname>
+
+The name of the group in which to place the object.
+
+=item I<data>
+
+A pointer to the buffer contanining the readback GLOD object.
+
+=back 
+
+
+=head1 DESCRIPTION
+
+This mechanism is provided to allow you to decouple the creation
+and use of multiresolution objects across multiple program
+invocations. glodLoadObject accepts any binary data that was
+previously created with glodReadbackObject() .
+
+After being loaded, a GLOD object is in the same default state as
+it it would be following a glodBuildObject() call. This means that
+it has not necessarily been adapted to a particular LOD and thus
+cannot yet be drawn. You must set any relevant adaptation
+parameters before you proceed onward to drawing this object.
+
+
+=head1 USAGE
+
+One usually reads back an object from GLOD first using
+glodReadbackObject() :
+
+  void* data; int data_size;
+  glodGetObjectParameteriv(MY_OBJ_NAME, GLOD_READBACK_SIZE, &data_size); 
+  data = malloc(data_size);
+  glodReadbackObject(MY_OBJ_NAME, data);
+
+You could then write this data to a file. When you later decide to use it:
+
+  void* data; int data_size;
+  glodLoadObject(NEW_OBJ_NAME, NEW_GROUP_NAME, data);
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if an object of the given name exists.
+
+=item B<GLOD_BAD_MAGIC> is generated if the buffer format is corrupt or incompatible with this version of GLOD.
+
+=item B<GLOD_BAD_HIERARCHY> is generated if the hierarchy type (the
+I<format> flag of glodBuildObject()) encoded in this buffer is not supported by this version of GLOD.
+
+=item B<GLOD_CORRUPT_BUFFER> is generated if the buffer is, though valid in all other respects, found to be corrupt.
+
+=back
+
+=cut

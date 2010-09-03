@@ -1,0 +1,72 @@
+Forest functions:
+
+public:
+-set forest to be valid (checks for existence of nodes/tris and initializes node refs and tri refs)
+-give contents (nodes and tris) of one forest to another forest
+-read forest data from a Vif class
+-write forest data out to an ascii VIF format file
+-read forest data from a binary VDS format file
+-memory map forest data from a binary VDS format file
+-write forest data out to a binary VDS format file
+-reset forest (un-memory-map file if file is memory-mapped, delete all nodes, tris, and refs)
+-
+
+private:
+-set valid
+-swap two nodes
+-swap actual memory of two nodes
+-reorder nodes to depth-first order
+-DFSvisit (used by depth-first reordering)
+-calculate bounding sphere radii of all nodes in forest
+-nil out live tri lists (reset all cuts on forest)
+-allocate and initialize node refs and tri refs
+-
+
+debug:
+-check for duplicate node refs in node refs array
+-check if proxies of all triangles match with corresponding proxy backrefs
+-print info about given tri
+-print into about given node
+-print forest structure of nodes in forest
+-print info about forest
+-highlight first livetri of given node
+-highlight next livetri of currently highlighted tri
+-highlight given node
+-unhighlight highlighted node
+-highlight first child node of highlighted node
+-highlight right sibling node of highlighted node
+-highlight left sibling node of highlighted node
+-highlight parent node of highlighted node
+-
+
+
+Forest data:
+
+public:
+-array of nodes
+-array of node refs (pointers to nodes' budgetitems in a simplifier queue)
+-array of tris
+-array of tri refs (indices into nodes' trirenderdatums/proxies in renderer tri renderdata array)
+-flag for whether vertex normal information is present
+-flag for whether vertex color information is present
+-number of textures for which texture coordinates are present
+-array of nodes' texture coordinates
+-flag for whether forest is valid (i.e. can have a cut instantiated on it)
+-flag for whether forest is in core memory or is memory-mapped from disk
+-byte pointer to beginning of file that forest is memory-mapped from (if it is memory-mapped)
+-flag for whether forest is a merge forest or cluster forest
+-number of nodes in forest
+-number of tris in forest
+
+
+private:
+-for depth-first sort:
+	-index used in depth-first sort
+	-array of nodes of forest in depth-first order
+	-array of locations of nodes of forest in depth-first ordered array
+-
+
+debug:
+-index of highlighted node
+-index of highlighted tri
+-

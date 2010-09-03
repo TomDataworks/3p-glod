@@ -1,0 +1,488 @@
+This file contains VIF formats, from the most recently introduced format to the oldest
+format.
+
+******************************************************************************
+******************************************************************************
+
+# VIF2.3
+# VIF2.3 adds in support for an error parameter to be specified for each merge.
+# These error parameters are all printed as a list immediately before the list of
+# merges.  Each merge now contains an additional index, which is the index of the
+# merge's error in this list of error parameters.  This error is said to be the
+# error of the vertex which is the parent vertex of that merge.
+# Each error in the list of error parameters is written out as a number of floats.
+# The errorparamsize, given after the number of errors in the VIF header, denotes
+# the number of floats used to represent each error.  Each error is printed on one
+# line, beginning with an 'e' and the index of that error in the list (beginning with
+# zero), and then consisting of each of the floats used to represent it, separated
+# by spaces.
+# The first error in the list (with index 0) is reserved for use by all vertices
+# not having any child vertices in the hierarchy.  These vertices are automatically
+# assigned the first error in the list - they do not store its index anywhere.
+# If a VIF file does not specify error parameters, "errorparams: 0" should appear
+# in the header, the "errorparamsize: " line should not appear, the merge lines
+# should follow directly after the triangles' lines (i.e. no error parameter values
+# should be listed), and the "e<errorparamindex> term must be left out of the lines
+# specifying merges.  If the value in the "errorparams: " line is nonzero, then it
+# is expected that the value in the "errorparamsize: " line will be a positive
+# integer, that the given number of error params will be specified between the
+# triangles and merges, and that all merges will contain the "e<errorparamindex>" term.
+
+
+VIF2.3
+format: p [c n x <numtextures>]
+vertex positions: n
+vertices: n
+triangles: n
+patches: n
+errorparams: n
+errorparam size: n
+merges: n
+
+p0 x y z
+c r g b	a	# this line appears only if 'c' present in format line above
+		# r, g, b, and a are integers between 0 and 255 inclusive
+n x y z		# this line appears only if 'n' present in format line above
+x0 u v		# texture coordinates for texture 0 - tex coords only appear if <numtextures>
+		# is present and greater than zero in format line above
+x1 u v		# texture coordinates for texture 1
+x2 u v		# texture coordinates for texture 2
+.
+.	# and so on for all sets of texture coordinates
+.
+p1 x y z
+...
+	# and so on for all vertex positions
+
+v0 i p c	# vertex 0 has vertex position i, patch ID p, and coincident vertex c (optional)
+v1 i p c	# patch ID is a positive integer (>= 1)
+			# if present, c is the index of a coincident vertex.  these coincident vertex
+			# indices must form a loop (e.g. if two vertices are coincident, their 
+			# coincident vertex indices will be each others indices)
+...
+	# and so on for all vertices
+
+t c1 c2 c3 p	# triangle has vertices indexed by c1, c2, and c3, and patch ID p
+...
+	# and so on for all triangles
+
+e0 f1 f2 f3 ...	# list of errors begins with index 0
+e1 f1 f2 f3 ...	# f1 etc. are floats, the quantity of which is given by
+		# the value of the "errorparamsize:" line in the header.
+
+...	# and so on for all errors
+
+m<parentvert> e<errorparamindex> <childvert1> <childvert2> ...
+		# <errorparamindex> is the index of this merge's error in the list of errors
+		# <parentvert> and <childvertn> are indices into the vertices list; e.g.:
+m0 e3 1 2 3	# means that (child) vertices 1, 2, and 3 can be merged together,
+		# introducing a new (parent) vertex, 0, with error corresponding to the
+		# fourth in the list of errors (index 3)
+...
+	# and so on for all merges
+
+
+# The hierarchy produced by a given set of merges must result in a single "root" vertex
+# which only appears in one merge and appears as the parent in that merge .  There must
+# be only one vertex with this property.
+# Also, all vertices must appear in at least one and at most two merges.
+
+
+# Here is a sample VIF2.3 file containing two triangles:
+
+VIF2.3
+format: pcnx1			# model has position, color, and normal information,
+				# and vertices have 1 set of texture coordinates
+vertex positions: 6		# model contains 6 vertex positions
+vertices: 6			# model contains 6 vertices
+triangles: 2			# ...and 2 triangles
+patches: 1			# model consists of a single patch
+errorparams: 3			# model uses three error values
+errorparamsize: 1		# errors consist of a single float
+merges: 2			# hierarchy is made up of 2 merge operations
+
+p0 0.5 1.0 1.0			# vertex position 0 is XYZ coordinates {.5, 1, 1}
+c 255 0 0 255			# ...and colored red
+n 0.0 0.0 1.0			# ...and normal {0,0,1}
+x0 0.2 0.2				# ...and texture coordinates {0.2, 0.2}
+p1 0.5 0.5 1.0			# vertex position 1 is XYZ coordinates {.5, .5, 1}
+c 0 255 0 255			# ...and so on
+n 0.0 0.0 1.0
+x0 0.0 0.0
+p2 1.0 0.5 1.0
+c 0 0 255 255
+n 0.0 0.0 1.0
+x0 0.0 0.5
+p3 1.0 1.0 1.0
+c 255 255 255 255
+n 0.0 0.0 1.0
+x0 0.0 1.0
+p4 0.75 1.0 1.0
+c 255 128 128 255
+n 0.0 0.0 1.0
+x0 0.5 1.0
+p5 0.75 0.75 0.75
+c 255 128 128 255
+n 0.0 0.0 1.0
+x0 1.0 1.0
+
+v0 0 1		# vertex 0 uses vertex position 0, has patch ID 1, and is not coincident with
+			# any other vertices
+v1 1 1
+v2 2 1
+v3 3 1
+v4 4 1
+v5 5 1
+
+t 0 1 2 1		# triangle 0 consists of vertices 0, 1, and 2, and has patch ID 1
+t 0 2 3 1		# triangle 1 consists of vertices 0, 2, and 3, and has patch ID 1
+
+e0 0.0		# vertices with no children in the hierarchy will be assigned this error
+e1 2.5
+e2 3.5
+
+m4 e1 0 3 	# 2 vertices (0,3) merge, creating vertex 4 {.75,1,1}, with error 2.5
+m5 e2 1 2 4 	# 3 vertices (1,2,4) merge to vertex 5 {.75,.75,.75}, with error 3.5
+
+# The hierarchy produced by these merges looks like this:
+#         5  <- Vertex 5 is the root node
+#        /|\
+#       1 2 4
+#           |\
+#           0 3
+
+
+******************************************************************************
+******************************************************************************
+
+# VIF2.2
+# VIF2.2 adds in support for half-edge collapses (multiple "clone" vertices pointing
+# to the same geometric location), coincident vertices, and patches.
+# Clusters are no longer explicit hierarchy operations; instead, a cluster can be
+# represented as a merge where one of the children of the merge is a "clone" vertex of
+# the parent of the merge.  Thus, all hierarchies can now be (and are) represented
+# with only merges.
+# A minor change is that in the event of no merges, giving the number of merges is no
+# longer optional; if no merges are specified in the hierarchy, the line "merges: 0"
+# should appear.
+
+VIF2.2
+format: p [c n x <numtextures>]
+vertex positions: n
+vertices: n
+triangles: n
+patches: n
+merges: n
+
+p0 x y z
+c r g b	a	# this line appears only if 'c' present in format line above
+			# r, g, b, and a are integers between 0 and 255 inclusive
+n x y z		# this line appears only if 'n' present in format line above
+x0 u v		# texture coordinates for texture 0 - tex coords only appear if <numtextures>
+			# is present and greater than zero in format line above
+x1 u v		# texture coordinates for texture 1
+x2 u v		# texture coordinates for texture 2
+.
+.	# and so on for all sets of texture coordinates
+.
+p1 x y z
+...
+	# and so on for all vertex positions
+
+v0 i p c	# vertex 0 has vertex position i, patch ID p, and coincident vertex c (optional)
+v1 i p c	# patch ID is a positive integer (>= 1)
+			# if present, c is the index of a coincident vertex.  these coincident vertex
+			# indices must form a loop (e.g. if two vertices are coincident, their 
+			# coincident vertex indices will be each others indices)
+...
+	# and so on for all vertices
+
+t c1 c2 c3 p	# triangle has vertices indexed by c1, c2, and c3, and patch ID p
+...
+	# and so on for all triangles
+
+m<parentvert> <childvert1> <childvert2>	...	# <parentvert> and <childvertn> are indices
+											# into the vertices list; e.g.:
+m0 1 2 3			# means that (child) vertices 1, 2, and 3 can be merged together,
+					# introducing a new (parent) vertex, 0
+...
+	# and so on for all merges
+
+
+# The hierarchy produced by a given set of merges must result in a single "root" vertex
+# which only appears in one merge and appears as the parent in that merge .  There must
+# be only one vertex with this property.
+# Also, all vertices must appear in at least one and at most two merges.
+
+
+# Here is a sample VIF2.2 file containing two triangles:
+
+VIF2.2
+format: pcnx1			# model has position, color, and normal information,
+						# and vertices have 1 set of texture coordinates
+vertex positions: 6		# model contains 6 vertex positions
+vertices: 6				# model contains 6 vertices
+triangles: 2			# ...and 2 triangles
+patches: 1				# model consists of a single patch
+merges: 2				# hierarchy is made up of 2 merge operations
+
+p0 0.5 1.0 1.0			# vertex position 0 is XYZ coordinates {.5, 1, 1}
+c 255 0 0 255			# ...and colored red
+n 0.0 0.0 1.0			# ...and normal {0,0,1}
+x0 0.2 0.2				# ...and texture coordinates {0.2, 0.2}
+p1 0.5 0.5 1.0			# vertex position 1 is XYZ coordinates {.5, .5, 1}
+c 0 255 0 255			# ...and so on
+n 0.0 0.0 1.0
+x0 0.0 0.0
+p2 1.0 0.5 1.0
+c 0 0 255 255
+n 0.0 0.0 1.0
+x0 0.0 0.5
+p3 1.0 1.0 1.0
+c 255 255 255 255
+n 0.0 0.0 1.0
+x0 0.0 1.0
+p4 0.75 1.0 1.0
+c 255 128 128 255
+n 0.0 0.0 1.0
+x0 0.5 1.0
+p5 0.75 0.75 0.75
+c 255 128 128 255
+n 0.0 0.0 1.0
+x0 1.0 1.0
+
+v0 0 1		# vertex 0 uses vertex position 0, has patch ID 1, and is not coincident with
+			# any other vertices
+v1 1 1
+v2 2 1
+v3 3 1
+v4 4 1
+v5 5 1
+
+t 0 1 2 1		# triangle 0 consists of vertices 0, 1, and 2, and has patch ID 1
+t 0 2 3 1		# triangle 1 consists of vertices 0, 2, and 3, and has patch ID 1
+
+m4 0 3 			# 2 vertices (0,3) merge, creating vertex 4 {.75,1,1}
+m5 1 2 4 		# 3 vertices (1,2,4) merge to vertex 5 {.75,.75,.75}
+
+# The hierarchy produced by these merges looks like this:
+#         5  <- Vertex 5 is the root node
+#        /|\
+#       1 2 4
+#           |\
+#           0 3
+
+******************************************************************************
+******************************************************************************
+
+# VIF2.1
+# VIF2.1 is identical to the 2.0 format, with the addition of a format field in the header
+# and the ability to specify an arbitrary number of texture coordinates per vertex.
+
+VIF2.1
+format: p [c n x <numtextures>]
+vertices: n
+triangles: n
+[[merges, clusters]: n]
+
+v0 x y z
+c r g b
+n x y z
+x0 u v	# texture coordinates for texture 0
+x1 u v	# texture coordinates for texture 1
+x2 u v	# texture coordinates for texture 2
+.
+.	# and so on for all sets of texture coordinates
+.
+
+v1 x y z
+...
+	#remainder of file (triangles and merges or clusters) follows same format as VIF2.0
+
+# In the 'format' line, p indicates the presence of vertex positions,
+# c indicates the presence of vertex colors, n indicates the presence
+# of vertex normals, and x indicates the presence of texture coordinates.
+# If there are texture coordinates, the x is followed by the number of texture
+# coordinates.  If there are no texture coordinates, both the x and the
+# number are omitted.
+# So 'format: p' means vertices have only position information
+# 'format: pn' means that vertices have position and normal information
+# 'format: pcx2' means that vertices have position and color information and two sets
+# of texture coordinates
+
+******************************************************************************
+******************************************************************************
+
+# VIF2.0
+# Sample VIF2.0 file for a very simple model containing two triangles.
+# Note that comments start with a pound symbol, and go to the end of the line.
+# Note also that blank lines are ignored.
+
+VIF2.0
+vertices: 6		# model contains 6 vertices
+triangles: 2		# ...and 2 triangles
+merges: 2		# ...and 2 merge operations (this line optional, default=0)
+
+v0 0.5 1.0 1.0		# vertex 0 has XYZ coordinates {.5, 1, 1}
+c 255 0 0		# ...and is colored red 		(this line optional)
+n 0.0 0.0 1.0		# ...and has normal {0,0,1} 		(this line optional)
+v1 0.5 0.5 1.0		# vertex 1 has XYZ coordinates {.5, .5, 1}
+c 0 255 0		# ...and so on
+n 0.0 0.0 1.0
+v 1.0 0.5 1.0		# notice that the index after the 'v' is optional - vertices are assigned indices in the order they're given
+c 0 0 255
+n 0.0 0.0 1.0
+v3 1.0 1.0 1.0		# ...the index, if supplied, IS checked for consistency
+c 255 255 255
+n 0.0 0.0 1.0
+v4 0.75 1.0 1.0
+c 255 128 128
+n 0.0 0.0 1.0
+v5 0.75 0.75 0.75
+c 255 128 128
+n 0.0 0.0 1.0
+
+t 0 1 2			# triangle 0 consists of vertices 0, 1, and 2
+t 0 2 3			# triangle 1 consists of vertices 0, 2, and 3
+
+m4 0 3 			# 2 vertices (0,3) merge, creating vertex 4 {.75,1,1}
+m5 1 2 4 		# 3 vertices (1,2,4) merge to vertex 5 {.75,.75,.75}
+
+# The hierarchy produced by these merges looks like this:
+#         5  <- Vertex 5 is the root node
+#        /|\
+#       1 2 4
+#           |\
+#           0 3
+
+
+
+# Further Explanation:
+#
+# VIF2.0 is identical to VIF1.0 except that it supports the specification of merges or clusters
+#     The header has the following format:
+# 
+# VIF<version>
+# vertices: <numverts>	
+# triangles: <numtris>
+# [merges, clusters]: <numgroupings>  # optional; omitting this line defaults <numgroupings> to 0
+#
+# The <numverts> and <numtris> fields are self-explanatory.  A VIF file can
+# also specify a sequence of merge or cluster operations that will create, 
+# or partially create, the VDS vertex tree.  The number of such grouping 
+# operations is given by <numgroupings>.  Note that the user is not required
+# to include any grouping operations, in which case this line may be omitted.
+# 
+# Vertex information:
+#     - lines begining with a 'v' specify the X,Y,Z coordinates of a vertex.
+#       To increase readability, the vertex number may optionally be included
+#       after the 'v' but before the first space.  If included, this number 
+#       is ignored.
+#     - lines begining with a 'c' specify the R,G,B color of the preceeding
+#       vertex.  Color components are integers ranging from 0 to 255.
+#     - lines begining with 'n' specify the normal of the preceeding vertex.
+#
+# v<vertnum> <x> <y> <z>  # X,Y,Z coordinates of vertex (<vertnum> is optional)
+# c <red> <green> <blue>  # (optional) R,G,B vertex color. Range: 0..255
+# n <nx> <ny> <nz>	  # (optional) X,Y,Z components of vertex normal vector
+# .
+# .	# repeat for as many vertices as are in the model
+# .
+#
+# Triangle information.  Each line specifies a triangle as 3 vertex indices.
+# Note that vertex indices start at zero.
+#
+# t <v1> <v2> <v3>	# 3 vertex indices that form the triangle corners
+# .
+# .	# repeat for as many triangles as are in the model 
+# .
+# 
+# Merge information:
+#     - this section is optional and may include zero or more merge operations
+#     - if any cluster operations are specified, this section must be omitted
+#     - lines begin with an 'm', followed by the the index
+#	of the new created (parent) vertex, and then by the indices of the merged (child) vertices.
+#
+# m<parentvertnum> <v1> <v2> [...]
+# .
+# .	# repeat for as many merge operations as desired.
+# .
+#
+# Cluster information:
+#     - this section is optional and may include zero or more cluster operations
+#     - if any merge operations are specified, this section must be omitted
+#     - lines begin with a 'u', followed by the index of the
+#	parent vertex of the cluster, and then by the indices of the clustered vertices.
+#	The number of the parent vertex of the cluster is not optional like vertex
+#	numbers are.
+#     - Note that the parent vertex of the cluster is not listed in the listing of the
+#	indices of the clustered vertices.  So for a single half-edge collapse, there
+#	will only be one child vertex and one parent vertex in the cluster.
+#
+# u<parentvertnum> <v1> <v2> [...]
+# .
+# .	# repeat for as many cluster operations as desired
+# .
+#
+
+******************************************************************************
+******************************************************************************
+
+# Sample VIF1.0 file for a very simple model containing two triangles.
+# Note that comments start with a pound symbol, and go to the end of the line.
+# Note also that blank lines are ignored.
+
+VIF1.0
+vertices: 4		# model contains 4 vertices
+triangles: 2		# ...and 2 triangles
+
+v0 0.5 1.0 1.0		# vertex 0 has XYZ coordinates {.5, 1, 1}
+c 255 0 0		# ...and is colored red 		(this line optional)
+n 0.0 0.0 1.0		# ...and has normal {0,0,1} 		(this line optional)
+v1 0.5 0.5 1.0		# vertex 1 has XYZ coordinates {.5, .5, 1}
+c 0 255 0		# ...and so on
+n 0.0 0.0 1.0
+v 1.0 0.5 1.0		# notice that the index after the 'v' is optional - vertices are assigned indices in the order they're given
+c 0 0 255
+n 0.0 0.0 1.0
+v3 1.0 1.0 1.0		# ...the index, if supplied, IS checked for consistency
+c 255 255 255
+n 0.0 0.0 1.0
+
+t 0 1 2			# triangle 0 consists of vertices 0, 1, and 2
+t 0 2 3			# triangle 1 consists of vertices 0, 2, and 3
+
+
+# Further Explanation:
+#
+#     The VIF1.0 header has the following format:
+# 
+# VIF<version>
+# vertices: <numverts>	
+# triangles: <numtris>
+# 
+# Vertex information:
+#     - lines begining with a 'v' specify the X,Y,Z coordinates of a vertex.
+#       To increase readability, the vertex number may optionally be included
+#       after the 'v' but before the first space.  If included, this number 
+#       is ignored.
+#     - lines begining with a 'c' specify the R,G,B color of the preceeding
+#       vertex.  Color components are integers ranging from 0 to 255.
+#     - lines begining with 'n' specify the normal of the preceeding vertex.
+#
+# v<vertnum> <x> <y> <z>  # X,Y,Z coordinates of vertex (<vertnum> is optional)
+# c <red> <green> <blue>  # (optional) R,G,B vertex color. Range: 0..255
+# n <nx> <ny> <nz>	  # (optional) X,Y,Z components of vertex normal vector
+# .
+# .	# repeat for as many vertices as are in the model
+# .
+#
+# Triangle information.  Each line specifies a triangle as 3 vertex indices.
+# Note that vertex indices start at zero.
+#
+# t <v1> <v2> <v3>	# 3 vertex indices that form the triangle corners
+# .
+# .	# repeat for as many triangles as are in the model 
+# .
+#
+

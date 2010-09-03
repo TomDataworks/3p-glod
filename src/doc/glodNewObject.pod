@@ -1,0 +1,66 @@
+=head1 NAME
+
+B<glodNewObject> - create a new GLOD object
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodNewObject>(I<GLuint> name, I<GLuint> groupname, I<GLenum> format)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name> 
+
+Identifies this new object. 
+
+I<Warning:> The GLOD object namespace is global.
+
+=item I<groupname>
+
+Identifies the refinement group for the object. Warning: the group namespace is also global. If groupname does not yet exist, it will be created with default parameters. See glodNewGroup for more details.
+
+=item I<format>
+
+Selects the type of object. Possible formats are B<GLOD_DISCRETE> and
+B<GLOD_CONTINUOUS> (which is currently actually a I<view-dependent>
+simplification hierarchy).
+
+=back 
+
+
+=head1 DESCRIPTION
+
+You provide to this call an identifier for the new object, its
+intended simplified format, and its group name. Keep in mind that while
+you draw a GLOD object using its name, you adapt it to a particular level of
+detail using its group identifier.
+
+After creating the new object, add geometry to the object using
+glodInsertElements() and/or glodInsertArrays() and then build it with
+glodBuildObject() .
+
+Should you want the same geometry to be adapted to multiple levels
+of detail at a given instant, refer to the glodInstanceObject()
+call.
+
+=head1 SEE ALSO
+
+glodBuildObject() glodInstanceObject()  glodDeleteObject()
+
+glodInsertArrays()  glodInsertElements()
+
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if an object of this C<name> already exists.
+
+=back
+
+=cut

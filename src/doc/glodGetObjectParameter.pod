@@ -1,0 +1,82 @@
+=head1 NAME
+
+B<glodGetObjectParameteriv>, B<glodGetObjectParameterfv> - Gets an object parameter
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodGetObjectParameteriv>(I<GLuint> name, I<GLenum> pname, I<GLint*> param)
+
+void B<glodGetObjectParameterfv>(I<GLuint> name, I<GLenum> pname, I<GLfloat*> param)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name>, I<pname>, I<param>
+
+Sets C<param[0...k]> to the property named C<pname> of the object named C<name>
+
+=back 
+
+
+=head1 PNAME/PARAM COMBINATIONS
+
+=over
+
+=item B<GLOD_NUM_PATCHES>
+
+Sets C<param[0]> to be the number of patches in this object
+
+=item B<GLOD_PATCH_NAMES>
+
+Sets C<param[0 .. GLOD_NUM_PATCHES-1]> to be the patch names for this
+object. There is no guarantee that the order of these indices is the
+order in which they were inserted into GLOD.
+
+=item B<GLOD_PATCH_SIZES>
+
+Sets for C<i=0 .. GLOD_NUM_PATCHES-1]>, sets:
+
+   param[i*2]     = (number of indices in patch i)
+   param[i*2 + 1] = (number of vertices in patch i)
+
+These parameters are used to determine the number of elements and
+number of vertices that would be produced were you to read-back the
+i-th patch of this object.
+
+For glodFillArrays() , you should allocate your vertex pointer (etc) to
+contain C<3*param[i*2] = 3*num_indices> vertex elements. 
+
+For glodFillElements() , you should allocate your vertex pointer (etc) to
+contain C<param[i*2+1] = num_verts> vertex elements. You should
+allocate your element pointer to contain C<param[i*2] = num_indices>
+vertex elements.
+
+
+=item B<GLOD_READBACK_SIZE>
+
+Sets C<param[0]> to be the size, in bytes, of this object, were it to
+be read back using glodReadbackObject()
+
+=back
+
+=head1 ERRORS
+
+This function returns silently and without modifying param if pname is
+incorrect.
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if the specified object does not exist.
+
+=item B<GLOD_UNKNOWN_PROPERTY> is generated if the parameter name is not recognized.
+
+=item B<GLOD_UNSUPPORTED_PROPERTY> is generated if the data type you chose for this parameter is not supported.
+
+=back 
+
+=cut

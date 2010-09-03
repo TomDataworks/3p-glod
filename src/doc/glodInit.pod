@@ -1,0 +1,31 @@
+=head1 NAME
+
+B<glodInit> - Initializes the GLOD library
+
+=cut
+
+=head1 C SPECIFICATION
+
+GLuint B<glodInit>(void)
+
+=cut
+
+=head1 DESCRIPTION
+
+This call initializes the GLOD library. This process includes binding
+to the various OpenGL extensions that GLOD uses to draw. Therefore,
+make sure you call glodInit after you have initialized your OpenGL
+context.
+
+B<GLOD will fail explosively if you forget to call this function.>
+
+=head1 RETURN VALUES
+
+1 on success, 0 on failure. glodGetError will be set to something diagnostic. At the moment, this function will not fail.
+
+=head1 ERRORS
+
+No errors are yet reported by glodInit. This is expected to change
+with code maturity.
+
+=cut

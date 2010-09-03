@@ -1,0 +1,429 @@
+#ifndef ZTHREADS
+#define ZTHREADS
+/******************************************************************************/
+/* ZThreads Library Interface (Version 0.1)
+/*
+/* Written by:    John Thornley
+/* Last modified: 8 February 2000
+/* Language:      C++
+/*
+/* The ZThreads namespace containing the ZThreads classes and functions.
+/*
+/* Copyright (c) John Thornley, 1996-2000.
+/******************************************************************************/
+
+/******************************************************************************/
+/* Errors and Exceptions
+/*
+/* Preconditions: Operations of the ZThreads library are subject to specified
+/* preconditions.  If the preconditions do not hold, a ztBadInputParametersError
+/* exception is thrown.
+/*
+/* Exceptions: Operations of the ZThreads library throw exceptions in the case
+/* of resource exhaustion or failure, or erroneous use of the operations.
+/* All exceptions that are thrown are derived from the ztException base class.
+/*
+/* Atomicity: Certain operations of the ZThreads library are required not to
+/* be called concurrently with certain other operations of the ZThreads library.
+/* The result of violating these atomicity requirements is not defined.
+/*
+/* Fatal Errors: A few operations of the ZThreads library are subject to fatal
+/* error conditions.  These error conditions result in the calling of abort().
+******************************************************************************/
+
+//==============================================================================
+// ZThreads namespace
+//==============================================================================
+
+namespace ZThreads {
+
+//==============================================================================
+// Exceptions
+//
+// The following exceptions are thrown by operations of the ZThreads library.
+// No other exceptions are thrown by or passed out of operations of the ZThreads
+// library.  Exceptions are divided into "failure" and "error" exceptions.
+// IMPORTANT: Operations that terminate exceptionally are guaranteed not to
+// have acquired any system resources (memory, synchronization objects, etc.),
+// created any threads, or altered the state of any object.
+//==============================================================================
+
+class ztException {};
+
+//------------------------------------------------------------------------------
+// Failure exceptions are thrown in response to exhaustion or failure of
+// system resources.  These exceptions may be thrown by any ZThreads operation.
+//------------------------------------------------------------------------------
+
+class ztFailureException : public ztException {};
+
+class ztMemoryAllocationFailure : public ztFailureException {};
+// Attempt to allocate memory failed, e.g., not enough memory available.
+
+class ztThreadCreationFailure : public ztFailureException {};
+// Attempt to create a thread failed, e.g., too many active threads.
+
+class ztSyncCreationFailure : public ztFailureException {};
+// Attempt to create a synchronization object failed, e.g., too many
+// active synchronization objects.
+
+class ztSystemCallFailure : public ztFailureException {};
+// Attempt to access system resources through a system call failed.
+
+//------------------------------------------------------------------------------
+// Error exceptions are thrown in response to erroneous use of the ZThreads 
+// operations.  These exceptions are only thrown where specified.
+///------------------------------------------------------------------------------
+
+class ztErrorException : public ztException {};
+
+class ztBadInputParametersError : public ztErrorException {};
+// Input parameters of a method/function do not satisfy a precondition.
+
+class ztDestructBusySyncObjectError : public ztErrorException {};
+// Destructor on synchronization object with suspended threads.
+
+class ztSetPreviouslySetFlagError : public ztErrorException {};
+// Set operation on previously set flag.
+
+class ztLockHeldLockError : public ztErrorException {};
+// Lock operation on lock that is already held by the calling thread.
+
+class ztUnlockUnheldLockError : public ztErrorException {};
+// Unlock operation on lock that is not held by the calling thread.
+
+class ztIncrementCounterOverflowError : public ztErrorException {};
+// Increment operation on counter that increases the counter's value to greater
+// then the maximum unsigned int value.
+
+class ztPassInvalidThreadBarrierError : public ztErrorException {};
+// Pass operation on barrier called by more than barrier.numThreads different
+// threads.
+
+class ztResetBusySyncObjectError : public ztErrorException {};
+// Reset operation on synchronization object with suspended threads.
+
+//==============================================================================
+// Processor affinity control functions
+//
+// ztGetNumSystemProcessors()
+// Description:
+// - Returns the number of processors available on the system.
+//
+// ztSetNumProcessProcessors(numProcessors)
+// Description:
+// - Sets the number of processors on which the threads of the current process
+//   will run to numProcessors.
+// Preconditions:
+// - numProcessors >= 1.
+// - numprocessors <= ztGetNumSystemProcessors().
+// Atomicity:
+// - Must only be called when the current process consists of a single thread.
+//==============================================================================
+
+int ztGetNumSystemProcessors( void ) /*throw (ztException)*/;
+
+void ztSetNumProcessProcessors( int numProcessors ) /*throw (ztException)*/;
+
+//==============================================================================
+// ztCreateThread(threadFunc, threadParams)
+// Description:
+// - Executes threadFunc(threadParams) as an asynchronous thread.  Returns
+//   immediately after creating the thread.
+// Preconditions:
+// - threadFunc != 0.
+// Notable Failure Exceptions:
+// - If the thread cannot be created, throws ztThreadCreationFailure.
+// Fatal Errors:
+// - If threadFunc is not a valid function pointer, calls abort().
+// - If the thread terminates exceptionally, calls abort().
+//==============================================================================
+
+typedef void* ztThreadParams;
+typedef void (*ztThreadFunc)( ztThreadParams params );
+
+void ztCreateThread(
+		ztThreadFunc threadFunc,
+		ztThreadParams threadParams ) /*throw (ztException)*/;
+
+//==============================================================================
+// ztForkAndJoinThreads(numThreads, threadFunc, threadParams)
+// Description:
+// - Executes threadFunc(i, numThreads, threadParams) as asynchronous threads,
+//   for i = 0 .. numThreads - 1.  Returns after all the created threads have
+//   terminated.
+// Preconditions:
+// - threadFunc != 0. 
+// Notable Failure Exceptions:
+// - If all of the threads cannot be created, throws ztThreadCreationFailure.
+// Special Error Handling:
+// - If threadFunc is not a valid function pointer, calls abort().
+// - If any of the threads terminate exceptionally, calls abort().
+//==============================================================================
+
+typedef void (*ztForkedThreadFunc)( 
+		unsigned int index, unsigned int numThreads, ztThreadParams params );
+
+void ztForkAndJoinThreads(
+		unsigned int numThreads,
+		ztForkedThreadFunc threadFunc,
+		ztThreadParams threadParams ) /*throw (ztException)*/;
+
+//==============================================================================
+// ztFlag class
+// Description:
+// - A ztFlag object is a synchronization object with a value of either
+//   "set" or "not set".
+//
+// flag.ztFlag() (constructor)
+// Description:
+// - Constructs flag and sets flag.value to "not set".
+// Notable Failure Exceptions:
+// - If flag cannot be constructed, throws ztSyncCreationFailure.
+//
+// flag.~ztFlag() (destructor)
+// Description:
+// - Destructs flag.
+// Error Exceptions:
+// - If any thread is suspended in a flag.Check() operation, throws
+//   ztDestructBusySyncObjectError.
+//
+// flag.Check()
+// Description:
+// - If flag.value is "set", continues execution with no effect.
+// - If flag.value is "not set", suspends execution of the calling thread.
+//
+// flag.Set()
+// Description:
+// - Sets flag.value to "set".
+// - Resumes execution of all threads suspended in flag.Check() operations.
+// Error Exceptions:
+// - If flag.value is already "set", throws ztSetPreviouslySetFlagError.
+//
+// flag.Reset()
+// Description:
+// - Sets flag.value to "not set".
+// Error Exceptions:
+// - If any thread is suspended in a flag.Check() operation, throws
+//   ztResetBusySyncObjectError.
+// Atomicity:
+// - Must not be called concurrently with any other operation on flag.
+//==============================================================================
+
+struct ztFlagImpl; // hidden implementation
+
+class ztFlag {
+public:
+
+	ztFlag( void ) /*throw (ztException)*/;  // constructor
+	~ztFlag( void ) /*throw (ztException)*/; // destructor
+
+	void Check( void ) /*throw (ztException)*/;
+	void Set( void ) /*throw (ztException)*/;
+	void Reset( void ) /*throw (ztException)*/;
+
+private:
+
+	ztFlag( const ztFlag& ); // copying not permitted	
+	ztFlag& operator=( const ztFlag& ); // assignment not permitted
+
+	ztFlagImpl* impl; // pointer to hidden implementation
+};
+
+//==============================================================================
+// ztLock class
+// Description:
+// - A ztLock object is a synchronization object with a value of either
+//   "not locked" or "locked by thread T".
+//
+// lock.ztLock() (constructor)
+// Description:
+// - Constructs lock and sets lock.value to "not locked".
+// Notable Failure Exceptions:
+// - If lock cannot be constructed, throws ztSyncCreationFailure.
+//
+// lock.~ztLock() (destructor)
+// Description:
+// - Destructs lock.
+// Error Exceptions:
+// - If any thread is suspended in a lock.Lock() operation, throws
+//   ztDestructBusySyncObjectError.
+//
+// lock.Lock() by thread T
+// Description:
+// - If lock.value is "not locked", sets lock.value to "locked by thread T".
+// - If lock.value is "locked by thread X", for some X != T, suspends execution
+//   of the calling thread.
+// Error Exceptions:
+// - If lock.value is already "locked by thread T", throws ztLockHeldLockError.
+//
+// lock.Unlock() by thread T
+// Description:
+// - If no threads are suspended in lock.Lock() operations, sets lock.value
+//   to "not locked".
+// - If one or more threads are suspended in lock.Lock() operations, resumes
+//   execution of one thread X suspended in a lock.Lock() operation and sets
+//   lock.value to "locked by thread X".
+// Error Exceptions:
+// - If lock.value is not "locked by thread T", throws ztUnlockUnheldLockError.
+//==============================================================================
+
+struct ztLockImpl; // hidden implementation
+
+class ztLock {
+public:
+
+	ztLock( void ) /*throw (ztException)*/;  // constructor
+	~ztLock( void ) /*throw (ztException)*/; // destructor
+
+	void Lock( void ) /*throw (ztException)*/;
+	void Unlock( void ) /*throw (ztException)*/;
+
+private:
+
+	ztLock( const ztLock& ); // copying not permitted	
+	ztLock& operator=( const ztLock& ); // assignment not permitted
+
+	ztLockImpl* impl; // pointer to hidden implementation
+};
+
+//==============================================================================
+// ztCounter class
+// Description:
+// - A ztCounter object is a synchronization object with an unsigned int value.
+//
+// counter.ztCounter() (constructor)
+// Description:
+// - Constructs counter and sets counter.value to zero.
+// Notable Failure Exceptions:
+// - If counter cannot be constructed, throws ztSyncCreationFailure.
+//
+// counter.~ztCounter() (destructor)
+// Description:
+// - Destructs counter.
+// Error Exceptions:
+// - If any thread is suspended in a counter.Check() operation, throws
+//   ztDestructBusySyncObjectError.
+//
+// counter.Check(level)
+// Description:
+// - If counter.value >= level, continues execution with no effect.
+// - If counter.value < level, suspends execution of the calling thread.
+//
+// counter.Increment(amount)
+// Description:
+// - Increments counter.value by amount.
+// - Resumes execution of all threads suspended in counter.Check(level)
+//   operations with level <= counter.value.
+// Error Exceptions:
+// - If counter.value + amount is greater than the maximum unsigned int value,
+//   throws ztIncrementCounterOverflowError.
+//
+// counter.IncrementToMaximum()
+// Description:
+// - Sets counter.value to the maximum unsigned int value.
+// - Resumes execution of all threads suspended in counter.Check() operations.
+//
+// counter.Reset()
+// Description:
+// - Sets counter.value to zero.
+// Error Exceptions:
+// - If any thread is suspended in a counter.Check() operation, throws
+//   ztResetBusySyncObjectError.
+// Atomicity:
+// - Must not be called concurrently with any other operation on counter.
+//==============================================================================
+
+struct ztCounterImpl; // hidden implementation
+
+class ztCounter {
+public:
+
+	ztCounter( void ) /*throw (ztException)*/;  // constructor
+	~ztCounter( void ) /*throw (ztException)*/; // destructor
+
+	void Check( unsigned int level ) /*throw (ztException)*/;
+	void Increment( unsigned int amount = 1 ) /*throw (ztException)*/;
+	void IncrementToMaximum( void ) /*throw (ztException)*/;
+	void Reset( void ) /*throw (ztException)*/;
+
+private:
+
+	ztCounter( const ztCounter& ); // copying not permitted	
+	ztCounter& operator=( const ztCounter& ); // assignment not permitted
+
+	ztCounterImpl* impl; // pointer to hidden implementation
+};
+
+//==============================================================================
+// ztBarrier class
+// Description:
+// - A ztBarrier is a synchronization object with two unsigned int values:
+//   barrier.numThreads and barrier.numWaiting.
+//
+// barrier.ztBarrier(numThreads) (constructor)
+// Description:
+// - Constructs barrier, sets barrier.numThreads to numThreads, and sets
+//   barrier.numWaiting to zero.
+// Preconditions:
+// - numThreads >= 1.
+// Notable Failure Exceptions:
+// - If barrier cannot be constructed, throws ztSyncCreationFailure.
+//
+// barrier.~ztBarrier() (destructor)
+// Description:
+// - Destructs barrier.
+// Error Exceptions:
+// - If any thread is suspended in a barrier.Pass() operation, throws
+//   ztDestructBusySyncObjectError.
+//
+// barrier.Pass()
+// Description:
+// - If barrier.numWaiting + 1 == barrier.numThreads, sets barrier.numWaiting
+//   to zero and resumes execution of all threads suspended in barrier.Pass()
+//   operations.
+// - If barrier.numWaiting + 1 < barrier.numThreads, increments
+//   barrier.numWaiting by one and suspends execution of the calling thread.
+// Error Exceptions:
+// - If the calling thread is a different thread from the first
+//   barrier.numThreads threads to perform barrier.Pass() operations since the
+//   most recent barrier.ztBarrier() or barrier.Reset() operation, throws
+//   ztPassInvalidThreadBarrierError.
+//
+// barrier.Reset(numThreads)
+// Description:
+// - Sets barrier.numThreads to numThreads and sets barrier.numWaiting to zero.
+// Preconditions:
+// - numThreads >= 1.
+// Error Exceptions:
+// - If any thread is suspended in a barrier.Pass() operation, throws
+//   ztResetBusySyncObjectError.
+// Atomicity:
+// - Must not be called concurrently with any other operation on barrier.
+//==============================================================================
+
+struct ztBarrierImpl; // hidden implementation
+
+class ztBarrier {
+public:
+
+	ztBarrier( unsigned int numThreads ) /*throw (ztException)*/;  // constructor
+	~ztBarrier( void ) /*throw (ztException)*/; // destructor
+
+	void Pass( void ) /*throw (ztException)*/;
+	void Reset( unsigned int numThreads ) /*throw (ztException)*/;
+
+private:
+
+	ztBarrier( const ztBarrier& ); // copying not permitted	
+	ztBarrier& operator=( const ztBarrier& ); // assignment not permitted
+
+	ztBarrierImpl* impl; // pointer to hidden implementation
+};
+
+//==============================================================================
+
+}
+
+/******************************************************************************/
+#endif // !ZTHREADS

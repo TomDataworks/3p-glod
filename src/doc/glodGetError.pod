@@ -1,0 +1,30 @@
+=head1 NAME
+
+B<glodGetError> - Reports the most recently recorded GLOD error
+
+=cut
+
+=head1 C SPECIFICATION
+
+GLenum B<glodGetError>(void)
+
+=cut
+
+=head1 DESCRIPTION
+
+This call is used to query the most recent GLOD error. It operates
+similarly to glGetError() in that it returns the first error to occur
+since the error flag was last cleared. Calling glodGetError() also
+clears the error flag, so the next error to follow will be recorded.
+
+=head1 RETURN VALUES
+
+If no errors have occured since the last call to glodGetError() ,
+GLOD_NO_ERROR is returned. Otherwise, a positive error value is
+returned (see glod.h for a current list).
+
+=head1 ERRORS
+
+None.
+
+=cut

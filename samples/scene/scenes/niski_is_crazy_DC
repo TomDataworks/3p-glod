@@ -1,0 +1,13 @@
+H 12 12
+N D 0 0 ../data/bunny-normals.ply - 1 / -10 0 0 / 0 0 0 0
+N C 1 0 ../data/brain-gear.ply - 1 / 10 0 0 / 0 0 0 0
+I 1 2 0 / 0 10 0 / 0 0 0 0
+I 0 3 0 / 0 -10 0 / 0 0 0 0
+N C 4 0 ../data/bunny-normals.ply - 1 / -10 -10 0 / 0 0 0 0
+N D 5 0 ../data/cylinder-normals.ply - 1 / 10 -10 0 / 0 0 0 0
+N C 6 0 ../data/sphere50.ply - 1 / 10 10 0 / 0 0 0 0
+N D 7 0 ../data/tetrahedron.ply - 1 / -10 10 0 / 0 0 0 0
+I 7 8 0 / -10 0 -10 / 0 0 0 0
+N D 9 0 ../data/triangle.ply - 1 / 10 0 10 / 0 0 0 0
+I 9 10 0 / 0 10 -10 / 0 0 0 0
+N D 11 0 ../data/gcanyon_300.ply - 1 / 0 -10 10 / 0 0 0 0

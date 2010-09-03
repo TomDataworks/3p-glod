@@ -1,0 +1,174 @@
+#!/usr/bin/perl -w
+###########################################################################
+# The Nat Preprocessor
+#   A quick perl script that gives you C-preprocessor like capabilities
+#   for plain old text files.
+###########################################################################
+if(scalar(@ARGV) == 0) {
+	Usage();
+	exit -1;
+}
+
+# Init
+my %string_defines;
+
+# parse command line
+$i = 0;
+for($i = 0 ; $i < scalar(@ARGV); $i++) {
+    if($ARGV[$i] eq '-D') {
+        if($i + 2 >= scalar(@ARGV)) {
+            printf("Error: not enough arguemnts for -f\n");
+            exit -1;
+        }
+            
+        $tag = $ARGV[$i+1];
+        $str = $ARGV[$i+2];
+
+        $string_defines{$tag} = $str;
+        
+        $i+=2;
+        next;
+    } else {
+        if(! defined($infile)) {
+	    $infile = $ARGV[$i];
+	} else {
+	    $outfile = $ARGV[$i];
+	}
+    }
+
+}
+
+if(! defined($infile) || ! defined($outfile)) {
+    Usage();
+    exit -1;
+}
+
+###########################################################################
+# Parse the file
+open(OUT, ">$outfile") || die($!);
+
+$lnum = 0; $curfile = "top";
+$string_defines{'NPP_FILENAME'} = $infile;
+ParseFile($infile);
+close(OUT);
+
+
+sub ParseFile {
+    my $fname; $fname = $_[0];
+    open(IN, $fname) || die($!);
+
+    my ($old_line, $line);
+
+    $curfile = $fname;
+    $lnum = 0;
+    while(<IN>) {
+	chomp;
+	
+	$lnum++;
+	$line = $_;
+	
+	$changed = 0;
+	
+	
+	# Is this a define?
+	if($line =~ /\#define/) {
+	    HandleDefine($line);
+	    next;
+	}
+
+	# Do any substitution
+	($line, $changed) = DoSubs($line);
+	
+	# is this an include?
+	if($line =~ /\#include/) {
+	    $pos = tell IN; my $ltmp; $ltmp = $lnum;
+	    close(IN);
+	    HandleInclude($line);
+	    open(IN, $fname);
+	    seek(IN, $pos, 0);
+            $curfile = $fname; $lnum = $ltmp;
+	    next;
+	}
+	
+	print OUT $line, "\n";
+    }
+    close(IN);
+}
+    
+sub HandleDefine {
+    $_[0] =~ /\#define (\S+) (.*)/;
+    if((! defined($1)) || (! defined($2))) {
+	printf("Syntax error at line $curfile:$lnum: \#define <key> <Value string>\n\n");
+        DoFail();
+    }
+    # do substitution on the key value
+    my ($val, $c);
+    ($val, $c) = DoSubs($2);
+
+    $string_defines{$1} = $val;
+}
+
+sub HandleInclude {
+    $_[0] =~ /\#include (.*)/;
+    if(! defined($1)) {
+	printf("Syntax error at line $curfile:$lnum: \#include <filename>\n");
+        DoFail();
+    }
+
+    $tmp = $1;
+    $tmp = $1 if($tmp =~ /\"(.+)\"/);
+    $tmp = $1 if($tmp =~ /\<(.+)\>/);
+    
+    if(! -e $tmp) {
+	printf("$curfile:$lnum  $tmp doesn't exist. Cannot continue.\n");
+        DoFail();
+    }
+
+    ParseFile($1);
+}
+
+############################################################################
+sub DoSubs {
+    my($line, $changed);
+    $line = $_[0];
+    $changed = 0;
+    foreach $key (keys(%string_defines)) {
+	if($line =~ /$key/) {
+       	    $val = quotemeta($string_defines{$key}); # quote it for safety
+	    $line =~ s/$key/$val/g;
+            $line =~ s/\\(.)/$1/g; # unquote this line
+            
+            $changed = 1;
+        }
+    }
+    return ($line, $changed);
+}
+
+sub GetTempFile {
+    $i = 0;
+    while(-e "/tmp/repp_$i") {
+        $i++;
+    }
+    return "/tmp/repp_$i";
+}
+
+sub Usage {
+    print "                        --->  Nat's  preprocessor <---\n";
+    print "Usage: repp [-D tag string] <filename>\n";
+    print "Where: \n";
+    print "       -d defines tag=string for any instance of TAG in the file\n";
+
+    print "Internal Language:\n";
+    print "       \#define <variable> <value string>\n";
+    print "       \#include filename\n";
+    print "\n\n";
+}
+
+sub DoFail {
+    close(OUT);
+    if(-e $outfile) {
+        unlink $outfile;
+    }    
+    exit -1;
+}
+

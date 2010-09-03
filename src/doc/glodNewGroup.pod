@@ -1,0 +1,44 @@
+=head1 NAME
+
+B<glodNewGroup> - create a new group used to adapt one or more GLOD objects
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodNewGroup>(I<GLuint> name)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name> 
+
+The name of the group
+
+=back 
+
+
+=head1 DESCRIPTION
+
+
+Creates a new group with a specified name. A group is created with no
+members and an undefined adapatation state. Therefore, you should set
+the group adaptation state using glodGroupParameteri() to an
+acceptable mode before calling glodAdaptGroup() .
+
+Groups are created automatically when you call glodNewObject() , so
+technically speaking, this call is merely a formality.
+
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if a group of the specified name is already in use.
+
+=back
+
+=cut

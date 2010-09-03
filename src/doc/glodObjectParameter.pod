@@ -1,0 +1,187 @@
+=head1 NAME
+
+B<glodObjectParameteri>, B<glodObjectParameterf> - Sets an object's
+parameter to a specified value.
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodObjectParameteri>(I<GLuint name>, I<GLenum pname>, I<GLint> param)
+
+void B<glodObjectParameterf>(I<GLuint name>, I<GLenum pname>, I<GLfloat> param)
+
+void B<glodObjectParameteriv>(I<GLuint name>, I<GLenum pname>, I<GLint> count, I<GLint*> param)
+
+void B<glodObjectParameterfv>(I<GLuint name>, I<GLenum pname>, I<GLint> count, I<GLfloat*> param)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name>, I<pname>, I<param>
+
+The parameter C<pname> of the object named C<name> is set to the value
+of C<param>. C<count> describes how many parameters are in a parameter vector.
+
+=back 
+
+
+=head1 POSSIBLE PNAME/PARAM COMBINATIONS
+
+=over
+
+=item GLOD_BUILD_OPERATOR
+
+Selects the method used for incrementally reducing the geometry while building the
+multiresolution hierarchy. Possible values for param are:
+
+=over
+
+=item GLOD_OPERATOR_HALF_EDGE_COLLAPSE
+
+Merges two vertices currently connected by an edge. One of the two
+vertices is merged into the other, which remains (essentially)
+unchanged.
+
+=item GLOD_OPERATOR_EDGE_COLLAPSE
+
+Merges two vertices currently connected by an edge. Both vertices are
+replace by a new, unified vertex, which is chosen to minimize error
+according to some error metric.
+
+=back
+
+=item GLOD_BUILD_QUEUE_MODE
+
+Changes the way order in which vertices are chosen to be
+collapsed. Possible values for param are:
+
+=over
+
+=item GLOD_QUEUE_GREEDY
+
+After each simplification operation, GLOD will recalculate the
+priority values for each of the neighboring edges. 
+
+=item GLOD_QUEUE_LAZY
+
+After each simplification operation, GLOD will mark the priority
+values of each neighboring edge to be dirty. Recomputation of costs
+will only be done on required edges. This is generally faster than
+GLOD_QUEUE_GREEDY and often produces results of comparable quality.
+
+=item GLOD_QUEUE_INDEPENDENT
+
+This method performs non-overlapping sets of operations on the input
+geometry, resulting in (fine-grained) hierarchies of logarithmic height.
+
+=back 
+
+=item GLOD_BUILD_SNAPSHOT_MODE
+
+This determines how "snapshots" of the current model are taken store
+as levels in a GLOD_DISCRETE hierarchy.
+
+=over
+
+=item GLOD_SNAPSHOT_PERCENT_REDUCTION
+
+In this mode, which is the default, a new discrete level is stored
+each time the triangle count is reduced by some percentage of the
+previous level (default is 0.5, or 50%)
+
+=item GLOD_SNAPSHOT_TRI_SPEC
+
+In this mode, the application provides an explicit list of triangle
+counts at which to create discrete levels.
+
+=item GLOD_SNAPSHOT_ERROR_SPEC
+
+In this mode, the application provides an explicit list of
+object-space error values at which to create discrete levels.
+
+=back
+
+=item GLOD_BUILD_PERCENT_REDUCTION_FACTOR
+
+When the GLOD_BUILD_SNAPSHOT_MODE is set to
+GLOD_SNAPSHOT_PERCENT_REDUCTION, this parameter sets the percent
+reduction that must be achieved over the previous discrete level
+before a new level is created. Values must be in (0,1). The default
+value is 0.5, which creates log2(original triangle count) levels,
+resulting in roughly double the storage size of the original
+model. Higher values result in fewer levels, requiring less storage,
+but providing less flexibility for runtime adaptation.
+
+=item GLOD_BUILD_TRI_SPECS
+
+When the GLOD_BUILD_SNAPSHOT_MODE is set to GLOD_SNAPSHOT_TRI_SPEC,
+this parameter provides the hierarchy builder with an explicit list of
+triangle counts at which discrete levels should be created. The
+provides direct control of the creation of one or more discrete
+levels. The list of triangle counts must be specified in decreasing order.
+
+=item GLOD_BUILD_ERROR_SPECS
+
+When the GLOD_BUILD_SNAPSHOT_MODE is set to GLOD_SNAPSHOT_ERROR_SPEC,
+this parameter provides the hierarchy builder with an explicit list of
+object space error values at which discrete levels should be
+created. The provides direct control of the creation of one or more
+discrete levels. The list of error values must be specified in
+increasing order. If the simplification terminates without reaching
+error values as high as some of those in the specification, no
+snapshots will be taken for those too-large error specifications.
+
+In the current implementation, the hierarchy builder actually performs
+one simplification operation beyond the specified error value,
+possibly producing a slightly larger error than requested. This
+problem may be fixed in a future version.
+
+=item GLOD_BUILD_BORDER_MODE
+
+Changes the handling of vertices on a geometric border (i.e. a vertex
+without a full ring of triangles around it). Possible values for param
+are:
+
+=over
+
+=item GLOD_BORDER_UNLOCK
+
+The default behavior, does not treat geometric border vertices
+specially.
+
+=item GLOD_BORDER_LOCK
+
+Prevents any modification to or removal of border vertices.
+
+=back
+
+=item GLOD_BUILD_SHARE_TOLERANCE
+
+This floating point parameter is intended to compensate for small
+floating point errors present in your data set. It controls the amount
+of distance between two vertices before they are considered
+coincident. Increase this number if cracks appear in your object.
+
+
+=back
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if an object of the specified name does not exist.
+
+=item B<GLOD_UNKNOWN_PROPERTY> is generated if the parameter name is not recognized.
+
+=item B<GLOD_UNSUPPORTED_PROPERTY> is generated if the data type you chose for this parameter is not supported.
+
+=item B<GLOD_INVALID_PARAMETER> is generated if the parameter value
+specified for a property is out of range or otherwise invalid.
+
+=back
+
+=cut

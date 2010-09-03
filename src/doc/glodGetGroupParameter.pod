@@ -1,0 +1,45 @@
+=head1 NAME
+
+B<glodGetGroupParameteriv>, B<glodGetGroupParameterfv> - Gets a named
+group parameter
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodGetGroupParameteriv>(I<GLuint> name, I<GLenum> pname, I<GLint*> param)
+
+void B<glodGetGroupParameterfv>(I<GLuint> name, I<GLenum> pname, I<GLfloat*> param)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name>, I<pname>, I<*param>
+
+Sets C<param[0...k]> to the property named C<pname> of group C<name>
+
+=back 
+
+
+=head1 PNAME/PARAM COMBINATIONS
+
+
+No group properties can yet be retrieved.
+
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if the specified group does not exist.
+
+=item B<GLOD_UNKNOWN_PROPERTY> is generated if the parameter name is not recognized.
+
+=item B<GLOD_UNSUPPORTED_PROPERTY> is generated if the data type you chose for this parameter is not supported.
+
+=back
+
+=cut

@@ -1,0 +1,37 @@
+=head1 NAME
+
+B<glodDeleteGroup> - delete an adaptation group
+
+=cut
+
+=head1 C SPECIFICATION
+
+void B<glodDeleteGroup>(I<GLuint> name)
+
+=cut
+
+=head1 PARAMETERS
+
+=over
+
+=item I<name>
+
+The name of the group to be deleted
+
+=back
+
+=head1 DESCRIPTION
+
+This call deletes a group, and all of its members. If an object in
+this group is the only instance of the object remaining in GLOD, its
+memory is freed.
+
+=head1 ERRORS
+
+=over
+
+=item B<GLOD_INVALID_NAME> is generated if a group of this name does not exist in the system.
+
+=back
+
+=cut

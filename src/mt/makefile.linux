@@ -1,0 +1,133 @@
+##############################################################################
+# Copyright 2003 Jonathan Cohen, Nat Duca, David Luebke, Brenden Schubert    #
+#                Johns Hopkins University and University of Virginia         #
+##############################################################################
+# This file is distributed as part of the GLOD library, and as such, falls   #
+# under the terms of the GLOD public license. GLOD is distributed without    #
+# any warranty, implied or otherwise. See the GLOD license for more details. #
+#                                                                            #
+# You should have recieved a copy of the GLOD Open-Source License with this  #
+# copy of GLOD; if not, please visit the GLOD web page,                      #
+# http://www.cs.jhu.edu/~graphics/GLOD/license for more information          #
+##############################################################################
+# Rooted here
+GROOT = /home/projects/graphics
+PROOT=  $(GROOT)/src/utils
+
+GFXDIR  =$(PROOT)/glvu
+GFXINC  =/usr/local/include
+
+# Unix commands
+RM  = rm -f
+MV  = mv -f
+AR  = ar cruv
+CO  = co
+CI  = ci
+GET = noget
+
+#compilers
+cc = gcc # cc or gcc
+CC = g++ # CC or g++
+HWOS=sgi_irix
+
+# sgi options
+#OBJTYPE   = -n32
+LIBTYPE   = libgcc
+
+# Lib locations
+GFXLIB =/usr/local/lib
+GLUTLIB =/usr/lib
+GLUTINC =/usr/include
+STDLIBS= -lglut -lGL -lGLU -lXmu -lXi -lXext -lX11 -lm
+
+MYFLAGS = -D$(cc) -UVERTEXARRAY
+LIBS = -lglvuglvu2 -lglvucamera -lglvumath -lmui $(STDLIBS)
+#DEBUGOPT= -O2 #-Wall
+DEBUGOPT= -g
+LDFLAG = -L$(GFXLIB) -L$(GLUTLIB) -L/usr/X11R6/lib
+CFLAGS  = $(DEBUGOPT) $(MYFLAGS)
+INCLUDE = -I. -I$(GFXINC) -I$(GFXINC)/glvu
+# -I$(GFXDIR)/camera -I$(GFXDIR)/math -I$(GLUTINC)
+
+### Now we start the real make rules for this project
+# General rules
+
+# I am not sure how this is supposed to work. Doesn't follow it even on using -g.
+.SCCS_GET:
+	$(CO) $@
+
+.DEFAULT:
+	$(CO) $@
+
+#.SILENT: .DEFAULT
+
+.c.o:
+	$(cc) $(OBJTYPE) -c $(CFLAGS) $(INCLUDE) $?
+.C.o:
+	$(CC) $(OBJTYPE) -c $(CFLAGS) $(INCLUDE) $?
+.cpp.o:
+	$(CC) $(OBJTYPE) -c $(CFLAGS) $(INCLUDE) $?
+
+
+#drawMT.C:RCS
+#	$(CO) $< 
+
+#.C:RCS/.C,v
+
+# Project specific rules
+#
+libMTobjects = mt.o plyMT.o drawMT.o sphMT.o triMT.o plycollapses.o
+libPLYobjects = plyfile.o
+libSPHobjects = minsphr.o
+libMSHobjects = tmesh.o
+libobjects = $(libMTobjects) $(libPLYobjects) $(libMSHobjects)
+
+objects  = viewMT.o
+prog     = viewMT
+#objects  = tmp.o
+#prog     = tmp
+libMT	 = libMT.a
+libSPH	 = libSPH.a
+libMSH	 = libMSH.a
+libs	 = $(libMT) $(libPLY) $(libMSH)
+
+all: $(prog)
+
+mt.C plycollapses.C drawMT.C: mt.h
+	touch $@
+viewMT.C: mt.h timer.h
+	touch $@
+plyMT.C: mt.h 
+	touch $@
+sphMT.C:  mt.h
+	touch $@
+triMT.C:
+	touch $@
+minsphr.C: minsphr.h
+	touch $@
+#plyfile.C: ply.h
+
+$(libSPH): $(libSPHobjects)
+	$(AR) $(libSPH) $(libSPHobjects)
+
+$(libPLY): $(libPLYobjects)
+	$(AR) $(libPLY) $(libPLYobjects)
+
+$(libMSH): $(libMSHobjects)
+	$(AR) $(libMSH) $(libMSHobjects)
+
+$(libMT): $(libMTobjects)
+	$(AR) $(libMT) $(libMTobjects)
+
+$(prog): $(objects) $(libs) $(GFXLIB)
+	$(CC) $(OBJTYPE) $(CFLAGS) $(LDFLAG) -o $@ $(objects) $(libs) $(LIBS)
+
+renderStrips: renderStrips.o $(libs) $(GFXLIB)
+	$(CC) $(OBJTYPE) $(CFLAGS) $(LDFLAG) -o $@ renderStrips.o $(LIBS)
+	
+
+test: test.o $(GFXLIB)
+	$(CC) $(OBJTYPE) $(CFLAGS) $(LDFLAG) -o $@ test.o $(LIBS)
+
+clean:
+	$(RM) $(objects) $(prog) $(libobjects) $(libs)
