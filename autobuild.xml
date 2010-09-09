@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<llsd>
+  <map>
+    <key>glod</key>
+    <map>
+      <key>build</key>
+      <map>
+        <key>windows</key>
+        <map>
+          <key>command</key>
+          <string>bash build-cmd.sh</string>
+        </map>
+      </map>
+      <key>builddir</key>
+      <string>stage</string>
+      <key>license</key>
+      <string>GLOD Open-Source License   Version 1.0</string>
+      <key>licensefile</key>
+      <string>LICENSES/GLOD.txt</string>
+      <key>manifest</key>
+      <map>
+        <key>common</key>
+        <map>
+          <key>files</key>
+          <array>
+            <string>libraries/include/glod/*.h</string>
+            <string>LICENSES/GLOD.txt</string>
+          </array>
+        </map>
+        <key>windows</key>
+        <map>
+          <key>files</key>
+          <array>
+            <string>libraries/i686-win32/lib/debug/*.lib</string>
+            <string>libraries/i686-win32/lib/debug/*.dll</string>
+            <string>libraries/i686-win32/lib/debug/*.pdb</string>
+            <string>libraries/i686-win32/lib/release/*.lib</string>
+            <string>libraries/i686-win32/lib/release/*.dll</string>
+          </array>
+        </map>
+      </map>
+      <key>sourcedir</key>
+      <string>.</string>
+      <key>uploadtos3</key>
+      <boolean>true</boolean>
+      <key>version</key>
+      <string>1.0pre4</string>
+    </map>
+  </map>
+</llsd>
