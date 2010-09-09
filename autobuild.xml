@@ -9,10 +9,10 @@
         <map>
           <key>command</key>
           <string>bash build-cmd.sh</string>
+          <key>directory</key>
+          <string>stage</string>
         </map>
       </map>
-      <key>builddir</key>
-      <string>stage</string>
       <key>license</key>
       <string>GLOD Open-Source License   Version 1.0</string>
       <key>licensefile</key>

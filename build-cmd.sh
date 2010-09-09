@@ -30,9 +30,9 @@ case "$AUTOBUILD_PLATFORM" in
         cp "src/api/debug/glod.pdb" \
             "stage/libraries/i686-win32/lib/debug/glod.pdb"
         cp "lib/release/glod.lib" \
-            "stage/libraries/i686-win32/lib/debug/glod.lib"
+            "stage/libraries/i686-win32/lib/release/glod.lib"
         cp "lib/release/glod.dll" \
-            "stage/libraries/i686-win32/lib/debug/glod.dll"
+            "stage/libraries/i686-win32/lib/release/glod.dll"
     ;;
 #        "darwin")
 #			libdir="$top/stage/libraries/universal-darwin/"
