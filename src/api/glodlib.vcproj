@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="glodlib"
 	ProjectGUID="{D5B2A29C-2504-46B4-BD42-E1CCF3CA1733}"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -81,8 +80,6 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib\Release"
 				ProgramDatabaseFile=".\Release/glod.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\Release\glod.lib"
 				TargetMachine="1"
 			/>
@@ -103,6 +100,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -177,8 +177,6 @@
 				AdditionalLibraryDirectories="..\..\lib\Debug,..\vds\Debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/glod.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\Debug\glod.lib"
 				TargetMachine="1"
 			/>
@@ -199,6 +197,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
