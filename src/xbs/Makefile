@@ -25,9 +25,9 @@ all:
 CC = g++
 XBS_CFLAGS += -g3
 #XBS_CFLAGS += -O2 -pg
-XBS_CFLAGS += -O2
+XBS_CFLAGS += -O2 -fno-stack-protector
 XBS_CFLAGS += -I. -I../mt -I../ply -I../../include -I../include -I../vds/
-XBS_LFLAGS = -lGL $(wildcard ../mt/*.o) ../ply/plyfile.o $(wildcard ../vds/*.o) ../api/glod_glext.o
+XBS_LFLAGS = -lGL $(wildcard ../mt/*.o) ../ply/plyfile.o $(wildcard ../vds/*.o) ../api/glod_glext.o -fno-stack-protector
 
 
 XBS_STANDALONE_SRCS = \

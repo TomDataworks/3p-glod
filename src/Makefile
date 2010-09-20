@@ -20,8 +20,8 @@ include ../Makefile.conf
 VDS_DIR=./vds
 
 # more stuff
-CFLAGS += -I../include/ -I./include -I/uf6/gfx/include
-LFLAGS += -L../lib/
+CFLAGS += -I../include/ -I./include -I/uf6/gfx/include -fno-stack-protector
+LFLAGS += -L../lib/ -fno-stack-protector
 
 # rules
 
