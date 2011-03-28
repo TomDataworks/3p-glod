@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <llsd>
-  <map>
-    <key>glod</key>
+<map>
+    <key>package_definition</key>
     <map>
       <key>build</key>
       <map>
@@ -69,6 +69,8 @@
           </array>
         </map>
       </map>
+      <key>name</key>
+      <string>glod</string>
       <key>sourcedir</key>
       <string>.</string>
       <key>uploadtos3</key>
@@ -76,6 +78,7 @@
       <key>version</key>
       <string>1.0pre4</string>
     </map>
+    <key>version</key>
+    <string>1.1</string>
   </map>
 </llsd>
-
