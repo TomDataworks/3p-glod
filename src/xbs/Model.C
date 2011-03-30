@@ -167,16 +167,9 @@ xbsVertex::~xbsVertex()
     }
     if (ops != NULL)
     {
-        // This seems a bit dangerous, because the vertex does
-        // not actually allocate the operations, but go ahead
-        // and delete any operations remaining on the
-        // vertices. The caller always has the option to set
-        // numOps to 0 before deleting...
-        for (int i=0; i<numOps; i++)
-        {
-            delete ops[i];
-            ops[i] = NULL;
-        }
+		//
+		//each individual op in ops is deleted in the queue.
+		//
         delete ops;
         ops = NULL;
         numOps = 0;

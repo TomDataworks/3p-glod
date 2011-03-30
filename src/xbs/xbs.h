@@ -224,7 +224,7 @@ class SimpQueue
 	dummy_op->initQueue(model, this);
 //	heap.test();
     }
-    virtual ~SimpQueue() {delete dummy_op; dummy_op = NULL;};
+    virtual ~SimpQueue() ; 
     void insert(Operation *op)
     {
 	if (op->getCost() == MAXFLOAT)
@@ -419,9 +419,7 @@ class XBSSimplifier
        
 	    op->apply(model, output, queue);
 
-	    // hack for now -- when an operation is aborted, it is not
-	    // removed from the source vertex, so do not delete
-            if (op->getSource() == op->getDestination())
+		//remove the op when we done it.
 		delete op;
             
             // debug
