@@ -37,7 +37,7 @@
         <map>
           <key>files</key>
           <array>
-            <string>libraries/include/glod/*.h</string>
+            <string>include/glod/*.h</string>
             <string>LICENSES/GLOD.txt</string>
           </array>
         </map>
@@ -45,27 +45,27 @@
         <map>
           <key>files</key>
           <array>
-            <string>libraries/universal-darwin/lib_debug/*.so</string>
-            <string>libraries/universal-darwin/lib_release/*.so</string>
+            <string>lib/debug/*.so</string>
+            <string>lib/release/*.so</string>
           </array>
         </map>
         <key>linux</key>
         <map>
           <key>files</key>
           <array>
-            <string>libraries/i686-linux/lib_debug_client/*.so</string>
-            <string>libraries/i686-linux/lib_release_client/*.so</string>
+            <string>lib/debug/*.so</string>
+            <string>lib/release/*.so</string>
           </array>
         </map>
         <key>windows</key>
         <map>
           <key>files</key>
           <array>
-            <string>libraries/i686-win32/lib/debug/*.lib</string>
-            <string>libraries/i686-win32/lib/debug/*.dll</string>
-            <string>libraries/i686-win32/lib/debug/*.pdb</string>
-            <string>libraries/i686-win32/lib/release/*.lib</string>
-            <string>libraries/i686-win32/lib/release/*.dll</string>
+            <string>lib/debug/*.lib</string>
+            <string>lib/debug/*.dll</string>
+            <string>lib/debug/*.pdb</string>
+            <string>lib/release/*.lib</string>
+            <string>lib/release/*.dll</string>
           </array>
         </map>
       </map>
