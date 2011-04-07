@@ -28,7 +28,8 @@ debug: all_files
 release: all_files
 
 ##############################################################################
-all_files: d_lib d_samples
+all_files: d_lib 
+#d_samples - the samples don't build cleanly in our build environment
 
 d_samples:
 	make -C ./samples/ $(TARGET_COMMAND)
