@@ -372,9 +372,10 @@ void glodGetObjectParameteriv (GLuint name, GLenum pname, GLint *param) {
             break;
         case GLOD_PATCH_NAMES: 
         {
-            unsigned int k; unsigned int d;
+            unsigned int k; ptrdiff_t d;
             HASHTABLE_WALK(obj->patch_id_map, node); //hashtable  --> patch name to 0-based-patch-index
-            k = node->key - 1; d = (unsigned int) node->data - 1;
+            k = node->key - 1; 
+			d = (ptrdiff_t) node->data - 1;
             param[d] = k;
             HASHTABLE_WALK_END(obj->patch_id_map);
         }
@@ -392,10 +393,11 @@ void glodGetObjectParameteriv (GLuint name, GLenum pname, GLint *param) {
                 return;
             }
 
-            unsigned int k; unsigned int d;
+            unsigned int k; ptrdiff_t d;
             GLuint nV, nI;
             HASHTABLE_WALK(obj->patch_id_map, node); //hashtable  --> patch name to 0-based-patch-index
-            k = node->key - 1; d = (unsigned int) node->data - 1;
+            k = node->key - 1; 
+			d = (ptrdiff_t) node->data - 1;
             obj->cut->getReadbackSizes(d, &nI, &nV);
             param[(2*d)] = nI;
             param[(2*d)+1] = nV;

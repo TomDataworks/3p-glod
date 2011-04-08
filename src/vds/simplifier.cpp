@@ -414,8 +414,8 @@ void Simplifier::SimplifyBudgetAndThreshold(unsigned int Budget, bool UseTriBudg
 	NodeIndex UnfoldNodeIndex = 0;
 	NodeIndex FoldNodeIndex = 0;
 	BudgetItem *FoldNode = NULL;
-	NodeIndex LastFold, LastUnfold;
-	int LastCutFolded, LastCutUnfolded;
+	NodeIndex LastFold = 0, LastUnfold = 0;
+	int LastCutFolded = 0, LastCutUnfolded = 0;
 
 	LastUnfold = 0;
 	while (!done)

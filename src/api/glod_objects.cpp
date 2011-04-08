@@ -397,7 +397,7 @@ void glodLoadObject(GLuint name, GLuint group_name, const GLvoid *data) {
         unsigned int k; unsigned int value;
         memcpy(&k, ((char*)data) + offset, sizeof(unsigned int)); offset += sizeof(unsigned int);    
         memcpy(&value, ((char*)data) + offset, sizeof(unsigned int)); offset += sizeof(unsigned int);    
-        HashtableAdd(obj->patch_id_map, k, (void*)value);
+		HashtableAdd(obj->patch_id_map, k, (void*) ((ptrdiff_t) value));
     }
     
     // read the hierarchy
@@ -470,7 +470,7 @@ void glodDrawPatch(GLuint name, GLuint patchname) {
     }
     
     // look up the real patch name
-    int patch_id = (int) HashtableSearch(obj->patch_id_map, patchname+1); // lameness
+    int patch_id = HashtableSearchInt(obj->patch_id_map, patchname+1); // lameness
     if(patch_id == 0) {
         // this patch isn't there
         GLOD_SetError(GLOD_INVALID_PATCH, "Patch of the specified doesn't exist.", patchname);
