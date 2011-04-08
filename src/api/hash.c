@@ -149,6 +149,22 @@ void *HashtableSearch( HashTable *h, unsigned int key )
 	return temp->data;
 }
 
+int HashtableSearchInt(HashTable* h, unsigned int key)
+{
+	void* ret = HashtableSearch( h, key );
+
+	int* foo = (int*) &ret;
+
+	if (sizeof(void*) == 4)
+	{
+		return foo[0];
+	}
+	else
+	{
+		return foo[1];
+	}
+}
+
 void HashtableReplace( HashTable *h, unsigned int key, void *data, int free_mem )
 {
 	unsigned int index = doHash( h, key );

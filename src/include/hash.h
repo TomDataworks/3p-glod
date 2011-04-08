@@ -34,6 +34,7 @@ void HashtableAdd( HashTable *h, unsigned int key, void *data );
 void HashtableDelete( HashTable *h, unsigned int key );
 void HashtableDeleteCautious( HashTable *h, unsigned int key);
 void *HashtableSearch( HashTable *h, unsigned int key );
+int HashtableSearchInt(HashTable* h, unsigned int key);
 void HashtableReplace( HashTable *h, unsigned int key, void *data, int free_mem );
 unsigned int HashtableNumElements( HashTable *h) ;
 

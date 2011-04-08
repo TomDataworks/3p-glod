@@ -1449,11 +1449,11 @@ void VDSCut::readback(int PatchID, GLOD_RawPatch* raw) {
 
     // copy all the triangles
     int i; int s_v, d_v;
-    vprod = 0;
+	 vprod = 0;
     for(tri = 0; tri < NumTris; ++tri) {
         for(i = 0; i < 3; i++) {
             s_v = tri_array[tri][i];
-            d_v = (int)HashtableSearch(v_src_to_raw, s_v + 1);
+            d_v = HashtableSearchInt(v_src_to_raw, s_v + 1);
             if(d_v == 0) {// never been seen
                 d_v = vprod++; // this is where it goes
                 {       // copy this vertex over ... vprod counts how far we've packed the raw array
