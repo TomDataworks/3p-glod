@@ -53,7 +53,7 @@ char *new_type_names[] =
     "float32", "float64",
 };
 
-int ply_type_size[] = {
+const unsigned char ply_type_size[] = {
     0, 1, 2, 4, 1, 2, 4, 4, 8
 };
 
