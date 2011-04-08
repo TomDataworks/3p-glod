@@ -37,11 +37,6 @@
 #include <Heap.h>
 #include <math.h>
 
-/*----------------------------- Local Constants -----------------------------*/
-
-#define TRUE 1
-#define FALSE 0
-
 /*------------------------------ Local Macros -------------------------------*/
 
 #define ARRAY(i)  ((i)-1)  /* the pseudo-code in Cormen assumes arrays go

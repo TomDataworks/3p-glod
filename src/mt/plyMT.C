@@ -32,9 +32,6 @@
 #include <ply.h>
 #include "mt.h"
 
-/*----------------------------- Local Constants -----------------------------*/
-
-enum Boolean {FALSE=0, TRUE=1};
 
 /*------------------------------ Local Macros -------------------------------*/
 
@@ -334,13 +331,13 @@ mtCNTVertex::fillPlyVertex(PlyFile *ply, plyVertex *pvert)
 void
 MT::readPlyMT(char *filename)
 {
-    Boolean has_mtinfo, has_verts, has_points, has_faces, has_nodes,
+    bool has_mtinfo, has_verts, has_points, has_faces, has_nodes,
 	    has_arcs, has_bvnodes;
-    Boolean mtinfo_has[1], vert_has[11], point_has[12], face_has[1];
-    Boolean node_has[1], arc_has[7];//, bvnode_has[1];
-    Boolean vert_has_coord, vert_has_normal, vert_has_texcoord,
+    bool mtinfo_has[1], vert_has[11], point_has[12], face_has[1];
+    bool node_has[1], arc_has[7];//, bvnode_has[1];
+    bool vert_has_coord, vert_has_normal, vert_has_texcoord,
 	    vert_has_color;
-    Boolean point_has_coord, point_has_normal, point_has_texcoord,
+    bool point_has_coord, point_has_normal, point_has_texcoord,
 	    point_has_color, point_has_radius;
     
     FILE *fp;
@@ -364,7 +361,7 @@ MT::readPlyMT(char *filename)
     PlyFile *ply = ply_read(fp, &nelems, &elist);
 
     has_mtinfo = has_verts = has_points = has_faces = has_nodes = has_arcs
-	= has_bvnodes = FALSE;
+	= has_bvnodes = false;
     
     for (int i=0; i<nelems; i++)
     {
@@ -376,10 +373,10 @@ MT::readPlyMT(char *filename)
 
 	if (equal_strings("mtinfo", elem_name))
 	{
-	    has_mtinfo = TRUE;
+	    has_mtinfo = true;
 	    
 	    for (int k=0; k<1; k++)
-		mtinfo_has[k] = FALSE;
+		mtinfo_has[k] = false;
 	    
 	    for (int j=0; j<nprops; j++)
 	    {
@@ -389,7 +386,7 @@ MT::readPlyMT(char *filename)
 				      plist[j]->name))
 		    {
 			ply_get_property(ply, elem_name, &mtinfo_props[k]);
-			mtinfo_has[k] = TRUE;
+			mtinfo_has[k] = true;
 		    }
 		}
 	    }
@@ -397,7 +394,7 @@ MT::readPlyMT(char *filename)
 	    /* test for necessary properties */
 	    for (int k=0; k<1; k++)
 	    {
-		if (mtinfo_has[k] == FALSE)
+		if (mtinfo_has[k] == false)
 		{
 		    fprintf(stderr, "MTInfos must have %s\n",
 			    mtinfo_props[k].name);
@@ -422,12 +419,12 @@ MT::readPlyMT(char *filename)
 	}
 	else if (equal_strings("vertex", elem_name))
 	{
-	    has_verts = TRUE;
+	    has_verts = true;
 	    
 	    for (int k=0; k<11; k++)
-		vert_has[k] = FALSE;
+		vert_has[k] = false;
 	    vert_has_coord = vert_has_normal = vert_has_texcoord =
-		vert_has_color = FALSE;
+		vert_has_color = false;
 	    
 	    for (int j=0; j<nprops; j++)
 	    {
@@ -437,28 +434,28 @@ MT::readPlyMT(char *filename)
 				      plist[j]->name))
 		    {
 			ply_get_property(ply, elem_name, &vert_props[k]);
-			vert_has[k] = TRUE;
+			vert_has[k] = true;
 		    }
 		}
 	    }
 
-	    if ((vert_has[0] == TRUE) &&
-		(vert_has[1] == TRUE) &&
-		(vert_has[2] == TRUE))
-		vert_has_coord = TRUE;
-	    if ((vert_has[3] == TRUE) &&
-		(vert_has[4] == TRUE) &&
-		(vert_has[5] == TRUE))
-		vert_has_normal = TRUE;
-	    if ((vert_has[6] == TRUE) &&
-		(vert_has[7] == TRUE))
-		vert_has_texcoord = TRUE;
-	    if ((vert_has[8] == TRUE) &&
-		(vert_has[9] == TRUE) &&
-		(vert_has[10] == TRUE))
-		vert_has_color = TRUE;
+	    if ((vert_has[0] == true) &&
+		(vert_has[1] == true) &&
+		(vert_has[2] == true))
+		vert_has_coord = true;
+	    if ((vert_has[3] == true) &&
+		(vert_has[4] == true) &&
+		(vert_has[5] == true))
+		vert_has_normal = true;
+	    if ((vert_has[6] == true) &&
+		(vert_has[7] == true))
+		vert_has_texcoord = true;
+	    if ((vert_has[8] == true) &&
+		(vert_has[9] == true) &&
+		(vert_has[10] == true))
+		vert_has_color = true;
 	    
-	    if (vert_has_coord == FALSE)
+	    if (vert_has_coord == false)
 	    {
 		fprintf(stderr, "Vertices must have x, y, and z\n");
 		exit(1);
@@ -574,12 +571,12 @@ MT::readPlyMT(char *filename)
 	}
 	else if (equal_strings("point", elem_name))
 	{
-	    has_points = TRUE;
+	    has_points = true;
 	    
 	    for (int k=0; k<12; k++)
-		point_has[k] = FALSE;
+		point_has[k] = false;
 	    point_has_coord = point_has_normal = point_has_texcoord =
-		point_has_color = FALSE;
+		point_has_color = false;
 	    
 	    for (int j=0; j<nprops; j++)
 	    {
@@ -589,35 +586,35 @@ MT::readPlyMT(char *filename)
 				      plist[j]->name))
 		    {
 			ply_get_property(ply, elem_name, &vert_props[k]);
-			point_has[k] = TRUE;
+			point_has[k] = true;
 		    }
 		}
 	    }
 
-	    if ((point_has[0] == TRUE) &&
-		(point_has[1] == TRUE) &&
-		(point_has[2] == TRUE))
-		point_has_coord = TRUE;
-	    if ((point_has[3] == TRUE) &&
-		(point_has[4] == TRUE) &&
-		(point_has[5] == TRUE))
-		point_has_normal = TRUE;
-	    if ((point_has[6] == TRUE) &&
-		(point_has[7] == TRUE))
-		point_has_texcoord = TRUE;
-	    if ((point_has[8] == TRUE) &&
-		(point_has[9] == TRUE) &&
-		(point_has[10] == TRUE))
-		point_has_color = TRUE;
-	    if (point_has[11] == TRUE)
-		point_has_radius = TRUE;
+	    if ((point_has[0] == true) &&
+		(point_has[1] == true) &&
+		(point_has[2] == true))
+		point_has_coord = true;
+	    if ((point_has[3] == true) &&
+		(point_has[4] == true) &&
+		(point_has[5] == true))
+		point_has_normal = true;
+	    if ((point_has[6] == true) &&
+		(point_has[7] == true))
+		point_has_texcoord = true;
+	    if ((point_has[8] == true) &&
+		(point_has[9] == true) &&
+		(point_has[10] == true))
+		point_has_color = true;
+	    if (point_has[11] == true)
+		point_has_radius = true;
 	    
-	    if (point_has_coord == FALSE)
+	    if (point_has_coord == false)
 	    {
 		fprintf(stderr, "Points must have x, y, and z\n");
 		exit(1);
 	    }
-	    if (point_has_radius == FALSE)
+	    if (point_has_radius == false)
 	    {
 		fprintf(stderr, "Points must have radius.\n");
 		exit(1);
@@ -661,10 +658,10 @@ MT::readPlyMT(char *filename)
 
 	else if (equal_strings("face", elem_name))
 	{
-	    has_faces = TRUE;
+	    has_faces = true;
 	    
 	    for (int k=0; k<1; k++)
-		face_has[k] = FALSE;
+		face_has[k] = false;
 	    
 	    for (int j=0; j<nprops; j++)
 	    {
@@ -674,7 +671,7 @@ MT::readPlyMT(char *filename)
 				      plist[j]->name))
 		    {
 			ply_get_property(ply, elem_name, &face_props[k]);
-			face_has[k] = TRUE;
+			face_has[k] = true;
 		    }
 		}
 	    }
@@ -682,7 +679,7 @@ MT::readPlyMT(char *filename)
 	    /* test for necessary properties */
 	    for (int k=0; k<1; k++)
 	    {
-		if (face_has[k] == FALSE)
+		if (face_has[k] == false)
 		{
 		    fprintf(stderr, "Faces must have %s\n",
 			    face_props[k].name);
@@ -713,10 +710,10 @@ MT::readPlyMT(char *filename)
 	}
 	else if (equal_strings("node", elem_name))
 	{
-	    has_nodes = TRUE;
+	    has_nodes = true;
 	    
 	    for (int k=0; k<1; k++)
-		node_has[k] = FALSE;
+		node_has[k] = false;
 
 	    for (int j=0; j<nprops; j++)
 	    {
@@ -726,7 +723,7 @@ MT::readPlyMT(char *filename)
 				      plist[j]->name))
 		    {
 			ply_get_property(ply, elem_name, &node_props[k]);
-			node_has[k] = TRUE;
+			node_has[k] = true;
 		    }
 		}
 	    }
@@ -734,7 +731,7 @@ MT::readPlyMT(char *filename)
 	    /* test for necessary properties */
 	    for (int k=0; k<1; k++)
 	    {
-		if (node_has[k] == FALSE)
+		if (node_has[k] == false)
 		{
 		    fprintf(stderr, "Nodes must have %s\n",
 			    node_props[k].name);
@@ -754,10 +751,10 @@ MT::readPlyMT(char *filename)
 	}
 	else if (equal_strings("arc", elem_name))
 	{
-	    has_arcs = TRUE;
+	    has_arcs = true;
 	    
 	    for (int k=0; k<7; k++)
-		arc_has[k] = FALSE;
+		arc_has[k] = false;
 	    
 	    for (int j=0; j<nprops; j++)
 	    {
@@ -771,7 +768,7 @@ MT::readPlyMT(char *filename)
 			   count_external, so it works whether the triangle
 			   count is stored as int or uchar */
 			ply_get_property(ply, elem_name, &arc_props[k]);
-			arc_has[k] = TRUE;
+			arc_has[k] = true;
 		    }
 		}
 	    }
@@ -780,7 +777,7 @@ MT::readPlyMT(char *filename)
 	    for (int k=0; k<4; k++)
 	    {
 		if (k==2) k++;
-		if (arc_has[k] == FALSE)
+		if (arc_has[k] == false)
 		{
 		    fprintf(stderr, "Arcs must have %s\n",
 			    arc_props[k].name);
@@ -800,21 +797,21 @@ MT::readPlyMT(char *filename)
 		free(pArc.faces);
 		pArc.faces = NULL;
 		pArc.nfaces = 0;
-		if (arc_has[2] == TRUE)
+		if (arc_has[2] == true)
 		{
 		    getArc(arcID)->addPoints(pArc.points, pArc.npoints);
 		    free(pArc.points);
 		    pArc.points = NULL;
 		    pArc.npoints = 0;
 		}
-		if (arc_has[5] == TRUE)
+		if (arc_has[5] == true)
 		{
 		    getArc(arcID)->setPatchNumber(pArc.patchNumber);
 		    if ((pArc.patchNumber+1) > numPatches)
 			numPatches = pArc.patchNumber+1;
 		}
 		
-		if (arc_has[6] == TRUE)
+		if (arc_has[6] == true)
 		{
 		    if (pArc.borderFlag == 0)
 			getArc(arcID)->clearBorder();
@@ -831,10 +828,10 @@ MT::readPlyMT(char *filename)
 #if 0
 	else if (equal_strings("bvnode", elem_name))
 	{
-	    has_bvnodes = TRUE;
+	    has_bvnodes = true;
 	    
 	    for (int k=0; k<0; k++)
-		bvnode_has[k] = FALSE;
+		bvnode_has[k] = false;
 	    
 	    for (int j=0; j<nprops; j++)
 	    {
@@ -844,7 +841,7 @@ MT::readPlyMT(char *filename)
 				      plist[j]->name))
 		    {
 			ply_get_property(ply, elem_name, &bvnode_props[k]);
-			bvnode_has[k] = TRUE;
+			bvnode_has[k] = true;
 		    }
 		}
 	    }
@@ -852,7 +849,7 @@ MT::readPlyMT(char *filename)
 	    /* test for necessary properties */
 	    for (int k=0; k<0; k++)
 	    {
-		if (bvnode_has[k] == FALSE)
+		if (bvnode_has[k] == false)
 		{
 		    fprintf(stderr, "BVNodes must have %s\n",
 			    bvnode_props[k].name);
@@ -875,7 +872,7 @@ MT::readPlyMT(char *filename)
     }
     ply_close(ply);
 
-    if (has_nodes == TRUE)
+    if (has_nodes == true)
     {
 	connectArcs();
 	buildBVH();

@@ -93,11 +93,9 @@
 /* #define dprintf if (1) fprintf */
 #define dprintf if (0) fprintf
 
-#define FALSE		0
-#define TRUE		1
-#define INITMESH	replaceB = FALSE
+#define INITMESH	replaceB = false
 #define SWAPMESH	replaceB = !replaceB
-#define REPLACEVERT(v)	{vert[replaceB] = (v); SWAPMESH;}
+#define REPLACEVERT(v)	{vert[replaceB ? 1 : 0] = (v); SWAPMESH;}
 
 #define TABLE_SIZE0 2003
 #define TABLE_SIZE1 5003
@@ -454,7 +452,7 @@ static Tri *maketri( void )
     tmp->drawvert[1] = 1;
     tmp->drawvert[2] = 2;
     tmp->adjcount = 0;
-    tmp->used = FALSE;
+    tmp->used = false;
     return tmp;
 }
 
@@ -810,7 +808,7 @@ int in_amend( Meshobj *m )
     while (tri = m->duptrilist->first) {
         deletetri(m->duptrilist,tri);
         inserttri(m->newtrilist,tri);
-        tri->used = TRUE;
+        tri->used = true;
         outmesh(m,m->newtrilist);
         dprintf(stderr,"outputted equivalent triangle\n");
     }
@@ -821,7 +819,7 @@ int in_amend( Meshobj *m )
 	while (tri = m->adjtrilist[0]->first) {
 	    deletetri(m->adjtrilist[0],tri);
 	    inserttri(m->newtrilist,tri);
-	    tri->used = TRUE;
+	    tri->used = true;
 	    outmesh(m,m->newtrilist);
 	}
     /*** choose a seed triangle with the minimum number of adjacencies ***/
@@ -876,13 +874,13 @@ int in_amend( Meshobj *m )
 
 static int ismember( Vert *vert, Tri *tri )
 {
-    /*** return TRUE if vert is one of the vertexes in tri, otherwise FALSE ***/
+    /*** return true if vert is one of the vertexes in tri, otherwise false ***/
     register int i;
 
     for (i=0; i<3; i++)
 	if (vert == tri->vert[i])
-	    return TRUE;
-    return FALSE;
+	    return true;
+    return false;
 }
 
 static int notcommon( Tri *tri, Tri *tri2 )
@@ -903,7 +901,7 @@ static void outmesh( Meshobj *m, Trilist *tris )
     Vert *vert[2];
     Vert *nextvert;
     int nextid;
-    int replaceB;
+    bool replaceB;
 
     /*** output trilist - transfer to donelist ***/
     tri = tris->first;
@@ -983,7 +981,7 @@ static void removeadjacencies( Meshobj *m, Tri *tri )
     register int i,j;
     Tri *adjtri;
 
-    tri->used = TRUE;
+    tri->used = true;
     for (i=0; i<3; i++) {
 	adjtri = tri->adj[i];
 	if (adjtri) {

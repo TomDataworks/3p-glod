@@ -56,11 +56,8 @@
 /*----------------------------- Local Constants -----------------------------*/
 
 #if defined(_WIN32) || defined(__APPLE__)
-typedef unsigned int Boolean;
 #undef min
 #undef max
-#else
-enum Boolean {FALSE=0, TRUE=1};
 #endif
 
 /*------------------------------ Local Macros -------------------------------*/
@@ -1178,9 +1175,9 @@ Model::splitPatchVerts()
 void
 Model::readPly(char *filename)
 {
-    Boolean has_verts, has_faces;
-    Boolean vert_has[11], face_has[2];
-    Boolean vert_has_coord, vert_has_normal, vert_has_texcoord,
+    bool has_verts, has_faces;
+    bool vert_has[11], face_has[2];
+    bool vert_has_coord, vert_has_normal, vert_has_texcoord,
         vert_has_color;
     
     int nelems;
@@ -1191,10 +1188,10 @@ Model::readPly(char *filename)
     PlyFile *ply = ply_open_for_reading(filename, &nelems, &elist,
                                         &file_type, &version);
 
-    has_verts = has_faces = FALSE;
+    has_verts = has_faces = false;
 
     vert_has_coord = vert_has_normal = vert_has_texcoord =
-        vert_has_color = FALSE;
+        vert_has_color = false;
     
     // first allocate vertices so face pointers may be set (in case faces
     // appear before vertices in file
@@ -1208,10 +1205,10 @@ Model::readPly(char *filename)
 
         if (equal_strings("vertex", elem_name))
         {
-            has_verts = TRUE;
+            has_verts = true;
             
             for (int k=0; k<11; k++)
-                vert_has[k] = FALSE;
+                vert_has[k] = false;
             
             for (int j=0; j<nprops; j++)
             {
@@ -1221,28 +1218,28 @@ Model::readPly(char *filename)
                                       plist[j]->name))
                     {
                         ply_get_property(ply, elem_name, &vert_props[k]);
-                        vert_has[k] = TRUE;
+                        vert_has[k] = true;
                     }
                 }
             }
 
-            if ((vert_has[0] == TRUE) &&
-                (vert_has[1] == TRUE) &&
-                (vert_has[2] == TRUE))
-                vert_has_coord = TRUE;
-            if ((vert_has[3] == TRUE) &&
-                (vert_has[4] == TRUE) &&
-                (vert_has[5] == TRUE))
-                vert_has_normal = TRUE;
-            if ((vert_has[6] == TRUE) &&
-                (vert_has[7] == TRUE))
-                vert_has_texcoord = TRUE;
-            if ((vert_has[8] == TRUE) &&
-                (vert_has[9] == TRUE) &&
-                (vert_has[10] == TRUE))
-                vert_has_color = TRUE;
+            if ((vert_has[0] == true) &&
+                (vert_has[1] == true) &&
+                (vert_has[2] == true))
+                vert_has_coord = true;
+            if ((vert_has[3] == true) &&
+                (vert_has[4] == true) &&
+                (vert_has[5] == true))
+                vert_has_normal = true;
+            if ((vert_has[6] == true) &&
+                (vert_has[7] == true))
+                vert_has_texcoord = true;
+            if ((vert_has[8] == true) &&
+                (vert_has[9] == true) &&
+                (vert_has[10] == true))
+                vert_has_color = true;
             
-            if (vert_has_coord == FALSE)
+            if (vert_has_coord == false)
             {
                 fprintf(stderr, "Vertices must have x, y, and z\n");
                 exit(1);
@@ -1379,10 +1376,10 @@ Model::readPly(char *filename)
         }
         else if (equal_strings("face", elem_name))
         {
-            has_faces = TRUE;
+            has_faces = true;
             
             for (int k=0; k<2; k++)
-                face_has[k] = FALSE;
+                face_has[k] = false;
             
             for (int j=0; j<nprops; j++)
             {
@@ -1392,13 +1389,13 @@ Model::readPly(char *filename)
                                       plist[j]->name))
                     {
                         ply_get_property(ply, elem_name, &face_props[k]);
-                        face_has[k] = TRUE;
+                        face_has[k] = true;
                     }
                 }
             }
             
             /* test for necessary properties */
-            if (face_has[0] != TRUE)
+            if (face_has[0] != true)
             {
                 fprintf(stderr, "Faces must have vertex_indices.\n");
                 exit(1);

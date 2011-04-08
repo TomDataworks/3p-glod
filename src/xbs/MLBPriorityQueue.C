@@ -42,11 +42,6 @@
 #include <MLBPriorityQueue.h>
 #include <math.h>
 
-/*----------------------------- Local Constants -----------------------------*/
-
-#define TRUE 1
-#define FALSE 0
-
 /*------------------------------ Local Macros -------------------------------*/
 
 

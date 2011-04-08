@@ -110,9 +110,6 @@ typedef struct VertexArray {
 #define MAXFLOAT              FLT_MAX
 #endif
 
-#define FALSE 0
-#define TRUE  1
-
 #define X 0
 #define Y 1
 #define Z 2
@@ -202,18 +199,18 @@ typedef struct PlyModel
     Color     solid_color;
     int       file_type;
     
-    int       has_vertex;
-    int       vert_has[MAX_VERT_PROPS];
-    int       has_face;
-    int       face_has[MAX_FACE_PROPS];
+    bool       has_vertex;
+    bool       vert_has[MAX_VERT_PROPS];
+    bool       has_face;
+    bool       face_has[MAX_FACE_PROPS];
     
-    int       has_vertex_colors;
-    int       has_vertex_normals;
-    int       has_texcoords;
-    int       has_texture;
-    int       has_patches;
-    int       has_normalmap;
-    //int       has_diffuse;
+    bool       has_vertex_colors;
+    bool       has_vertex_normals;
+    bool       has_texcoords;
+    bool       has_texture;
+    bool       has_patches;
+    bool       has_normalmap;
+    
     int       texture_id;
     char     *texture_name;
     

@@ -79,11 +79,6 @@ typedef struct Hash_Table {     /* uniform spatial subdivision, with hash */
 static Hash_Table *init_table(int, float);
 static void add_to_hash (Vertex *, Hash_Table *, float);
 
-#ifndef _WIN32
-#define TRUE  (1)
-#define FALSE (0)
-#endif
-
 #define MIN(a,b) (((a)<(b)) ? (a) : (b))
 #define MAX(a,b) (((a)>(b)) ? (a) : (b))
 

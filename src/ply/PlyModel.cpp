@@ -121,13 +121,13 @@ void MakePatches(PlyModel *model)
     
     if(! model->has_patches) {
         //      printf("Building fake patch 0.\n");
-        model->face_has[1] = TRUE;
+        model->face_has[1] = true;
         for(i = 0;  i < model->nfaces; i++)
             model->flist[i].patch_num = 0;
     }
     
     model->npatches = 0;
-    if (model->face_has[1] == FALSE)
+    if (model->face_has[1] == false)
         return;
     
     // ply patches should be numbered from 0 to num_patches - 1
@@ -186,9 +186,9 @@ void SetupNormalMap(PlyModel *model)
     int i;
     char texturename[80];
     
-    if (model->has_texcoords == FALSE || model->has_patches == FALSE)
+    if (model->has_texcoords == false || model->has_patches == false)
     {
-        model->has_normalmap = FALSE;
+        model->has_normalmap = false;
         return;
     }
     
@@ -200,14 +200,14 @@ void SetupNormalMap(PlyModel *model)
         
         if (model->plist[i].texture_id == -1)
         {
-            model->has_normalmap = FALSE;
+            model->has_normalmap = false;
             return;
         }
         
         fprintf(stderr, "Finished loading normal map: %s\n", texturename);
     }
     
-    model->has_normalmap = TRUE;
+    model->has_normalmap = true;
     
 #ifdef USE_NV
     InitRegisterCombiners();
@@ -361,7 +361,7 @@ void read_plyfile(char *filename, PlyModel *model)
         exit(1);
     }
     
-    model->has_vertex = model->has_face = model->has_normalmap = FALSE;
+    model->has_vertex = model->has_face = model->has_normalmap = false;
     
     for (i = 0; i < model->nelems; i++)
     {
@@ -371,14 +371,14 @@ void read_plyfile(char *filename, PlyModel *model)
         
         if (equal_strings ("vertex", elem_name)) {
             
-            model->has_vertex = TRUE;
+            model->has_vertex = true;
             /* create a vertex list to hold all the vertices */
             ALLOCN(model->vlist, Vertex, num_elems);
             model->nverts = num_elems;
             
             /* set up for getting vertex elements */
             for (k=0; k< (int) MAX_VERT_PROPS; k++)
-                model->vert_has[k] = FALSE;
+                model->vert_has[k] = false;
             
             for (j=0; j<nprops; j++)
             {
@@ -387,7 +387,7 @@ void read_plyfile(char *filename, PlyModel *model)
                     if (equal_strings(vert_props[k].name, plist[j]->name))
                     {
                         ply_get_property (ply, elem_name, &vert_props[k]);
-                        model->vert_has[k] = TRUE;
+                        model->vert_has[k] = true;
                     }
                 }
             }
@@ -408,25 +408,25 @@ void read_plyfile(char *filename, PlyModel *model)
                 model->vert_has[4] &&
                 model->vert_has[5])
             {
-                model->has_vertex_normals = TRUE;
+                model->has_vertex_normals = true;
             }
             else
             {
-                model->has_vertex_normals = FALSE;
+                model->has_vertex_normals = false;
             }
             
             
             if (model->vert_has[6] && model->vert_has[7]) 
-                model->has_texcoords = TRUE;
+                model->has_texcoords = true;
             else
-                model->has_texcoords = FALSE;
+                model->has_texcoords = false;
             
             if (model->vert_has[9] && model->vert_has[10] && model->vert_has[11])
             {
-                model->has_vertex_colors = TRUE;
+                model->has_vertex_colors = true;
             }
             else
-                model->has_vertex_colors=FALSE;
+                model->has_vertex_colors=false;
             
             /* grab all the vertex elements */
             for (j = 0; j < num_elems; j++) {
@@ -441,7 +441,7 @@ void read_plyfile(char *filename, PlyModel *model)
         }
         else if (equal_strings ("face", elem_name)) {
             
-            model->has_face = TRUE;
+            model->has_face = true;
             
             /* create a list to hold all the face elements */
             ALLOCN(model->flist, Face, num_elems);
@@ -450,7 +450,7 @@ void read_plyfile(char *filename, PlyModel *model)
             /* set up for getting face elements */
             /* verify which properties these vertices have */
             for (k=0; k< (int) MAX_FACE_PROPS; k++)
-                model->face_has[k] = FALSE;
+                model->face_has[k] = false;
             
             for (j=0; j<nprops; j++)
             {
@@ -459,7 +459,7 @@ void read_plyfile(char *filename, PlyModel *model)
                     if (equal_strings(face_props[k].name, plist[j]->name))
                     {
                         ply_get_property (ply, elem_name, &face_props[k]);
-                        model->face_has[k] = TRUE;
+                        model->face_has[k] = true;
                     }
                 }
                 
@@ -694,19 +694,19 @@ void read_plyfile(char *filename, PlyModel *model)
           
           if (model->texture_id == -1)
           {
-              model->has_texture = FALSE;
+              model->has_texture = false;
               fprintf(stderr, "Failed to load texture, %s.\n", model->texture_name);
           }
           else {
               printf("Loaded %s as texture file.\n", model->texture_name);
-              model->has_texture = TRUE;
+              model->has_texture = true;
           }
       }
       else
       {
           model->texture_name = NULL;
           model->texture_id = -1;
-          model->has_texture = FALSE;
+          model->has_texture = false;
       }
       
       return;

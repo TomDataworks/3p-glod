@@ -45,9 +45,6 @@
 #define Y 1
 #define Z 2
 
-#define FALSE 0
-#define TRUE  1
-
 /*------------------------------ Local Macros -------------------------------*/
 
 #define MAX(x,y) ((x)>(y) ? (x) : (y))
@@ -623,10 +620,10 @@ void read_plycollapses(char *filename, MT *mt)
     PlyProperty **plist;
     char         *elem_name;
     float 	  version;
-    int   	  has_x, has_y, has_z, has_u, has_v;
-    int   	  has_fverts, has_fpatchnum;
-    int   	  has_vert1, has_vert2, has_cx, has_cy, has_cz, has_cost;
-    int           has_cu, has_cv;
+    bool   	  has_x, has_y, has_z, has_u, has_v;
+    bool   	  has_fverts, has_fpatchnum;
+    bool   	  has_vert1, has_vert2, has_cx, has_cy, has_cz, has_cost;
+    bool      has_cu, has_cv;
 #if 0
     int           has_bvi, has_bu, has_bv, has_bpid;
 #endif
@@ -653,12 +650,12 @@ void read_plycollapses(char *filename, MT *mt)
     ply_get_info (ply, &version, &file_type);
 
 #if 0
-    has_borderinfo = FALSE;
+    has_borderinfo = false;
 #endif
 
-    has_x = has_y = has_z = has_u = has_v = FALSE;
-    has_vert1 = has_vert2 = has_cx = has_cy = has_cz = has_cost = FALSE;
-    has_cu = has_cv = FALSE;
+    has_x = has_y = has_z = has_u = has_v = false;
+    has_vert1 = has_vert2 = has_cx = has_cy = has_cz = has_cost = false;
+    has_cu = has_cv = false;
     
     for (i = 0; i < nelems; i++)
     {
@@ -677,28 +674,28 @@ void read_plycollapses(char *filename, MT *mt)
 		if (equal_strings("x", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &vert_props[0]);  /* x */
-		    has_x = TRUE;
+		    has_x = true;
 		}
 		else if (equal_strings("y", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &vert_props[1]);  /* y */
-		    has_y = TRUE;
+		    has_y = true;
 		}
 		else if (equal_strings("z", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &vert_props[2]);  /* z */
-		    has_z = TRUE;
+		    has_z = true;
 		}
 #if 1
 		else if (equal_strings("u", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &vert_props[3]);  /* u */
-		    has_u = TRUE;
+		    has_u = true;
 		}
 		else if (equal_strings("v", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &vert_props[4]);  /* v */
-		    has_v = TRUE;
+		    has_v = true;
 		}
 #endif
 	    }
@@ -730,20 +727,20 @@ void read_plycollapses(char *filename, MT *mt)
 
 	    /* set up for getting face elements */
 	    /* verify which properties these vertices have */
-	    has_fverts = has_fpatchnum = FALSE;
+	    has_fverts = has_fpatchnum = false;
 	    
 	    for (j=0; j<nprops; j++)
 	    {
 		if (equal_strings("vertex_indices", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &face_props[0]);
-		    has_fverts = TRUE;
+		    has_fverts = true;
 		}
 #if 0
 		if (equal_strings("patch_num", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &face_props[1]);
-		    has_fpatchnum = TRUE;
+		    has_fpatchnum = true;
 		}
 #endif
 	    }
@@ -781,7 +778,7 @@ void read_plycollapses(char *filename, MT *mt)
 	}
 	else if (equal_strings ("borderinfo", elem_name))
 	{
-	    has_borderinfo = TRUE;
+	    has_borderinfo = true;
 #if 0
 	    /* create a list to hold all the borderinfo elements */
 	    ALLOCN(blist, BorderInfo *, num_elems);
@@ -789,29 +786,29 @@ void read_plycollapses(char *filename, MT *mt)
 	    
 	    /* set up for getting borderinfo elements */
 	    /* verify which properties these borderinfos have */
-	    has_bvi = has_bu = has_bv = has_bpid = FALSE;
+	    has_bvi = has_bu = has_bv = has_bpid = false;
 	    
 	    for (j=0; j<nprops; j++)
 	    {
 		if (equal_strings("vertex_index", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &borderinfo_props[0]);
-		    has_bvi = TRUE;
+		    has_bvi = true;
 		}
 		if (equal_strings("u", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &borderinfo_props[1]);
-		    has_bu = TRUE;
+		    has_bu = true;
 		}
 		if (equal_strings("v", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &borderinfo_props[2]);
-		    has_bv = TRUE;
+		    has_bv = true;
 		}
 		if (equal_strings("patch_ids", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &borderinfo_props[3]);
-		    has_bpid = TRUE;
+		    has_bpid = true;
 		}
 	    }
 	    
@@ -844,42 +841,42 @@ void read_plycollapses(char *filename, MT *mt)
 		if (equal_strings("vert1", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &edge_collapse_props[0]);
-		    has_vert1 = TRUE;
+		    has_vert1 = true;
 		}
 		if (equal_strings("vert2", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &edge_collapse_props[1]);
-		    has_vert2 = TRUE;
+		    has_vert2 = true;
 		}
 		if (equal_strings("x", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &edge_collapse_props[2]);
-		    has_cx = TRUE;
+		    has_cx = true;
 		}
 		if (equal_strings("y", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &edge_collapse_props[3]);
-		    has_cy = TRUE;
+		    has_cy = true;
 		}
 		if (equal_strings("z", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &edge_collapse_props[4]);
-		    has_cz = TRUE;
+		    has_cz = true;
 		}
 		if (equal_strings("cost", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &edge_collapse_props[5]);
-		    has_cost = TRUE;
+		    has_cost = true;
 		}
 		if (equal_strings("u", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &edge_collapse_props[6]);
-		    has_cu = TRUE;
+		    has_cu = true;
 		}
 		if (equal_strings("v", plist[j]->name))
 		{
 		    ply_get_property (ply, elem_name, &edge_collapse_props[7]);
-		    has_cv = TRUE;
+		    has_cv = true;
 		}
 	    }
 	    
@@ -947,9 +944,9 @@ void read_plycollapses(char *filename, MT *mt)
     ply_close (ply);
 
     if ((has_u) && (has_v) && (has_cu) && (has_cv))
-	has_texcoord = TRUE;
+	has_texcoord = true;
     else
-	has_texcoord = FALSE;
+	has_texcoord = false;
 
     
 #if 0
@@ -965,7 +962,7 @@ void read_plycollapses(char *filename, MT *mt)
     }
 
 #if 0
-    if ((!strcmp(filename, "textured.ply")) && (has_texcoord == TRUE))
+    if ((!strcmp(filename, "textured.ply")) && (has_texcoord == true))
     {
 	readPPM("texture.ppm", &obj->texture);
 	obj->hasTexture = 1;
