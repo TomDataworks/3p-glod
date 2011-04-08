@@ -38,14 +38,14 @@ WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 #include <string.h>
 #include "ply.h"
 
-char *type_names[] = {
+static char *type_names[] = {
     "invalid",
     "char", "short", "int",
     "uchar", "ushort", "uint",
     "float", "double",
 };
 
-char *new_type_names[] = 
+static char *new_type_names[] = 
 {
     "invalid",
     "int8", "int16", "int32",
@@ -53,7 +53,7 @@ char *new_type_names[] =
     "float32", "float64",
 };
 
-const unsigned char ply_type_size[] = {
+static const unsigned char ply_type_size[] = {
     0, 1, 2, 4, 1, 2, 4, 4, 8
 };
 
