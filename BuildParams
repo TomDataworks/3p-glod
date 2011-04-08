@@ -1,4 +1,4 @@
 PACKAGE_NAME = glod
 public_build = true
 build_legacy_package = false
-AUTOBUILD_VSVER=80
+AUTOBUILD_VSVER=100
