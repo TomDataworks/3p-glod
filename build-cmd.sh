@@ -39,7 +39,7 @@ case "$AUTOBUILD_PLATFORM" in
             "stage/lib/release/glod.dll"
     ;;
         "darwin")
-			libdir="$top/stage/lib/"
+			libdir="$top/stage/lib"
             mkdir -p "$libdir"/{debug,release}
 			make -C src clean
 			make -C src debug
