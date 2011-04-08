@@ -64,8 +64,8 @@ typedef union
 } endian_test_type;
 
 
-static int native_binary_type = -1;
-static int types_checked = 0;
+static char native_binary_type = -1;
+static char types_checked = 0;
 
 #define NO_OTHER_PROPS  -1
 
