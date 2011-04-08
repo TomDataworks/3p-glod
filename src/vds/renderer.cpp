@@ -20,6 +20,7 @@
 #include <limits.h>
 #include <iostream>
 #include <stdio.h>
+#include <stdlib.h>
 #include "renderer.h"
 #include "simplifier.h"
 #include "manager.h"
