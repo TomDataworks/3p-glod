@@ -842,7 +842,7 @@ void Forest::VertexRenderDataIndicesToPointers()
 	unsigned int i;
 	for (i = 1; i <= mNumNodes; ++i)
 	{
-		mpNodes[i].mpRenderData = &(mpNodeRenderData[((unsigned int)mpNodes[i].mpRenderData)]);
+		mpNodes[i].mpRenderData = &(mpNodeRenderData[((uintptr_t)mpNodes[i].mpRenderData)]);
 	}
 }
 
