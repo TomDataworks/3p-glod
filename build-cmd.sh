@@ -43,12 +43,12 @@ case "$AUTOBUILD_PLATFORM" in
             mkdir -p "$libdir"/{debug,release}
 			make -C src clean
 			make -C src debug
-			cp "lib/libGLOD.so" \
-				"$libdir/debug/libglod.so"
+			cp "lib/libGLOD.dylib" \
+				"$libdir/debug/libglod.dylib"
 			make -C src clean
 			make -C src release
-			cp "lib/release/libGLOD.so" \
-				"$libdir/release/libglod.so"
+			cp "lib/release/libglod.dylib" \
+				"$libdir/release/libglod.dylib"
 		;;
         "linux")
 			libdir="$top/stage/libraries/i686-linux/"
