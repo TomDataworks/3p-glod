@@ -47,7 +47,7 @@ case "$AUTOBUILD_PLATFORM" in
 				"$libdir/debug/libglod.dylib"
 			make -C src clean
 			make -C src release
-			cp "lib/release/libglod.dylib" \
+			cp "lib/libGLOD.dylib" \
 				"$libdir/release/libglod.dylib"
 		;;
         "linux")
