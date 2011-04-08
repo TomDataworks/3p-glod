@@ -258,7 +258,7 @@ void Simplifier::SimplifyBudget(unsigned int Budget, bool UseTriBudget)
 	NodeIndex UnfoldNodeIndex = 0;
 	NodeIndex FoldNodeIndex = 0;
 	BudgetItem *FoldNode = NULL;
-	NodeIndex LastFold, LastUnfold;
+	NodeIndex LastFold = 0, LastUnfold = 0;
 	int LastCutFolded, LastCutUnfolded;
 	count = 0;
 

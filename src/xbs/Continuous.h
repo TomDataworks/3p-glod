@@ -65,7 +65,7 @@ class VDSHierarchy : public Hierarchy
                             xbsTriangle **changedTris, int numChangedTris,
                             xbsTriangle **destroyedTris, int numDestroyedTris,
                             xbsVertex *generated_vert);
-        virtual void debugWrite(char *filename)
+        /*virtual void debugWrite(char *filename)
         {
             fprintf(stderr, "VDSHierarchy write not written!\n");
             if (vif == NULL)
@@ -77,7 +77,7 @@ class VDSHierarchy : public Hierarchy
                 exit(1);
             }
             fprintf(stderr, "done!\n");
-        };
+        };*/
         
         virtual GLOD_Cut* makeCut();
         virtual int  getReadbackSize();

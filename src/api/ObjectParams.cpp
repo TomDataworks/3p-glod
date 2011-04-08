@@ -138,7 +138,7 @@ void glodObjectParameteri (GLuint name, GLenum pname, GLint param) {
                 GLOD_SetError(GLOD_INVALID_PARAM, "Share tolerance out of range");
                 return;
             }
-            obj->shareTolerance = param;
+            obj->shareTolerance = (GLfloat) param;
             break;
   
         default:

@@ -1592,7 +1592,7 @@ class Model
         ~Model(); /* moved to Model.C */
 
         void readPly(char *filename=NULL);
-        void writePly(char *filename=NULL);
+        //void writePly(char *filename=NULL); unused
         void indexVertTris();
         void removeEmptyVerts();
         void setOtherElements(PlyOtherElems *other_elements)

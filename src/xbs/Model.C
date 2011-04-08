@@ -1450,6 +1450,7 @@ Model::readPly(char *filename)
  output      : 
  notes       : 
 \*****************************************************************************/
+#if 0 //unused
 void
 Model::writePly(char *filename)
 {
@@ -1543,6 +1544,7 @@ Model::writePly(char *filename)
     /* close the PLY file */
     ply_close(ply);
 }
+#endif
 
 /*****************************************************************************\
  @ Model::indexVertTris

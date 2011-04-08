@@ -438,7 +438,7 @@ class XBSSimplifier
 	output = NULL;
     }
     Hierarchy *getHierarchy() {return output;};
-    void writeHierarchy(char *filename = NULL) {output->debugWrite(filename);};
+    //void writeHierarchy(char *filename = NULL) {output->debugWrite(filename);};
 };
 
 

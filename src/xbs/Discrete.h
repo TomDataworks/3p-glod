@@ -195,7 +195,7 @@ class DiscreteHierarchy : public Hierarchy
         void SetVertIdx(int patchNum, xbsVertex* vert, int vertNum);
         
         
-        virtual void debugWrite(char *filename=NULL);
+        //virtual void debugWrite(char *filename=NULL);
         
         virtual void adapt()
         {
@@ -273,10 +273,10 @@ class DiscreteCut : public GLOD_Cut
             return view.computePixelsOfError(hierarchy->LODs[LODNumber]->errorCenter, hierarchy->LODs[LODNumber]->errorOffsets, hierarchy->errors[LODNumber], area); //view.computePixelsOfError(center, hierarchy->errors[LODNumber]);
         }
     
-        virtual void debugWrite(char* filename) { 
+        /*virtual void debugWrite(char* filename) { 
             fprintf(stderr, "Not written.\n");
             return; 
-        }
+        }*/
 
         // readback on a cut on a patch
 #ifdef GLOD

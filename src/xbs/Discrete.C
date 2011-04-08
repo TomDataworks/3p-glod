@@ -779,6 +779,7 @@ int DiscreteHierarchy::load(void* src_data) {
  output      : 
  notes       : 
 \*****************************************************************************/
+#if 0 //unused
 void
 DiscreteHierarchy::debugWrite(char *basename)
 {
@@ -828,6 +829,7 @@ DiscreteHierarchy::debugWrite(char *basename)
     
     return;    
 } /** End of DiscreteHierarchy::debugWrite() **/
+#endif
 
 /*****************************************************************************\
  @ DiscreteHierarchy::write

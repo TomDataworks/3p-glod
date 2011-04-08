@@ -96,7 +96,7 @@ class Hierarchy
                             xbsVertex *generated_vert) {};
         virtual ~Hierarchy() {};
 
-        virtual void debugWrite(char *filename) = 0;
+        //virtual void debugWrite(char *filename) = 0;
     
         // readback of a full hierarchy
         virtual int load(void* src) = 0; // returns 0 on fail

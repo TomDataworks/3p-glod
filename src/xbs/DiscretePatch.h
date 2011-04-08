@@ -176,7 +176,7 @@ class DiscretePatchHierarchy : public Hierarchy
             update(model, (Operation *)op);
         };
 
-        virtual void debugWrite(char *filename=NULL);
+        //virtual void debugWrite(char *filename=NULL);
     
         virtual void adapt()
         {
@@ -368,10 +368,10 @@ class DiscretePatchCut : public GLOD_Cut
             //      return view.computePixelsOfError(hierarchy->LODs[LODNumber]->errorCenter, hierarchy->LODs[LODNumber]->errorOffsets, hierarchy->errors[LODNumber], area); //view.computePixelsOfError(center, hierarchy->errors[LODNumber]);
         }
     
-        virtual void debugWrite(char* filename) { 
+        /*virtual void debugWrite(char* filename) { 
             fprintf(stderr, "Not written.\n");
             return; 
-        }
+        }*/
 
         // readback on a cut on a patch
         virtual void getReadbackSizes(int patch, GLuint* nindices, GLuint* nverts);

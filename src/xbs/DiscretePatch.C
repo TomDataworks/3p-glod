@@ -401,11 +401,13 @@ int DiscretePatchHierarchy::load(void* src_data) {
 \*****************************************************************************/
 
 
+#if 0 //unused
 void
 DiscretePatchHierarchy::debugWrite(char *basename)
 {
     assert(false);
 } /** End of DiscretePatchHierarchy::debugWrite() **/
+#endif
 
 /*****************************************************************************\
  @ DiscreteHierarchy::write
