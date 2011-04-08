@@ -25,7 +25,9 @@
 #include <math.h>
 #if defined(_WIN32) || defined(__APPLE__)
 #include <float.h>
-#define MAXFLOAT FLT_MAX
+#ifndef MAXFLOAT
+#define MAXFLOAT              FLT_MAX
+#endif
 #undef min
 #else 
 #include <values.h>

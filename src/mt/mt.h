@@ -27,8 +27,13 @@
 #include <values.h>
 #else
 #include <float.h>
+
 #define MAXINT INT_MAX
-#define MAXFLOAT FLT_MAX
+
+#ifndef MAXFLOAT
+#define MAXFLOAT              FLT_MAX
+#endif
+
 #endif
 
 #ifdef _WIN32

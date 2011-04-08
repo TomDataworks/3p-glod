@@ -106,7 +106,9 @@ typedef struct VertexArray {
 #define VERTEX_ARRAY_ELEMENTS 1
 #define VERTEX_ARRAY_ARRAYS 2
 
+#ifndef MAXFLOAT
 #define MAXFLOAT              FLT_MAX
+#endif
 
 #define FALSE 0
 #define TRUE  1

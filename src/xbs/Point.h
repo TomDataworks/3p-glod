@@ -48,7 +48,11 @@
 #define MIN(a,b) (((a)<(b)) ? (a) : (b))
 #define MAX(a,b) (((a)>(b)) ? (a) : (b))
 #ifdef _WIN32
-#define MAXFLOAT FLT_MAX
+
+#ifndef MAXFLOAT
+#define MAXFLOAT              FLT_MAX
+#endif
+
 #endif
 
 /*---------------------------------- Types ----------------------------------*/
