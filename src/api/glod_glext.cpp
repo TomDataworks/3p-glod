@@ -66,12 +66,12 @@ void GLOD_InitGL() {
     _glUnmapBufferARB = (PFNGLUNMAPBUFFERARBPROC) wglGetProcAddress("glUnmapBufferARB");
 #else
 #ifdef __APPLE__
-    _glGenBuffersARB =  (PFNGLGENBUFFERSARBPROC) glutGetProcAddress("glGenBuffersARB");
-    _glBindBufferARB = (PFNGLBINDBUFFERARBPROC) glutGetProcAddress("glBindBufferARB");
-    _glBufferDataARB = (PFNGLBUFFERDATAARBPROC) glutGetProcAddress("glBufferDataARB");
-    _glDeleteBuffersARB = (PFNGLDELETEBUFFERSARBPROC) glutGetProcAddress("glDeleteBuffersARB");
-    _glMapBufferARB = (PFNGLMAPBUFFERARBPROC) glutGetProcAddress("glMapBufferARB");
-    _glUnmapBufferARB = (PFNGLUNMAPBUFFERARBPROC) glutGetProcAddress("glUnmapBufferARB");
+    _glGenBuffersARB =  glGenBuffersARB;
+    _glBindBufferARB = glBindBufferARB;
+    _glBufferDataARB = glBufferDataARB;
+    _glDeleteBuffersARB = glDeleteBuffersARB;
+    _glMapBufferARB = glMapBufferARB;
+    _glUnmapBufferARB = glUnmapBufferARB;
 #endif
 #if ! defined(__APPLE__) && ! defined(_WIN32)
     _glGenBuffersARB =  (PFNGLGENBUFFERSARBPROC) glXGetProcAddressARB((const GLubyte*)"glGenBuffersARB");
