@@ -61,7 +61,7 @@ void glodInsertArrays (GLuint name, GLuint patchname,
   // convert the any-named patch to a 0...N number
   if(HashtableSearch(obj->patch_id_map, patchname+1) == NULL) { // does this patch already exist
       p->name = HashtableNumElements(obj->patch_id_map);
-      HashtableAdd(obj->patch_id_map, patchname+1, (void*) (p->name+1));
+      HashtableAdd(obj->patch_id_map, patchname+1, (void*) (ptrdiff_t) (p->name+1));
   } else {
     if(obj->format != GLOD_DISCRETE_MANUAL) {
       GLOD_SetError(GLOD_INVALID_NAME, "A patch of this name already exists!\n");
@@ -99,7 +99,7 @@ void glodInsertElements (GLuint name, GLuint patchname,
   // convert the any-named patch to a 0...N number
   if(HashtableSearch(obj->patch_id_map, patchname+1) == NULL) { // does this patch already exist
       p->name = HashtableNumElements(obj->patch_id_map);
-      HashtableAdd(obj->patch_id_map, patchname+1, (void*) (p->name+1));
+      HashtableAdd(obj->patch_id_map, patchname+1, (void*) (ptrdiff_t) (p->name+1));
   } else {
     if(obj->format != GLOD_DISCRETE_MANUAL) {
       GLOD_SetError(GLOD_INVALID_NAME, "A patch of this name already exists!\n");
@@ -134,7 +134,7 @@ GLOD_APIENTRY void glodFillArrays( GLuint name, GLuint patch_name ) {
   }
   
   // look up the real patch name
-  patch_id = (int) HashtableSearch(obj->patch_id_map, patch_name+1); // lameness
+  patch_id = HashtableSearchInt(obj->patch_id_map, patch_name+1); // lameness
   if(patch_id == 0) {
     // this patch isn't there
     GLOD_SetError(GLOD_INVALID_PATCH, "Patch of the specified doesn't exist.", patch_name);
@@ -165,7 +165,7 @@ GLOD_APIENTRY void glodFillElements( GLuint name, GLuint patch_name,
   }
 
   // look up the real patch name
-  patch_id = (int) HashtableSearch(obj->patch_id_map, patch_name+1); // lameness
+  patch_id = HashtableSearchInt(obj->patch_id_map, patch_name+1); // lameness
   if(patch_id == 0) {
     // this patch isn't there
     GLOD_SetError(GLOD_INVALID_PATCH, "Patch of the specified doesn't exist.", patch_name);

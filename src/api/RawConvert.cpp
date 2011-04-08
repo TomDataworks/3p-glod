@@ -162,7 +162,7 @@ GLOD_RawPatch* ProducePatch(GLenum mode,
       
       for(j = 0; j < 3; j++) { // foreach vertex in triangle
 	
-	int tmp = (int) HashtableSearch(index_hash, ibuf[j]+1);
+	int tmp = HashtableSearchInt(index_hash, ibuf[j]+1);
 	int index = tmp - 1; // we store things in the hashtable +1
 	
 	if(tmp == 0) { // this vertex hasn't been seen before
@@ -188,7 +188,7 @@ GLOD_RawPatch* ProducePatch(GLenum mode,
 	  
 	  // put it into the hash --- asign a new index
 	  index = cur_idx; cur_idx++;
-	  HashtableAdd(index_hash, ibuf[j]+1,(void*)(index+1));
+	  HashtableAdd(index_hash, ibuf[j]+1,(void*) (ptrdiff_t) (index+1));
           // we have another vertex
           vcount++;
 	}
