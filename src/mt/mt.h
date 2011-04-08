@@ -28,7 +28,9 @@
 #else
 #include <float.h>
 
-#define MAXINT INT_MAX
+#ifndef MAXINT
+#define MAXINT      INT_MAX
+#endif
 
 #ifndef MAXFLOAT
 #define MAXFLOAT              FLT_MAX

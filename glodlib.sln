@@ -1,20 +1,14 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glodlib", "src\api\glodlib.vcproj", "{D5B2A29C-2504-46B4-BD42-E1CCF3CA1733}"
-	ProjectSection(ProjectDependencies) = postProject
-		{998AF61E-C0F1-49CC-BA98-B25B70F56188} = {998AF61E-C0F1-49CC-BA98-B25B70F56188}
-		{1F28DBAB-3BFF-460D-BBE6-2E0081276690} = {1F28DBAB-3BFF-460D-BBE6-2E0081276690}
-		{5EDE2BDE-05B3-42D1-B170-52D2232E7AB1} = {5EDE2BDE-05B3-42D1-B170-52D2232E7AB1}
-		{8EFBBDDF-4345-47AC-A715-6F858383BD70} = {8EFBBDDF-4345-47AC-A715-6F858383BD70}
-	EndProjectSection
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glodlib", "src\api\glodlib.vcxproj", "{D5B2A29C-2504-46B4-BD42-E1CCF3CA1733}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mt", "src\mt\mt.vcproj", "{998AF61E-C0F1-49CC-BA98-B25B70F56188}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mt", "src\mt\mt.vcxproj", "{998AF61E-C0F1-49CC-BA98-B25B70F56188}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ply", "src\ply\ply.vcproj", "{1F28DBAB-3BFF-460D-BBE6-2E0081276690}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ply", "src\ply\ply.vcxproj", "{1F28DBAB-3BFF-460D-BBE6-2E0081276690}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vdslib", "src\vds\vdslib_glod.vcproj", "{5EDE2BDE-05B3-42D1-B170-52D2232E7AB1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vdslib", "src\vds\vdslib_glod.vcxproj", "{5EDE2BDE-05B3-42D1-B170-52D2232E7AB1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xbs", "src\xbs\xbs.vcproj", "{8EFBBDDF-4345-47AC-A715-6F858383BD70}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xbs", "src\xbs\xbs.vcxproj", "{8EFBBDDF-4345-47AC-A715-6F858383BD70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -73,7 +73,9 @@
 #ifndef M_PI
 # define M_PI 3.141592653589793238462643383
 #endif
+#ifndef MAXINT
 #define MAXINT INT_MAX
+#endif
 #define MAXFLT FLT_MAX
 #undef min
 #endif
