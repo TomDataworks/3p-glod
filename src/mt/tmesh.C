@@ -281,14 +281,27 @@ static void hashtribegin( Meshobj *m )
 
 static int hashtri( Tri *tri )
 {
-    unsigned int val, l;
+    int val, l;
+		
+	if (sizeof(void*) == 4)
+	{ //32-bit build, use first 32-bits
+		l = ((unsigned int*) &tri->vert[0])[0];
+		val = l;
+		l = ((unsigned int*) &tri->vert[1])[0];
+		val = val^l;
+		l = ((unsigned int*) &tri->vert[2])[0];
+		val = val^l;
+	}
+	else
+	{ //64-bit, use second 32-bits
+		l = ((unsigned int*) &tri->vert[0])[1];
+		val = l;
+		l = ((unsigned int*) &tri->vert[1])[1];
+		val = val^l;
+		l = ((unsigned int*) &tri->vert[2])[1];
+		val = val^l;
+	}
 
-    l = (unsigned int)tri->vert[0];
-    val = l;
-    l = (unsigned int)tri->vert[1];
-    val = val^l;
-    l = (unsigned int)tri->vert[2];
-    val = val^l;
     return (int) (val%triHashSize);
 }
 
