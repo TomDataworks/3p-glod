@@ -84,17 +84,6 @@ typedef struct PlyProperty {    /* description of a property */
     int count_offset;              /* offset byte for list count */
 } PlyProperty;
 
-typedef struct PlyElement {  /* description of an element */
-    char *name;                /* element name */
-    int num;                   /* number of elements in this object */
-    int size;                  /* size of element (bytes) or -1 if variable */
-    int nprops;                /* number of properties for this element */
-    PlyProperty **props;       /* list of properties in the file */
-    char *store_prop;          /* flags: property wanted by user? */
-    int other_offset;          /* offset to un-asked-for props, or -1 if none*/
-    int other_size;            /* size of other_props structure */
-} PlyElement;
-
 typedef struct PlyOtherProp {   /* describes other properties in an element */
     char *name;                   /* element name */
     int size;                     /* size of other_props */
@@ -117,10 +106,6 @@ typedef struct PlyOtherElems {  /* "other" elements, not interpreted by user */
     int num_elems;                /* number of other elements */
     OtherElem *other_list;        /* list of data for other elements */
 } PlyOtherElems;
-
-/* memory allocation */
-extern char *my_alloc();
-#define myalloc(mem_size) my_alloc((mem_size), __LINE__, __FILE__)
 
 #ifndef ALLOCN
 #define REALLOCN(PTR,TYPE,OLD_N,NEW_N)                                  \
@@ -157,14 +142,6 @@ extern char *my_alloc();
 #define FREE(PTR)  { free((PTR)); (PTR) = NULL; }
 #endif
     
-
-/*** delcaration of routines ***/
-extern void ply_free_other_elements(PlyOtherElems *other_elems);
-extern void ply_free_property(PlyProperty *prop);
-extern void ply_free_other_property(PlyOtherProp *other_prop);
-extern void ply_free_element(PlyElement *elem);
-
-extern int equal_strings(char *string1, char *string2);
 
 /* 
 
