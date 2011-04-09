@@ -459,8 +459,6 @@ class mtVertex
     { 
 	*((mtVertex *)(destVert)) = *this;
     };
-    virtual void describeProperties(PlyFile *ply, char *elem_name);
-    virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
 };
 
 class mtNVertex : public mtVertex 
@@ -507,8 +505,6 @@ class mtNVertex : public mtVertex
     { 
 	*((mtNVertex *)(destVert)) = *this;
     };
-    virtual void describeProperties(PlyFile *ply, char *elem_name);
-    virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
 };
 
 class mtTVertex : public mtVertex
@@ -547,8 +543,6 @@ class mtTVertex : public mtVertex
     { 
 	*((mtTVertex *)(destVert)) = *this;
     };
-    virtual void describeProperties(PlyFile *ply, char *elem_name);
-    virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
 };
 
 class mtCVertex : public mtVertex
@@ -587,8 +581,6 @@ class mtCVertex : public mtVertex
     { 
 	*((mtCVertex *)(destVert)) = *this;
     };
-    virtual void describeProperties(PlyFile *ply, char *elem_name);
-    virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
 };
 
 
@@ -634,8 +626,6 @@ class mtCNVertex : public mtVertex
     { 
 	*((mtCNVertex *)(destVert)) = *this;
     };
-    virtual void describeProperties(PlyFile *ply, char *elem_name);
-    virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
 };
 
 
@@ -681,8 +671,6 @@ class mtCTVertex : public mtVertex
     { 
 	*((mtCTVertex *)(destVert)) = *this;
     };
-    virtual void describeProperties(PlyFile *ply, char *elem_name);
-    virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
 };
 
 
@@ -728,8 +716,6 @@ class mtNTVertex : public mtVertex
     { 
 	*((mtNTVertex *)(destVert)) = *this;
     };
-    virtual void describeProperties(PlyFile *ply, char *elem_name);
-    virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
 };
 
 
@@ -780,8 +766,6 @@ class mtCNTVertex : public mtVertex
     { 
 	*((mtCNTVertex *)(destVert)) = *this;
     };
-    virtual void describeProperties(PlyFile *ply, char *elem_name);
-    virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
 };
 
 
@@ -1220,9 +1204,6 @@ class MT
 	numPatches = 1;
     };
 	        
-    void readPlyCollapses(char *filename=NULL);
-    void readPlyMT(char *filename=NULL);
-    void writePlyMT(char *filename=NULL);
     void setOtherElements(PlyOtherElems *other_elements)
       { other_elems = other_elements; };
     int getNumVerts() {return numVerts;};

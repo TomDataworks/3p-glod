@@ -853,8 +853,6 @@ class xbsVertex
         }
 
         // conversion functions to other data types
-        virtual void describeProperties(PlyFile *ply, char *elem_name);
-        virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
         virtual mtVertex *makeMTVertex();
         virtual void fillData(xbsVec3& crd, xbsColor& clr,
                               xbsVec3& nrm, xbsVec2& tcrd)
@@ -918,8 +916,6 @@ class xbsNVertex : public xbsVertex
         { 
             *((xbsNVertex *)(destVert)) = *this;
         };
-        virtual void describeProperties(PlyFile *ply, char *elem_name);
-        virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
         virtual mtVertex *makeMTVertex();
         virtual int attribsEqual(xbsVertex *vert)
         {
@@ -999,8 +995,6 @@ class xbsTVertex : public xbsVertex
         { 
             *((xbsTVertex *)(destVert)) = *this;
         };
-        virtual void describeProperties(PlyFile *ply, char *elem_name);
-        virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
         virtual mtVertex *makeMTVertex();
         virtual int attribsEqual(xbsVertex *vert)
         {
@@ -1078,8 +1072,6 @@ class xbsCVertex : public xbsVertex
         { 
             *((xbsCVertex *)(destVert)) = *this;
         };
-        virtual void describeProperties(PlyFile *ply, char *elem_name);
-        virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
         virtual mtVertex *makeMTVertex();
         virtual int attribsEqual(xbsVertex *vert)
         {
@@ -1168,8 +1160,6 @@ class xbsCNVertex : public xbsVertex
         { 
             *((xbsCNVertex *)(destVert)) = *this;
         };
-        virtual void describeProperties(PlyFile *ply, char *elem_name);
-        virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
         virtual mtVertex *makeMTVertex();
         virtual int attribsEqual(xbsVertex *vert)
         {
@@ -1266,8 +1256,6 @@ class xbsCTVertex : public xbsVertex
         { 
             *((xbsCTVertex *)(destVert)) = *this;
         };
-        virtual void describeProperties(PlyFile *ply, char *elem_name);
-        virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
         virtual mtVertex *makeMTVertex();
         virtual int attribsEqual(xbsVertex *vert)
         {
@@ -1362,8 +1350,6 @@ class xbsNTVertex : public xbsVertex
         { 
             *((xbsNTVertex *)(destVert)) = *this;
         };
-        virtual void describeProperties(PlyFile *ply, char *elem_name);
-        virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
         virtual mtVertex *makeMTVertex();
         virtual int attribsEqual(xbsVertex *vert)
         {
@@ -1461,8 +1447,6 @@ class xbsCNTVertex : public xbsVertex
         { 
             *((xbsCNTVertex *)(destVert)) = *this;
         };
-        virtual void describeProperties(PlyFile *ply, char *elem_name);
-        virtual void fillPlyVertex(PlyFile *ply, plyVertex *pvert);
         virtual mtVertex *makeMTVertex();
         virtual int attribsEqual(xbsVertex *vert)
         {
@@ -1591,8 +1575,6 @@ class Model
         Model(GLOD_RawObject* obj);
         ~Model(); /* moved to Model.C */
 
-        void readPly(char *filename=NULL);
-        //void writePly(char *filename=NULL); unused
         void indexVertTris();
         void removeEmptyVerts();
         void setOtherElements(PlyOtherElems *other_elements)
