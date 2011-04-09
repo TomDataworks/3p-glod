@@ -19,9 +19,8 @@
 
 // This class implements Vif version 2.3
 
-class VifMerge
+struct VifMerge
 {
-public:
 	unsigned int NumNodesInMerge;	// number of child vertices
 	unsigned int *NodesBeingMerged;	// array of child vertices' indices
 	unsigned int ParentNode;		// index of parent vertex into which child vertices are merged
@@ -37,9 +36,8 @@ public:
 	// vertex, the nodes are collapsed into an existing vertex.
 };
 
-class VifVertex
+struct VifVertex
 {
-public:
 	unsigned int VertexPosition;	// index into Vif's VertexPositions array
 	VDS::PatchIndex PatchID;	// patch of which this vertex is a part (must be
 								// between 1 and NumPatches, inclusive)
@@ -49,9 +47,8 @@ public:
 									// (ignored if CoincidentVertexFlag is false)
 };
 
-class VifTri
+struct VifTri
 {
-public:
 	unsigned int Corners[3];	// indices into Vertices array
 	VDS::PatchIndex PatchID;	// patch of which this triangle is a part
 								// note that PatchID must be identical to the PatchID

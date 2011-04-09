@@ -119,8 +119,11 @@ namespace VDS
         TriIndex miNextLiveTris[3];
 	};
 
-	struct VertexRenderDatum
+	class VertexRenderDatum
 	{
+	public:
+		VertexRenderDatum() { }
+
 		Point3 Position;
 		Vec3 Normal;
 		ByteColorA Color;
