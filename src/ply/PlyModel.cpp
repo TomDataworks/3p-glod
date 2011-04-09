@@ -748,59 +748,8 @@ int LoadPPMTexture( char *filename )
   void WriteVAElements(char* filename, int nverts, VertexArray* va, int nelems, int* elems) {
       
   }
-  
-  void DeleteModel(PlyModel *model) {
-      int i;
-      // free face list
-      Face* flist  = model->flist;
-      for(i = 0; i < model->nfaces; i++) {
-          free(flist[i].verts);
-          if(flist[i].other_props != NULL)
-              free(flist[i].other_props);
-      }
-      free(model->flist);
-      
-      // free vert list
-      Vertex* vlist = model->vlist;
-      for(i = 0; i < model->nverts; i++) {
-          if(vlist[i].other_props != NULL)
-              free(vlist[i].other_props);
-      }
-      free(model->vlist);
-      
-      // free patch list
-      if(model->npatches != 0) {
-          for(i = 0; i < model->npatches; i++) {
-              Patch* p = &model->plist[i];
-              free(p->indices);
-              if(p->varray != NULL)
-                  free(p->varray);
-          }
-          free(model->plist);
-      }
-      
-      // free global vertex array.... 
-      if(model->varray != NULL)
-          free(model->varray);
-      
-      // now free ply attributes...
-      if(model->face_other != NULL) {
-          ply_free_other_property(model->face_other);
-          free(model->face_other);
-      }
-      
-      if(model->vert_other != NULL) {
-          ply_free_other_property(model->vert_other);
-          free(model->vert_other);
-      }
-      
-      
-      if(model->elist != NULL) {
-          for(int i = 0; i < model->nelems; i++)
-              free(model->elist[i]);
-          free(model->elist);
-      }
-  }
+ 
+ 
 /*****************************************************************************\
   PlyModel.cpp
   --

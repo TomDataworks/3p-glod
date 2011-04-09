@@ -235,6 +235,4 @@ void DrawModelVA(PlyModel *model, int patch); // does a drawelements or drawarra
 void DrawModelImmediate(PlyModel *model);
 void DrawSphere(Point center, double radius);
 
-void DeleteModel(PlyModel* model);
-
 #endif
