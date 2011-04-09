@@ -35,7 +35,7 @@ class VDSHierarchy : public Hierarchy
             vif = NULL;
             mpForest = NULL;
             numDanglingVerts = 0;
-            danglingVerts = new int[1];
+            danglingVerts = new int();
             maxDanglingVerts = 1;
         }
         virtual ~VDSHierarchy() {

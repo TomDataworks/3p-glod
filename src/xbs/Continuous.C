@@ -40,14 +40,14 @@ VDSHierarchy::initialize(Model *model)
     VDS::Point3 coord;
     VDS::ByteColorA color;
     VDS::Vec3 normal;
-    VDS::Point2 *texcoord = new VDS::Point2[1];
+    VDS::Point2 *texcoord = new VDS::Point2();
     for (int vnum=0; vnum<model->getNumVerts(); vnum++)
     {
         xbsVertex *vert = model->getVert(vnum);
         vert->fillVDSData(coord, color, normal, texcoord[0]);
         vert->mtIndex = vif->addVertPos(coord, color, normal, texcoord);
         if (hasTexcoord)
-            texcoord = new VDS::Point2[1];
+            texcoord = new VDS::Point2();
     }
 
     // note: we don't delete any texcoord actually used by VIF
@@ -260,7 +260,7 @@ VDSHierarchy::update(Model *model, Operation *op,
             VDS::Point3 coord;
             VDS::ByteColorA color;
             VDS::Vec3 normal;
-            VDS::Point2 *texcoord = new VDS::Point2[1];
+            VDS::Point2 *texcoord = new VDS::Point2();
             
             destVert->fillVDSData(coord, color, normal, texcoord[0]);
             int vertPos = vif->addVertPos(coord, color, normal, texcoord);
@@ -654,7 +654,7 @@ VDSHierarchy::update(Model *model, EdgeCollapse *op,
         VDS::Point3 coord;
         VDS::ByteColorA color;
         VDS::Vec3 normal;
-        VDS::Point2 *texcoord = new VDS::Point2[1];
+        VDS::Point2 *texcoord = new VDS::Point2();
         
         genVert->fillVDSData(coord, color, normal, texcoord[0]);
         int vertPos = vif->addVertPos(coord, color, normal, texcoord);

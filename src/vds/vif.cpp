@@ -99,10 +99,10 @@ Vif::addVertPos(Point3& coord, ByteColorA& color,
     {
 		if (maxVertexPositions == 0)
 		{
-			VertexPositions = new VDS::VertexRenderDatum[1];
+			VertexPositions = new VDS::VertexRenderDatum();
 			if (NumTextures > 0)
 			{
-			    TextureCoords = new Point2 *[1];
+			    TextureCoords = new (Point2*)();
 			}
 			
 			maxVertexPositions = 1;
@@ -183,7 +183,7 @@ Vif::addTri(unsigned int v1, unsigned int v2, unsigned int v3,
     {
 		if (maxTris == 0)
 		{
-			Triangles = new VifTri[1];
+			Triangles = new VifTri();
 			maxTris = 1;
 		}
 		else
@@ -212,7 +212,7 @@ Vif::addMerge(VifMerge& merge)
     {
 		if (maxMerges == 0)
 		{
-			Merges = new VifMerge[1];
+			Merges = new VifMerge();
 			maxMerges = 1;
 		}
 		else

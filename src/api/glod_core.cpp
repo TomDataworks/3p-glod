@@ -45,7 +45,7 @@ GLOD_APIENTRY GLuint glodInit() {
   GLOD_TILE_COLS=1;
   GLOD_NUM_TILES=GLOD_TILE_ROWS*GLOD_TILE_COLS;
 
-  tiles=new GLOD_Tile[1];
+  tiles=new GLOD_Tile(1);
   tiles[0].min_x=-1;
   tiles[0].max_x=1;
   tiles[0].min_y=-1;

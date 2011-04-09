@@ -60,7 +60,7 @@ class PointSet
 
         PointSet()
         {
-            points = new mtVec3[1];
+            points = new mtVec3();
             numPoints = 0;
             maxPoints = 1;
         }
