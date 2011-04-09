@@ -53,6 +53,8 @@ case "$AUTOBUILD_PLATFORM" in
         "linux")
 			libdir="$top/stage/libraries/i686-linux/"
             mkdir -p "$libdir"/lib_{debug,release}_client
+			export CFLAGS=-m32
+			export LFLAGS=-m32
 			make -C src clean
 			make -C src debug
 			cp "lib/libGLOD.so" \
