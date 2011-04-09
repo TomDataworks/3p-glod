@@ -150,7 +150,7 @@ Vif::addVert(unsigned int vpos, VDS::PatchIndex patchid,
     {
 		if (maxVerts == 0)
 		{
-			Vertices = new VifVertex[1];
+			Vertices = new VifVertex();
 
 			maxVerts = 1;
 		}
