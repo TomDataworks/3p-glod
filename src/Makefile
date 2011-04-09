@@ -67,7 +67,6 @@ CFLAGS += -I./xbs/
 XBS_SRC = 	Continuous.C \
 		Discrete.C \
 		DiscretePatch.C \
-		MTHierarchy.C \
 		Heap.C \
 		Hierarchy.C \
 		Metric.C \
