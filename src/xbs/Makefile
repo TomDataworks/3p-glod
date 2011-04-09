@@ -38,7 +38,6 @@ XBS_STANDALONE_SRCS = \
 			MLBPriorityQueue.C \
 		 	Model.C \
 			ModelShare.C \
-			MTHierarchy.C \
 			Operation.C \
 			PermissionGrid.C \
 			SimpQueue.C \

@@ -273,11 +273,6 @@ class DiscreteCut : public GLOD_Cut
             return view.computePixelsOfError(hierarchy->LODs[LODNumber]->errorCenter, hierarchy->LODs[LODNumber]->errorOffsets, hierarchy->errors[LODNumber], area); //view.computePixelsOfError(center, hierarchy->errors[LODNumber]);
         }
     
-        /*virtual void debugWrite(char* filename) { 
-            fprintf(stderr, "Not written.\n");
-            return; 
-        }*/
-
         // readback on a cut on a patch
 #ifdef GLOD
         virtual void getReadbackSizes(int patch, GLuint* nindices, GLuint* nverts);
