@@ -79,19 +79,6 @@
 /*------------------------------- Local Types -------------------------------*/
 
 
-/*------------------------------ Local Globals ------------------------------*/
-
-static const Color DEFAULT_COLOR = {200, 200, 200};
-static const FloatColor FRONT_COLOR = {0.0, 1.0, 0.0};
-static const FloatColor BACK_COLOR = {1.0, 0.0, 0.0};
-
-
-
-
-
-
-
-
 /*------------------------ Local Function Prototypes ------------------------*/
 int LoadPPMTexture(char *);
 void InitRegisterCombiners();
