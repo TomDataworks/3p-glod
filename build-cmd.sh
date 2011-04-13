@@ -43,10 +43,12 @@ case "$AUTOBUILD_PLATFORM" in
             mkdir -p "$libdir"/{debug,release}
 			make -C src clean
 			make -C src debug
+			install_name_tool -id "@executable_path/../Resources/libGLOD.dylib" "lib/libGLOD.dylib" 
 			cp "lib/libGLOD.dylib" \
 				"$libdir/debug/libglod.dylib"
 			make -C src clean
 			make -C src release
+			install_name_tool -id "@executable_path/../Resources/libGLOD.dylib" "lib/libGLOD.dylib" 
 			cp "lib/libGLOD.dylib" \
 				"$libdir/release/libglod.dylib"
 		;;
