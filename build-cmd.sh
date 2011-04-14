@@ -53,18 +53,18 @@ case "$AUTOBUILD_PLATFORM" in
 				"$libdir/release/libglod.dylib"
 		;;
         "linux")
-			libdir="$top/stage/libraries/i686-linux/"
-            mkdir -p "$libdir"/lib_{debug,release}_client
+			libdir="$top/stage/lib"
+            mkdir -p "$libdir"/{debug,release}
 			export CFLAGS=-m32
 			export LFLAGS=-m32
 			make -C src clean
 			make -C src debug
 			cp "lib/libGLOD.so" \
-				"$libdir/lib_debug_client/libglod.so"
+				"$libdir/debug/libglod.so"
 			make -C src clean
 			make -C src release
 			cp "lib/libGLOD.so" \
-				"$libdir/lib_release_client/libglod.so"
+				"$libdir/release/libglod.so"
         ;;
 esac
 mkdir -p "stage/include/glod"
