@@ -956,11 +956,15 @@ DiscreteCut::coarsen(ErrorMode mode, int triTermination, float errorTermination)
     int level;
     for (level=LODNumber; level<hierarchy->numLODs; level++)
     {
-        if ((((mode == ObjectSpace) ? (view.computePixelsOfError(hierarchy->LODs[level]->errorCenter, hierarchy->LODs[level]->errorOffsets, hierarchy->errors[level])!=0?hierarchy->errors[level]:0) :
-              view.computePixelsOfError(hierarchy->LODs[level]->errorCenter, hierarchy->LODs[level]->errorOffsets, hierarchy->errors[level])) //view.computePixelsOfError(center, hierarchy->errors[level]))
-             >  errorTermination) ||
-            (hierarchy->LODs[level]->numTris <= triTermination))
+		xbsReal error = view.computePixelsOfError(hierarchy->LODs[level]->errorCenter, hierarchy->LODs[level]->errorOffsets, hierarchy->errors[level]) ;
+		if(mode == ObjectSpace)
+		{
+			error =  (error > 0.000001f ? hierarchy->errors[level] : 0.f) ;
+		}
+        if(error >  errorTermination || hierarchy->LODs[level]->numTris <= triTermination)
+		{
             break;
+		}
     }
     
     LODNumber = (level>hierarchy->numLODs-1) ? hierarchy->numLODs-1 : level;
