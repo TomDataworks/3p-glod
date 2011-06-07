@@ -670,7 +670,7 @@ GLOD_Group::adaptTriangleBudget()
 		queuesBalanced = (coarsenTopError >= refineTopError);
 	      }
 	    
-	    if ((refineTop->cut->currentErrorScreenSpace()<0.000001f)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
+	    if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
 		return;
 
 #ifdef DEBUG_TRIADAPT
@@ -872,7 +872,7 @@ printf("\tCoarsen Queue Top Error: %f, Refine Queue Top Error: %f\n",
 	    }
 	    */
 	    
-	    if ((refineTop->cut->currentErrorScreenSpace()<0.000001f)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
+	    if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
 		return;
 	    
 #if 1
@@ -991,7 +991,7 @@ GLOD_Group::adaptTriangleBudget()
 	    obj->inArea=new int[GLOD_NUM_TILES];
 	}
 	*/
-	if (obj->cut->currentErrorScreenSpace()<0.000001f){
+	if (obj->cut->currentErrorScreenSpace() < 0.0000000001){
 	    obj->cut->coarsen(ObjectSpace, 0.0, MAXFLOAT);
 	    for (int j=0; j<GLOD_NUM_TILES; j++)
 		obj->inArea[j]=0;
@@ -1289,9 +1289,9 @@ printf("\tCoarsen Queue Top Error: %.50f, Refine Queue Top Error: %.50f\n",
 		printf("%i %i\n", currentNumTris, triBudget);
 	    }
 	    */
-	    if (coarsenTop->cut->currentErrorScreenSpace()<0.000001f)
+	    if (coarsenTop->cut->currentErrorScreenSpace() < 0.0000000001)
 		break;
-	    if ((refineTop->cut->currentErrorScreenSpace()<0.000001f)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
+	    if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
 		return;
 	    
 #if 0
@@ -1476,7 +1476,7 @@ printf("\tCoarsen Queue Top Error: %.50f, Refine Queue Top Error: %.50f\n",
 		}
 		 */
 	    }
-	    if ((refineTop->cut->currentErrorScreenSpace()<0.000001f)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
+	    if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
 		return;
 	    
 	    /*
@@ -1908,7 +1908,7 @@ else
 		    queuesBalanced = (coarsenTopError >= refineTopError);
 		}
 	    }
-	    if ((refineTop->cut->currentErrorScreenSpace() < 0.000001f)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced)){
+	    if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced)){
 		return;
 	    }
 	    

@@ -254,12 +254,10 @@ class DiscreteCut : public GLOD_Cut
                             float ErrorTermination);
         virtual xbsReal coarsenErrorObjectSpace(int area=-1) {
             //if (coarsenErrorScreenSpace(area)==0) return 0;
-            return (LODNumber>=hierarchy->numLODs-1) ? MAXFLOAT : ((coarsenErrorScreenSpace(area) < 0.000001f) ? 0.f :
-                                                                   hierarchy->errors[LODNumber+1]);
+            return (LODNumber >= hierarchy->numLODs-1) ? MAXFLOAT : hierarchy->errors[LODNumber+1];
         }
         virtual xbsReal currentErrorObjectSpace(int area=-1) {
-            if (LODNumber>=hierarchy->numLODs) return MAXFLOAT/2.0f;
-            if (currentErrorScreenSpace(area) < 0.000001f) return 0.f;
+            if (LODNumber >= hierarchy->numLODs) return MAXFLOAT/2.0f;       
             return hierarchy->errors[LODNumber];
         }
         virtual xbsReal coarsenErrorScreenSpace(int area=-1) {

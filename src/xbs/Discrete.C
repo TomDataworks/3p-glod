@@ -956,11 +956,16 @@ DiscreteCut::coarsen(ErrorMode mode, int triTermination, float errorTermination)
     int level;
     for (level=LODNumber; level<hierarchy->numLODs; level++)
     {
-		xbsReal error = view.computePixelsOfError(hierarchy->LODs[level]->errorCenter, hierarchy->LODs[level]->errorOffsets, hierarchy->errors[level]) ;
+		xbsReal error ;
 		if(mode == ObjectSpace)
 		{
-			error =  (error > 0.f ? hierarchy->errors[level] : 0.f) ;
+			error =  hierarchy->errors[level] ;//(error > 0.f ? hierarchy->errors[level] : 0.f) ;
 		}
+		else
+		{
+			error = view.computePixelsOfError(hierarchy->LODs[level]->errorCenter, hierarchy->LODs[level]->errorOffsets, hierarchy->errors[level]) ;
+		}
+
         if(error >  errorTermination || hierarchy->LODs[level]->numTris <= triTermination)
 		{
             break;
@@ -989,12 +994,16 @@ DiscreteCut::refine(ErrorMode mode, int triTermination, float errorTermination)
     int level;
     for (level=LODNumber; level>=0; level--)
     {
-		xbsReal error = view.computePixelsOfError(hierarchy->LODs[level]->errorCenter, hierarchy->LODs[level]->errorOffsets, hierarchy->errors[level]) ;
+		xbsReal error ;
 		if(mode == ObjectSpace)
 		{
-			error =  (error > 0.f ? hierarchy->errors[level] : 0.f) ;
+			error =  hierarchy->errors[level];//(error > 0.f ? hierarchy->errors[level] : 0.f) ;
 		}
-        
+		else
+		{
+			error = view.computePixelsOfError(hierarchy->LODs[level]->errorCenter, hierarchy->LODs[level]->errorOffsets, hierarchy->errors[level]) ;
+		}
+
 		if(error <  errorTermination || hierarchy->LODs[level]->numTris > triTermination)
 		{
             break;
@@ -1126,10 +1135,10 @@ void DiscreteCut::draw(int patchnum) {
     
     for (int area=0; area<GLOD_NUM_TILES; area++){
 #ifdef GLOD_USE_TILES
-        if (view.computePixelsOfError(hierarchy->LODs[LODNumber]->errorCenter, 
-                                      hierarchy->LODs[LODNumber]->errorOffsets, 
-                                      hierarchy->errors[LODNumber],area) < 0.000001f)
-            continue;
+        //if (view.computePixelsOfError(hierarchy->LODs[LODNumber]->errorCenter, 
+        //                              hierarchy->LODs[LODNumber]->errorOffsets, 
+        //                              hierarchy->errors[LODNumber],area) < 0.0000000001)
+        //    continue;
 #endif
         if (patch->numIndices==0) return;
         
