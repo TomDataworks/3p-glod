@@ -260,7 +260,7 @@ void GLOD_Group::addObject(GLOD_Object *obj)
     currentNumTris += obj->cut->currentNumTris;
 #else
     for (int i=0; i<GLOD_NUM_TILES; i++)
-	if (obj->cut->currentErrorScreenSpace()!=0)
+	if (obj->cut->currentErrorScreenSpace() > 0.f)
 	    currentNumTris[i] += obj->cut->currentNumTris;
 #endif
     return;
@@ -285,11 +285,11 @@ GLOD_Group::removeObject(int index)
 	return;
     }
 #ifndef GLOD_USE_TILES
-    if (objects[index]->cut->currentErrorScreenSpace()!=0)
+    if (objects[index]->cut->currentErrorScreenSpace() > 0.f)
 	currentNumTris -= objects[index]->cut->currentNumTris;
 #else
     for (int i=0; i<GLOD_NUM_TILES; i++)
-	if (objects[index]->cut->currentErrorScreenSpace()!=0)
+	if (objects[index]->cut->currentErrorScreenSpace() > 0.f)
 	    currentNumTris[i] -= objects[index]->cut->currentNumTris;
 #endif
     //currentNumTris-= objects[index]->cut->currentNumTris;
@@ -342,11 +342,11 @@ GLOD_Group::adaptErrorThreshold()
 	    objects[i]->
 		adaptScreenSpaceErrorThreshold(screenSpaceErrorThreshold);
 #ifndef GLOD_USE_TILES
-	    if (objects[i]->cut->currentErrorScreenSpace()!=0)
+	    if (objects[i]->cut->currentErrorScreenSpace() > 0.f)
 		currentNumTris += objects[i]->cut->currentNumTris;
 #else
 	    for (int j=0; j<GLOD_NUM_TILES; j++)
-		if (objects[i]->cut->currentErrorScreenSpace()!=0)
+		if (objects[i]->cut->currentErrorScreenSpace() > 0.f)
 		    currentNumTris[j] += objects[i]->cut->currentNumTris;
 	    //currentNumTris += objects[i]->cut->currentNumTris;
 #endif
@@ -358,11 +358,11 @@ GLOD_Group::adaptErrorThreshold()
 	    objects[i]->
 		adaptObjectSpaceErrorThreshold(objectSpaceErrorThreshold);
 #ifndef GLOD_USE_TILES
-	    if (objects[i]->cut->currentErrorScreenSpace()!=0)
+	    if (objects[i]->cut->currentErrorScreenSpace() > 0.f)
 		currentNumTris += objects[i]->cut->currentNumTris;
 #else
 	    for (int j=0; j<GLOD_NUM_TILES; j++)
-		if (objects[i]->cut->currentErrorScreenSpace()!=0)
+		if (objects[i]->cut->currentErrorScreenSpace() > 0.f)
 		    currentNumTris[j]+= objects[i]->cut->currentNumTris;
 #endif
 	    //currentNumTris += objects[i]->cut->currentNumTris;
@@ -670,7 +670,7 @@ GLOD_Group::adaptTriangleBudget()
 		queuesBalanced = (coarsenTopError >= refineTopError);
 	      }
 	    
-	    if ((refineTop->cut->currentErrorScreenSpace()==0)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
+	    if ((refineTop->cut->currentErrorScreenSpace()<0.000001f)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
 		return;
 
 #ifdef DEBUG_TRIADAPT
@@ -872,7 +872,7 @@ printf("\tCoarsen Queue Top Error: %f, Refine Queue Top Error: %f\n",
 	    }
 	    */
 	    
-	    if ((refineTop->cut->currentErrorScreenSpace()==0)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
+	    if ((refineTop->cut->currentErrorScreenSpace()<0.000001f)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
 		return;
 	    
 #if 1
@@ -991,7 +991,7 @@ GLOD_Group::adaptTriangleBudget()
 	    obj->inArea=new int[GLOD_NUM_TILES];
 	}
 	*/
-	if (obj->cut->currentErrorScreenSpace()==0){
+	if (obj->cut->currentErrorScreenSpace()<0.000001f){
 	    obj->cut->coarsen(ObjectSpace, 0.0, MAXFLOAT);
 	    for (int j=0; j<GLOD_NUM_TILES; j++)
 		obj->inArea[j]=0;
@@ -1001,7 +1001,7 @@ GLOD_Group::adaptTriangleBudget()
 	else {
 	    //obj->cut->coarsen(ObjectSpace, 0.0, MAXFLOAT);
 	    for (int j=0; j<GLOD_NUM_TILES; j++)
-		if (obj->cut->currentErrorScreenSpace(j)!=0){
+		if (obj->cut->currentErrorScreenSpace(j)>0.f){
 		    obj->inArea[j]=1;
 		    //obj->numAreas++;
 		    currentNumTris[j] += obj->cut->currentNumTris;
@@ -1289,9 +1289,9 @@ printf("\tCoarsen Queue Top Error: %.50f, Refine Queue Top Error: %.50f\n",
 		printf("%i %i\n", currentNumTris, triBudget);
 	    }
 	    */
-	    if (coarsenTop->cut->currentErrorScreenSpace()==0)
+	    if (coarsenTop->cut->currentErrorScreenSpace()<0.000001f)
 		break;
-	    if ((refineTop->cut->currentErrorScreenSpace()==0)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
+	    if ((refineTop->cut->currentErrorScreenSpace()<0.000001f)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
 		return;
 	    
 #if 0
@@ -1476,7 +1476,7 @@ printf("\tCoarsen Queue Top Error: %.50f, Refine Queue Top Error: %.50f\n",
 		}
 		 */
 	    }
-	    if ((refineTop->cut->currentErrorScreenSpace()==0)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
+	    if ((refineTop->cut->currentErrorScreenSpace()<0.000001f)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
 		return;
 	    
 	    /*
@@ -1648,7 +1648,7 @@ GLOD_Group::adaptTriangleBudget()
 	//}
 	//else {
 	    for (int j=0; j<GLOD_NUM_TILES; j++)
-		if (obj->cut->currentErrorScreenSpace(j)!=0){
+		if (obj->cut->currentErrorScreenSpace(j) > 0.f){
 		    obj->inArea[j]=1;
 		    //obj->numAreas++;
 		    currentNumTris[j] += obj->cut->currentNumTris;
@@ -1908,7 +1908,7 @@ else
 		    queuesBalanced = (coarsenTopError >= refineTopError);
 		}
 	    }
-	    if ((refineTop->cut->currentErrorScreenSpace()==0)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced)){
+	    if ((refineTop->cut->currentErrorScreenSpace() < 0.000001f)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced)){
 		return;
 	    }
 	    

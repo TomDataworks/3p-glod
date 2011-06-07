@@ -481,7 +481,7 @@ DiscretePatchCut::adaptObjectSpaceErrorThreshold(float threshold)
     //fprintf(stderr, "adaptObjectSpaceErrorThreshold(): ");
     int level;
     for (level=1; level<hierarchy->numUsedLODs; level++)
-        if ((view.computePixelsOfError(hierarchy->LODs[level]->errorCenter, hierarchy->LODs[level]->errorOffsets, hierarchy->errors[level], -1)!=0?hierarchy->errors[level]:0) > threshold)
+        if ((view.computePixelsOfError(hierarchy->LODs[level]->errorCenter, hierarchy->LODs[level]->errorOffsets, hierarchy->errors[level], -1) > 0.f ? hierarchy->errors[level] : 0.f) > threshold)
             break;
     
     level--;
@@ -825,7 +825,7 @@ void DiscretePatchCut::draw(int patchnum) {
     for (int area=0; area<GLOD_NUM_TILES; area++){
         if (view.computePixelsOfError(hierarchy->LODs[LODNumber]->errorCenter, 
                                       hierarchy->LODs[LODNumber]->errorOffsets, 
-                                      hierarchy->errors[LODNumber],area)==0)
+                                      hierarchy->errors[LODNumber],area) < 0.000001f)
             continue;
         
         if (patch->numIndices==0) return;

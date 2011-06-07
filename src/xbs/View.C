@@ -131,6 +131,7 @@ GLOD_View::computePixelsOfError(xbsVec3 center, xbsVec3 offsets, xbsReal objectS
     float squareObjBoxDiag = offsets.SquaredLength() * 4;
     float error = sqrt(squareScreenBoxDiag/squareObjBoxDiag) * objectSpaceError + 0.0000000001;
     
+	if(error < 0.000001f) error = 0.f ;
     return error;
 }
 

@@ -959,7 +959,7 @@ DiscreteCut::coarsen(ErrorMode mode, int triTermination, float errorTermination)
 		xbsReal error = view.computePixelsOfError(hierarchy->LODs[level]->errorCenter, hierarchy->LODs[level]->errorOffsets, hierarchy->errors[level]) ;
 		if(mode == ObjectSpace)
 		{
-			error =  (error > 0.000001f ? hierarchy->errors[level] : 0.f) ;
+			error =  (error > 0.f ? hierarchy->errors[level] : 0.f) ;
 		}
         if(error >  errorTermination || hierarchy->LODs[level]->numTris <= triTermination)
 		{
@@ -989,11 +989,16 @@ DiscreteCut::refine(ErrorMode mode, int triTermination, float errorTermination)
     int level;
     for (level=LODNumber; level>=0; level--)
     {
-        if ((((mode == ObjectSpace) ? (view.computePixelsOfError(hierarchy->LODs[level]->errorCenter, hierarchy->LODs[level]->errorOffsets, hierarchy->errors[level])!=0?hierarchy->errors[level]:0) :
-              view.computePixelsOfError(hierarchy->LODs[level]->errorCenter, hierarchy->LODs[level]->errorOffsets, hierarchy->errors[level])) //view.computePixelsOfError(center, hierarchy->errors[level]))
-             < errorTermination) ||
-            (hierarchy->LODs[level]->numTris > triTermination))
+		xbsReal error = view.computePixelsOfError(hierarchy->LODs[level]->errorCenter, hierarchy->LODs[level]->errorOffsets, hierarchy->errors[level]) ;
+		if(mode == ObjectSpace)
+		{
+			error =  (error > 0.f ? hierarchy->errors[level] : 0.f) ;
+		}
+        
+		if(error <  errorTermination || hierarchy->LODs[level]->numTris > triTermination)
+		{
             break;
+		}
     }
     
     LODNumber = (level<0) ? 0 : level;
@@ -1123,7 +1128,7 @@ void DiscreteCut::draw(int patchnum) {
 #ifdef GLOD_USE_TILES
         if (view.computePixelsOfError(hierarchy->LODs[LODNumber]->errorCenter, 
                                       hierarchy->LODs[LODNumber]->errorOffsets, 
-                                      hierarchy->errors[LODNumber],area)==0)
+                                      hierarchy->errors[LODNumber],area) < 0.000001f)
             continue;
 #endif
         if (patch->numIndices==0) return;
