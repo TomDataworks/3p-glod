@@ -410,7 +410,7 @@ GLOD_Group::adaptTriangleBudget()
 		return;
 	}
 
-//printf("Beginning adaptTriangleBudget()\n");
+	//printf("Beginning adaptTriangleBudget()\n");
 
 	// update currentNumTris
 	bool VDScutCounted = false;
@@ -439,12 +439,12 @@ GLOD_Group::adaptTriangleBudget()
     for (int i=0; i<numObjects; i++)
     {
 		GLOD_Object *obj = objects[i];
-	//delete obj->budgetCoarsenHeapData;
-	//delete obj->budgetRefineHeapData;
-	if (obj->format!=GLOD_VDS){
-	    obj->budgetCoarsenHeapData=HeapElement(obj);
-	    obj->budgetRefineHeapData=HeapElement(obj);
-	}
+	
+		if (obj->format!=GLOD_VDS)
+		{
+			obj->budgetCoarsenHeapData=HeapElement(obj);
+			obj->budgetRefineHeapData=HeapElement(obj);
+		}
 		// all VDS objects in a group share the same VDS::Simplifier, and
 		// adapting this simplifier adapts all of the VDS objects at once
 		// therefore, we only need a single entry in the queues for all 
@@ -523,7 +523,7 @@ GLOD_Group::adaptTriangleBudget()
 	  overBudget=1;
 	}
 #ifdef DEBUG_TRIADAPT
-        printf("\n\nbeginning of adapt\n\n");
+    printf("\n\nbeginning of adapt\n\n");
 #endif
 
 	unsigned int FirstObjectRefined = UINT_MAX - 1;
@@ -560,183 +560,183 @@ GLOD_Group::adaptTriangleBudget()
         else
             printf("queuesBalanced: 0\n");
 #endif
-	// Refine first, then coarsen, so that coarsening is last (and thus
-	// we end up within the budget)
+		// Refine first, then coarsen, so that coarsening is last (and thus
+		// we end up within the budget)
 
-	// refine
-	while (roomToRefine)
-	{
-#ifdef DEBUG_TRIADAPT
-	  printf("Beginning refine pass\n");
-#endif
-	    GLOD_Object *refineObj =
-			(GLOD_Object *)refineQueue->extractMin()->userData();
-
-	    GLOD_Object *nextRefine = (refineQueue->size() > 0) ?
-			(GLOD_Object *)refineQueue->min()->userData() : NULL;
-
-	    // apply refinement
-	    int beforeTris = refineObj->cut->currentNumTris;
-	    int triTermination = triBudget - (currentNumTris - beforeTris);
-
-	    if (triTermination < 0)
-	    {
-	    	triTermination = refineObj->cut->refineTris;
-	    }
-
-	    float errorTermination = (nextRefine != NULL) ? 
-			nextRefine->cut->currentErrorObjectSpace() : -MAXFLOAT;
-
-	    if ((errorMode == ScreenSpace) && (errorTermination != -MAXFLOAT))
+		// refine
+		while (roomToRefine)
 		{
-			float nextRefineError = nextRefine->cut->currentErrorScreenSpace();			
-			errorTermination =  nextRefineError;
-		}
+#ifdef DEBUG_TRIADAPT
+			printf("Beginning refine pass\n");
+#endif
+			GLOD_Object *refineObj =
+				(GLOD_Object *)refineQueue->extractMin()->userData();
+
+			GLOD_Object *nextRefine = (refineQueue->size() > 0) ?
+				(GLOD_Object *)refineQueue->min()->userData() : NULL;
+
+			// apply refinement
+			int beforeTris = refineObj->cut->currentNumTris;
+			int triTermination = triBudget - (currentNumTris - beforeTris);
+
+			if (triTermination < 0)
+			{
+	    		triTermination = refineObj->cut->refineTris;
+			}
+
+			float errorTermination = (nextRefine != NULL) ? 
+				nextRefine->cut->currentErrorObjectSpace() : -MAXFLOAT;
+
+			if ((errorMode == ScreenSpace) && (errorTermination != -MAXFLOAT))
+			{
+				float nextRefineError = nextRefine->cut->currentErrorScreenSpace();			
+				errorTermination =  nextRefineError;
+			}
 #ifdef DEBUG_TRIADAPT
             printf("refining %u\n", refineObj->name);
             printf("tri term %i errorTerm %f\n", triTermination, errorTermination);
 #endif
             refineObj->cut->refine(errorMode, triTermination, errorTermination);
 
-	    int afterTris = refineObj->cut->currentNumTris;
-	    currentNumTris = currentNumTris - beforeTris + afterTris;
+			int afterTris = refineObj->cut->currentNumTris;
+			currentNumTris = currentNumTris - beforeTris + afterTris;
 
-		if ((refineObj->name == LastObjectRefined) &&
-			(triTermination == LastRefineTriTermination) &&
-			(fabs(errorTermination - LastRefineErrorTermination) < 0.0000001))
-		{
-		//	printf("Duplicate refine call - euthanizing budget loop.\n");
-
-			if (coarsenQueue->size() == 1)
-				return;
-
-			coarsenQueue->remove(&(refineObj->budgetCoarsenHeapData));
-			refineTop= (GLOD_Object *)refineQueue->min()->userData();
-		}
-		else if(FirstRefine &&
-			(refineObj->name == FirstObjectRefined) &&
-			(triTermination == FirstRefineTriTermination) &&
-			(fabs(errorTermination - FirstRefineErrorTermination) < 0.0000001))
-		{
-			if (coarsenQueue->size() == 1)
-				return;
-
-			coarsenQueue->remove(&(refineObj->budgetCoarsenHeapData));
-			refineTop= (GLOD_Object *)refineQueue->min()->userData();
-		}
-		else
-		{
-			if(FirstRefine)
+			if ((refineObj->name == LastObjectRefined) &&
+				(triTermination == LastRefineTriTermination) &&
+				(fabs(errorTermination - LastRefineErrorTermination) < 0.0000001))
 			{
-				FirstRefine = false ;
-				FirstObjectRefined = refineObj->name;
-				FirstRefineTriTermination = triTermination;
-				FirstRefineErrorTermination = errorTermination;
+			//	printf("Duplicate refine call - euthanizing budget loop.\n");
+
+				if (coarsenQueue->size() == 1)
+					return;
+
+				coarsenQueue->remove(&(refineObj->budgetCoarsenHeapData));
+				refineTop= (GLOD_Object *)refineQueue->min()->userData();
 			}
+			else if(FirstRefine &&
+				(refineObj->name == FirstObjectRefined) &&
+				(triTermination == FirstRefineTriTermination) &&
+				(fabs(errorTermination - FirstRefineErrorTermination) < 0.0000001))
+			{
+				if (coarsenQueue->size() == 1)
+					return;
 
-			LastObjectRefined = refineObj->name;
-			LastRefineTriTermination = triTermination;
-			LastRefineErrorTermination = errorTermination;
+				coarsenQueue->remove(&(refineObj->budgetCoarsenHeapData));
+				refineTop= (GLOD_Object *)refineQueue->min()->userData();
+			}
+			else
+			{
+				if(FirstRefine)
+				{
+					FirstRefine = false ;
+					FirstObjectRefined = refineObj->name;
+					FirstRefineTriTermination = triTermination;
+					FirstRefineErrorTermination = errorTermination;
+				}
 
-			// possible reasons that the refine terminated:
-			//
-			// a) error < errorTermination
-			//    -- put back on refine queue (it won't be on top anymore)
-			//
-			// b) tris > triTermination
-			//    -- put on coarsen queue (we will need to coarsen either
-			//       this or something else to get within budget)
-			//
-			// c) no more refinements possible
-			//    -- put on coarsen queue
+				LastObjectRefined = refineObj->name;
+				LastRefineTriTermination = triTermination;
+				LastRefineErrorTermination = errorTermination;
+
+				// possible reasons that the refine terminated:
+				//
+				// a) error < errorTermination
+				//    -- put back on refine queue (it won't be on top anymore)
+				//
+				// b) tris > triTermination
+				//    -- put on coarsen queue (we will need to coarsen either
+				//       this or something else to get within budget)
+				//
+				// c) no more refinements possible
+				//    -- put on coarsen queue
 			
-			if (errorMode == ObjectSpace)
-			{
-			    refineObj->budgetRefineHeapData.setKey(
-				  -refineObj->cut->currentErrorObjectSpace());
+				if (errorMode == ObjectSpace)
+				{
+					refineObj->budgetRefineHeapData.setKey(
+					  -refineObj->cut->currentErrorObjectSpace());
+				}
+				else
+				{
+					refineObj->budgetRefineHeapData.setKey(
+						-refineObj->cut->currentErrorScreenSpace());
+				}
+
+				if (errorMode == ObjectSpace)
+				{
+					NewError = refineObj->cut->coarsenErrorObjectSpace();
+				}
+				else
+				{
+					NewError = refineObj->cut->coarsenErrorScreenSpace();
+				}	
+
+				refineQueue->insert(&(refineObj->budgetRefineHeapData));
+				coarsenQueue->changeKey(&(refineObj->budgetCoarsenHeapData), NewError);
 			}
-			else
-			{
-				refineObj->budgetRefineHeapData.setKey(
-					-refineObj->cut->currentErrorScreenSpace());
-			}
 
-			if (errorMode == ObjectSpace)
-			{
-				NewError = refineObj->cut->coarsenErrorObjectSpace();
-			}
-			else
-			{
-				NewError = refineObj->cut->coarsenErrorScreenSpace();
-			}	
+			coarsenTop = (GLOD_Object *)coarsenQueue->min()->userData();
+			refineTop = (GLOD_Object *)refineQueue->min()->userData();
 
-			refineQueue->insert(&(refineObj->budgetRefineHeapData));
-			coarsenQueue->changeKey(&(refineObj->budgetCoarsenHeapData), NewError);
-		}
+			TrisAfterRefine = (currentNumTris - refineTop->cut->currentNumTris +
+				refineTop->cut->refineTris);
 
-	    coarsenTop = (GLOD_Object *)coarsenQueue->min()->userData();
-	    refineTop = (GLOD_Object *)refineQueue->min()->userData();
+			roomToRefine = (refineTop->cut->refineTris == MAXINT) ? 0 :
+				(TrisAfterRefine < triBudget);
 
-		TrisAfterRefine = (currentNumTris - refineTop->cut->currentNumTris +
-			refineTop->cut->refineTris);
+			overBudget = ((currentNumTris > triBudget) &&
+				  (coarsenTop->cut->coarsenErrorObjectSpace() != MAXFLOAT));
 
-	    roomToRefine = (refineTop->cut->refineTris == MAXINT) ? 0 :
-			(TrisAfterRefine < triBudget);
-
-	    overBudget = ((currentNumTris > triBudget) &&
-			  (coarsenTop->cut->coarsenErrorObjectSpace() != MAXFLOAT));
-
-	    //printf("over (refine)? %i %i\n", currentNumTris, triBudget);
+			//printf("over (refine)? %i %i\n", currentNumTris, triBudget);
 	   
-	    if (errorMode == ObjectSpace)
-	      {
-		queuesBalanced = (coarsenTop->cut->coarsenErrorObjectSpace()
-				  >= refineTop->cut->currentErrorObjectSpace());
-	      }
-	    else
-	      {
-		float coarsenTopError = coarsenTop->cut->coarsenErrorScreenSpace();
-		float refineTopError = refineTop->cut->currentErrorScreenSpace();
-		queuesBalanced = (coarsenTopError >= refineTopError);
-	      }
+			if (errorMode == ObjectSpace)
+			{
+				queuesBalanced = (coarsenTop->cut->coarsenErrorObjectSpace()
+					  >= refineTop->cut->currentErrorObjectSpace());
+			}
+			else
+			{
+				float coarsenTopError = coarsenTop->cut->coarsenErrorScreenSpace();
+				float refineTopError = refineTop->cut->currentErrorScreenSpace();
+				queuesBalanced = (coarsenTopError >= refineTopError);
+			}
 	    
-	 //   if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
-		//return;
+	 //		if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
+				//return;
 
 #ifdef DEBUG_TRIADAPT
-printf("\tCurrent Num Tris: %i, TrisAfterRefine: %i, Budget: %i\n",
-	currentNumTris, TrisAfterRefine, triBudget);
-printf("before %i after %i rque: %i cque: %i\n", beforeTris, afterTris, refineQueue->size(), coarsenQueue->size());
+			printf("\tCurrent Num Tris: %i, TrisAfterRefine: %i, Budget: %i\n",
+				currentNumTris, TrisAfterRefine, triBudget);
+			printf("before %i after %i rque: %i cque: %i\n", beforeTris, afterTris, refineQueue->size(), coarsenQueue->size());
 
-printf("\tCoarsen Queue Top Error: %f, Refine Queue Top Error: %f\n",
-	(errorMode == ObjectSpace) ? coarsenTop->cut->coarsenErrorObjectSpace() :
-	coarsenTop->cut->coarsenErrorScreenSpace(), (errorMode == ObjectSpace) ? 
-	refineTop->cut->currentErrorObjectSpace() : 
-	refineTop->cut->currentErrorScreenSpace());
+			printf("\tCoarsen Queue Top Error: %f, Refine Queue Top Error: %f\n",
+				(errorMode == ObjectSpace) ? coarsenTop->cut->coarsenErrorObjectSpace() :
+				coarsenTop->cut->coarsenErrorScreenSpace(), (errorMode == ObjectSpace) ? 
+				refineTop->cut->currentErrorObjectSpace() : 
+				refineTop->cut->currentErrorScreenSpace());
 #endif
 #if 1
 	    
-	    if (queuesBalanced)
-	      {
-		while ((!overBudget) && (!roomToRefine) && (refineQueue->size() > 1))
-		  {
+			if (queuesBalanced)
+			{
+				while ((!overBudget) && (!roomToRefine) && (refineQueue->size() > 1))
+				{
 
-		    //		    printf("Queues Balanced; removing tops of refine and coarsen queues(refine)\n");
+				//		    printf("Queues Balanced; removing tops of refine and coarsen queues(refine)\n");
 
-		    refineQueue->remove( &(refineTop->budgetRefineHeapData) );
-		    coarsenQueue->remove( &(refineTop->budgetCoarsenHeapData) );
-		    refineTop = (GLOD_Object *)refineQueue->min()->userData();
+					refineQueue->remove( &(refineTop->budgetRefineHeapData) );
+					coarsenQueue->remove( &(refineTop->budgetCoarsenHeapData) );
+					refineTop = (GLOD_Object *)refineQueue->min()->userData();
 		    
-		    TrisAfterRefine = (currentNumTris - 
-				  refineTop->cut->currentNumTris + refineTop->cut->refineTris);
+					TrisAfterRefine = (currentNumTris - 
+						refineTop->cut->currentNumTris + refineTop->cut->refineTris);
 		    
-		    roomToRefine = (refineTop->cut->refineTris == MAXINT) ? 0 :
-		      (TrisAfterRefine < triBudget);
-		  }
-	      }
+					roomToRefine = (refineTop->cut->refineTris == MAXINT) ? 0 :
+						(TrisAfterRefine < triBudget);
+				}
+			}
 #endif      
 
-	} // end of refinement
+		} // end of refinement
 #ifdef DEBUG_TRIADAPT
         printf("after refinement\n");
         if (roomToRefine)
@@ -753,199 +753,198 @@ printf("\tCoarsen Queue Top Error: %f, Refine Queue Top Error: %f\n",
             printf("queuesBalanced: 0\n");
 #endif
         
-	while (overBudget || !queuesBalanced)
-	{
+		while (overBudget || !queuesBalanced)
+		{
 #ifdef DEBUG_TRIADAPT
-	  printf("Beginning coarsen pass\n");
+			printf("Beginning coarsen pass\n");
 #endif
-	    GLOD_Object *coarsenObj =
-			(GLOD_Object *)coarsenQueue->extractMin()->userData();
+			GLOD_Object *coarsenObj =
+				(GLOD_Object *)coarsenQueue->extractMin()->userData();
 	  
-	    GLOD_Object *nextCoarsen = (coarsenQueue->size() > 0) ?
-			(GLOD_Object *)coarsenQueue->min()->userData() : NULL;
+			GLOD_Object *nextCoarsen = (coarsenQueue->size() > 0) ?
+				(GLOD_Object *)coarsenQueue->min()->userData() : NULL;
 		
-	    // apply coarsening
+			// apply coarsening
 	    
-	    int beforeTris = coarsenObj->cut->currentNumTris;
-	    /*
-	    if (beforeTris==0&&(refineQueue->size()>1)){
-	      refineQueue->remove( &(coarsenTop->budgetRefineHeapData) );
-	      coarsenQueue->remove( &(coarsenTop->budgetCoarsenHeapData) );
-	      refineTop = (GLOD_Object *)refineQueue->min()->userData();
-	      coarsenTop = (GLOD_Object *)coarsenQueue->min()->userData();
-	      continue;
+			int beforeTris = coarsenObj->cut->currentNumTris;
+			/*
+			if (beforeTris==0&&(refineQueue->size()>1)){
+			  refineQueue->remove( &(coarsenTop->budgetRefineHeapData) );
+			  coarsenQueue->remove( &(coarsenTop->budgetCoarsenHeapData) );
+			  refineTop = (GLOD_Object *)refineQueue->min()->userData();
+			  coarsenTop = (GLOD_Object *)coarsenQueue->min()->userData();
+			  continue;
 	      
-	    }
-	    else if (beforeTris==0&&(refineQueue->size()==1)){
-	      */
-	      
-	    int triTermination = triBudget - (currentNumTris - beforeTris);
-	    
-	    float errorTermination = (nextCoarsen != NULL) ?
-			nextCoarsen->cut->coarsenErrorObjectSpace() : MAXFLOAT;
-	    //printf("tri term %i errorTerm(os) %f\n", triTermination, errorTermination);
-	    if ((errorMode == ScreenSpace) && (errorTermination != MAXFLOAT))
-	      {
-		errorTermination = nextCoarsen->cut->coarsenErrorScreenSpace();
-	      }
-#ifdef DEBUG_TRIADAPT
-	    printf("coarsening %u\n", coarsenObj->name);
-	    printf("tri term %i errorTerm %f\n", triTermination, errorTermination);
-#endif
-
-		if (triTermination >= beforeTris)
-			triTermination = 0;
-
-	    coarsenObj->cut->coarsen(errorMode, triTermination, errorTermination);
-		
-	    int afterTris = coarsenObj->cut->currentNumTris;
-	    currentNumTris = currentNumTris - beforeTris + afterTris;
-
-
-		if ((coarsenObj->name == LastObjectCoarsened) &&
-			(triTermination == LastCoarsenTriTermination) &&
-			(fabs(errorTermination - LastCoarsenErrorTermination) < 0.0000001))
-		{
-      //              printf("Duplicate coarsen call - euthanizing budget loop.\n");
-
-			if (refineQueue->size() == 1)
-				return;
-
-			refineQueue->remove(&(coarsenObj->budgetRefineHeapData));
-			refineTop= (GLOD_Object *)refineQueue->min()->userData();
-		}
-		else if(FirstCoarsen &&
-			(coarsenObj->name == FirstObjectCoarsened) &&
-			(triTermination == FirstCoarsenTriTermination) &&
-			(fabs(errorTermination - FirstCoarsenErrorTermination) < 0.0000001))
-		{
-			if (refineQueue->size() == 1)
-				return;
-
-			refineQueue->remove(&(coarsenObj->budgetRefineHeapData));
-			refineTop= (GLOD_Object *)refineQueue->min()->userData();
-		}
-		else
-		{
-			if(FirstCoarsen)
-			{
-				FirstCoarsen = false ;
-				FirstObjectCoarsened = coarsenObj->name;
-				FirstCoarsenTriTermination = triTermination;
-				FirstCoarsenErrorTermination = errorTermination;
 			}
-
-			LastObjectCoarsened = coarsenObj->name;
-			LastCoarsenTriTermination = triTermination;
-			LastCoarsenErrorTermination = errorTermination;
-
-			// possible reasons that the coarsen terminated:
-			//
-			// a) error > errorTermination
-			//    -- put back on coarsen queue (it won't be on top anymore)
-			//
-			// b) tris <= triTermination
-			//    -- put on refinement queue
-			//
- 			// c) no more coarsening possible
-			//    -- put on refinement queue
-
-			if (errorMode == ObjectSpace)
+			else if (beforeTris==0&&(refineQueue->size()==1)){
+			  */
+	      
+			int triTermination = triBudget - (currentNumTris - beforeTris);
+	    
+			float errorTermination = (nextCoarsen != NULL) ?
+				nextCoarsen->cut->coarsenErrorObjectSpace() : MAXFLOAT;
+			//printf("tri term %i errorTerm(os) %f\n", triTermination, errorTermination);
+			if ((errorMode == ScreenSpace) && (errorTermination != MAXFLOAT))
 			{
-				coarsenObj->budgetCoarsenHeapData.setKey(
-					coarsenObj->cut->coarsenErrorObjectSpace());
+				errorTermination = nextCoarsen->cut->coarsenErrorScreenSpace();
+			}
+	#ifdef DEBUG_TRIADAPT
+			printf("coarsening %u\n", coarsenObj->name);
+			printf("tri term %i errorTerm %f\n", triTermination, errorTermination);
+	#endif
+
+			if (triTermination >= beforeTris)
+				triTermination = 0;
+
+			coarsenObj->cut->coarsen(errorMode, triTermination, errorTermination);
+		
+			int afterTris = coarsenObj->cut->currentNumTris;
+			currentNumTris = currentNumTris - beforeTris + afterTris;
+
+
+			if ((coarsenObj->name == LastObjectCoarsened) &&
+				(triTermination == LastCoarsenTriTermination) &&
+				(fabs(errorTermination - LastCoarsenErrorTermination) < 0.0000001))
+			{
+		  //              printf("Duplicate coarsen call - euthanizing budget loop.\n");
+
+				if (refineQueue->size() == 1)
+					return;
+
+				refineQueue->remove(&(coarsenObj->budgetRefineHeapData));
+				refineTop= (GLOD_Object *)refineQueue->min()->userData();
+			}
+			else if(FirstCoarsen &&
+				(coarsenObj->name == FirstObjectCoarsened) &&
+				(triTermination == FirstCoarsenTriTermination) &&
+				(fabs(errorTermination - FirstCoarsenErrorTermination) < 0.0000001))
+			{
+				if (refineQueue->size() == 1)
+					return;
+
+				refineQueue->remove(&(coarsenObj->budgetRefineHeapData));
+				refineTop= (GLOD_Object *)refineQueue->min()->userData();
 			}
 			else
 			{
-				coarsenObj->budgetCoarsenHeapData.setKey(
-					coarsenObj->cut->coarsenErrorScreenSpace());
+				if(FirstCoarsen)
+				{
+					FirstCoarsen = false ;
+					FirstObjectCoarsened = coarsenObj->name;
+					FirstCoarsenTriTermination = triTermination;
+					FirstCoarsenErrorTermination = errorTermination;
+				}
+
+				LastObjectCoarsened = coarsenObj->name;
+				LastCoarsenTriTermination = triTermination;
+				LastCoarsenErrorTermination = errorTermination;
+
+				// possible reasons that the coarsen terminated:
+				//
+				// a) error > errorTermination
+				//    -- put back on coarsen queue (it won't be on top anymore)
+				//
+				// b) tris <= triTermination
+				//    -- put on refinement queue
+				//
+ 				// c) no more coarsening possible
+				//    -- put on refinement queue
+
+				if (errorMode == ObjectSpace)
+				{
+					coarsenObj->budgetCoarsenHeapData.setKey(
+						coarsenObj->cut->coarsenErrorObjectSpace());
+				}
+				else
+				{
+					coarsenObj->budgetCoarsenHeapData.setKey(
+						coarsenObj->cut->coarsenErrorScreenSpace());
+				}
+				coarsenQueue->insert(&(coarsenObj->budgetCoarsenHeapData));
+
+				if (errorMode == ObjectSpace)
+				{
+					NewError = -coarsenObj->cut->currentErrorObjectSpace();
+				}
+				else
+				{
+					NewError = -coarsenObj->cut->currentErrorScreenSpace();
+				}
+
+				refineQueue->changeKey(&(coarsenObj->budgetRefineHeapData), NewError);
 			}
-			coarsenQueue->insert(&(coarsenObj->budgetCoarsenHeapData));
+	    
+			coarsenTop = (GLOD_Object *)coarsenQueue->min()->userData();
+			refineTop = (GLOD_Object *)refineQueue->min()->userData();
+	    
+			TrisAfterRefine = (currentNumTris - refineTop->cut->currentNumTris +
+				  refineTop->cut->refineTris);
+			roomToRefine = (refineTop->cut->refineTris == MAXINT) ? 0 :
+				(TrisAfterRefine < triBudget);
+
+			overBudget = ((currentNumTris > triBudget) && 
+				(coarsenTop->cut->coarsenErrorObjectSpace() != MAXFLOAT));
+
+			if (triBudget<0)
+			  overBudget=0;
 
 			if (errorMode == ObjectSpace)
-			{
-				NewError = -coarsenObj->cut->currentErrorObjectSpace();
-			}
+			  {		
+					queuesBalanced = (coarsenTop->cut->coarsenErrorObjectSpace() 
+					  >= refineTop->cut->currentErrorObjectSpace());
+			  }
 			else
-			{
-				NewError = -coarsenObj->cut->currentErrorScreenSpace();
-			}
-
-			refineQueue->changeKey(&(coarsenObj->budgetRefineHeapData), NewError);
-		}
-	    
-	    coarsenTop = (GLOD_Object *)coarsenQueue->min()->userData();
-	    refineTop = (GLOD_Object *)refineQueue->min()->userData();
-	    
-		TrisAfterRefine = (currentNumTris - refineTop->cut->currentNumTris +
-			  refineTop->cut->refineTris);
-	    roomToRefine = (refineTop->cut->refineTris == MAXINT) ? 0 :
-			(TrisAfterRefine < triBudget);
-
-	    overBudget = ((currentNumTris > triBudget) && 
-			(coarsenTop->cut->coarsenErrorObjectSpace() != MAXFLOAT));
-
-	    if (triBudget<0)
-	      overBudget=0;
-
-	    if (errorMode == ObjectSpace)
-	      {
-		
-		queuesBalanced = (coarsenTop->cut->coarsenErrorObjectSpace() 
-				  >= refineTop->cut->currentErrorObjectSpace());
-	      }
-	    else
-	      {
-		queuesBalanced = (coarsenTop->cut->coarsenErrorScreenSpace()
-			  >= refineTop->cut->currentErrorScreenSpace());
-	      }
+			  {
+					queuesBalanced = (coarsenTop->cut->coarsenErrorScreenSpace()
+						>= refineTop->cut->currentErrorScreenSpace());
+			  }
 #ifdef DEBUG_TRIADAPT    
-            printf("\tCurrent Num Tris: %i, TrisAfterRefine: %i, Budget: %i, ref %i, %i\n",
-                   currentNumTris, TrisAfterRefine, triBudget, refineTop->cut->refineTris, MAXINT);
-            printf("before %i after %i rque: %i cque: %i\n", beforeTris, afterTris, refineQueue->size(), coarsenQueue->size());
-            printf("\tCoarsen Queue Top Error: %.50f, Refine Queue Top Error: %.50f\n",
-                   (errorMode == ObjectSpace) ? coarsenTop->cut->coarsenErrorObjectSpace() :
-                   coarsenTop->cut->coarsenErrorScreenSpace(), (errorMode == ObjectSpace) ? 
-                   refineTop->cut->currentErrorObjectSpace() : 
-                   refineTop->cut->currentErrorScreenSpace());
+				printf("\tCurrent Num Tris: %i, TrisAfterRefine: %i, Budget: %i, ref %i, %i\n",
+					   currentNumTris, TrisAfterRefine, triBudget, refineTop->cut->refineTris, MAXINT);
+				printf("before %i after %i rque: %i cque: %i\n", beforeTris, afterTris, refineQueue->size(), coarsenQueue->size());
+				printf("\tCoarsen Queue Top Error: %.50f, Refine Queue Top Error: %.50f\n",
+					   (errorMode == ObjectSpace) ? coarsenTop->cut->coarsenErrorObjectSpace() :
+					   coarsenTop->cut->coarsenErrorScreenSpace(), (errorMode == ObjectSpace) ? 
+					   refineTop->cut->currentErrorObjectSpace() : 
+					   refineTop->cut->currentErrorScreenSpace());
 #endif
-	    if (coarsenQueue->size()==1)
-	      queuesBalanced=1;
+			if (coarsenQueue->size()==1)
+			  queuesBalanced=1;
 	    
-	   /* 
-	    if (refineTop->cut->currentErrorScreenSpace()==0){
-		printf("arrrrr %i %f\n", coarsenTop->cut->currentNumTris, coarsenTop->cut->coarsenErrorObjectSpace());
-		printf("cq %i rq %i\n", coarsenQueue->size(), refineQueue->size());
-		printf("%i %i %i\n", overBudget, roomToRefine, queuesBalanced);
-		printf("%i %i\n", currentNumTris, triBudget);
-	    }
-	    */
+		   /* 
+			if (refineTop->cut->currentErrorScreenSpace()==0){
+			printf("arrrrr %i %f\n", coarsenTop->cut->currentNumTris, coarsenTop->cut->coarsenErrorObjectSpace());
+			printf("cq %i rq %i\n", coarsenQueue->size(), refineQueue->size());
+			printf("%i %i %i\n", overBudget, roomToRefine, queuesBalanced);
+			printf("%i %i\n", currentNumTris, triBudget);
+			}
+			*/
 	    
-	 //   if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
-		//return;
+		 //   if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
+			//return;
 	    
 #if 1
-	    if (queuesBalanced)
-		{
-			while (!overBudget&&!roomToRefine&&(refineQueue->size()>1))
+			if (queuesBalanced)
 			{
+				while (!overBudget&&!roomToRefine&&(refineQueue->size()>1))
+				{
 
-			  //	  printf("Queues Balanced; removing tops of refine and coarsen queues(coarsen)\n");
+				  //	  printf("Queues Balanced; removing tops of refine and coarsen queues(coarsen)\n");
 
-				refineQueue->remove(&(refineTop->budgetRefineHeapData));
-				coarsenQueue->remove(&(refineTop->budgetCoarsenHeapData));
-				refineTop= (GLOD_Object *)refineQueue->min()->userData();
+					refineQueue->remove(&(refineTop->budgetRefineHeapData));
+					coarsenQueue->remove(&(refineTop->budgetCoarsenHeapData));
+					refineTop= (GLOD_Object *)refineQueue->min()->userData();
 
-				TrisAfterRefine = (currentNumTris 
-					- refineTop->cut->currentNumTris 
-					+ refineTop->cut->refineTris);
+					TrisAfterRefine = (currentNumTris 
+						- refineTop->cut->currentNumTris 
+						+ refineTop->cut->refineTris);
 
-				roomToRefine = (refineTop->cut->refineTris == MAXINT) ? 0 :
-					(TrisAfterRefine < triBudget);
+					roomToRefine = (refineTop->cut->refineTris == MAXINT) ? 0 :
+						(TrisAfterRefine < triBudget);
+				}
 			}
-		}
 #endif    
-	} // end of coarsening
+		} // end of coarsening
 	
 //	if (!queuesBalanced&&!roomToRefine&&!overBudget){
 //	  roomToRefine=1;
@@ -953,9 +952,7 @@ printf("\tCoarsen Queue Top Error: %f, Refine Queue Top Error: %f\n",
 //	}
 	
     }
-    
-	
-
+ 
     budgetChanged = 0;
 
 #if 0
