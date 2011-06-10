@@ -525,8 +525,19 @@ GLOD_Group::adaptTriangleBudget()
 #ifdef DEBUG_TRIADAPT
         printf("\n\nbeginning of adapt\n\n");
 #endif
+
+	unsigned int FirstObjectRefined = UINT_MAX - 1;
+	float FirstRefineErrorTermination;
+	int FirstRefineTriTermination;
+	unsigned int FirstObjectCoarsened = UINT_MAX - 1;
+	float FirstCoarsenErrorTermination;
+	int FirstCoarsenTriTermination;
+
     while (roomToRefine || overBudget || !queuesBalanced)
-    {
+    {		
+		bool FirstRefine = true ;
+		bool FirstCoarsen = true ;
+
 #ifdef DEBUG_TRIADAPT
         printf("\tCurrent Num Tris: %i, TrisAfterRefine: %i, Budget: %i\n",
                currentNumTris, TrisAfterRefine, triBudget);
@@ -592,7 +603,7 @@ GLOD_Group::adaptTriangleBudget()
 
 		if ((refineObj->name == LastObjectRefined) &&
 			(triTermination == LastRefineTriTermination) &&
-			(errorTermination == LastRefineErrorTermination))
+			(fabs(errorTermination - LastRefineErrorTermination) < 0.0000001))
 		{
 		//	printf("Duplicate refine call - euthanizing budget loop.\n");
 
@@ -602,8 +613,27 @@ GLOD_Group::adaptTriangleBudget()
 			coarsenQueue->remove(&(refineObj->budgetCoarsenHeapData));
 			refineTop= (GLOD_Object *)refineQueue->min()->userData();
 		}
+		else if(FirstRefine &&
+			(refineObj->name == FirstObjectRefined) &&
+			(triTermination == FirstRefineTriTermination) &&
+			(fabs(errorTermination - FirstRefineErrorTermination) < 0.0000001))
+		{
+			if (coarsenQueue->size() == 1)
+				return;
+
+			coarsenQueue->remove(&(refineObj->budgetCoarsenHeapData));
+			refineTop= (GLOD_Object *)refineQueue->min()->userData();
+		}
 		else
 		{
+			if(FirstRefine)
+			{
+				FirstRefine = false ;
+				FirstObjectRefined = refineObj->name;
+				FirstRefineTriTermination = triTermination;
+				FirstRefineErrorTermination = errorTermination;
+			}
+
 			LastObjectRefined = refineObj->name;
 			LastRefineTriTermination = triTermination;
 			LastRefineErrorTermination = errorTermination;
@@ -670,8 +700,8 @@ GLOD_Group::adaptTriangleBudget()
 		queuesBalanced = (coarsenTopError >= refineTopError);
 	      }
 	    
-	    if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
-		return;
+	 //   if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
+		//return;
 
 #ifdef DEBUG_TRIADAPT
 printf("\tCurrent Num Tris: %i, TrisAfterRefine: %i, Budget: %i\n",
@@ -774,7 +804,7 @@ printf("\tCoarsen Queue Top Error: %f, Refine Queue Top Error: %f\n",
 
 		if ((coarsenObj->name == LastObjectCoarsened) &&
 			(triTermination == LastCoarsenTriTermination) &&
-			(errorTermination == LastCoarsenErrorTermination))
+			(fabs(errorTermination - LastCoarsenErrorTermination) < 0.0000001))
 		{
       //              printf("Duplicate coarsen call - euthanizing budget loop.\n");
 
@@ -784,8 +814,27 @@ printf("\tCoarsen Queue Top Error: %f, Refine Queue Top Error: %f\n",
 			refineQueue->remove(&(coarsenObj->budgetRefineHeapData));
 			refineTop= (GLOD_Object *)refineQueue->min()->userData();
 		}
+		else if(FirstCoarsen &&
+			(coarsenObj->name == FirstObjectCoarsened) &&
+			(triTermination == FirstCoarsenTriTermination) &&
+			(fabs(errorTermination - FirstCoarsenErrorTermination) < 0.0000001))
+		{
+			if (refineQueue->size() == 1)
+				return;
+
+			refineQueue->remove(&(coarsenObj->budgetRefineHeapData));
+			refineTop= (GLOD_Object *)refineQueue->min()->userData();
+		}
 		else
 		{
+			if(FirstCoarsen)
+			{
+				FirstCoarsen = false ;
+				FirstObjectCoarsened = coarsenObj->name;
+				FirstCoarsenTriTermination = triTermination;
+				FirstCoarsenErrorTermination = errorTermination;
+			}
+
 			LastObjectCoarsened = coarsenObj->name;
 			LastCoarsenTriTermination = triTermination;
 			LastCoarsenErrorTermination = errorTermination;
@@ -872,8 +921,8 @@ printf("\tCoarsen Queue Top Error: %f, Refine Queue Top Error: %f\n",
 	    }
 	    */
 	    
-	    if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
-		return;
+	 //   if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
+		//return;
 	    
 #if 1
 	    if (queuesBalanced)
