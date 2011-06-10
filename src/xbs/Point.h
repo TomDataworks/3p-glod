@@ -31,7 +31,6 @@
 
 /*------------------ Includes Needed for Definitions Below ------------------*/
 
-#include <mt.h>
 #if defined(_WIN32) || defined(__APPLE__)
 #include <float.h>
 #include <math.h>
@@ -39,6 +38,7 @@
 #include <values.h>
 #endif
 #include <math.h>
+#include <mt.h>
 
 /*-------------------------------- Constants --------------------------------*/
 

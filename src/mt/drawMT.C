@@ -11,7 +11,6 @@
  * http://www.cs.jhu.edu/~graphics/GLOD/license for more information          *
  ******************************************************************************/
 #include <stdlib.h>
-#include "mt.h"
 #ifdef _WIN32
 #define _WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -21,6 +20,8 @@
 #else
 #include <GL/gl.h>
 #endif
+
+#include "mt.h"
 
 // used for special coloring options
 #define NEW_FRAME_COUNT    10

@@ -30,7 +30,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <ply.h>
-#include <mt.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -42,6 +41,7 @@
 #include <GL/gl.h>
 #endif
 
+#include <mt.h>
 #include <glod_core.h>
 #include <primtypes.h>
 //note: permissiongrid is included later in this file.

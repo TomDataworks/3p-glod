@@ -31,9 +31,9 @@
 
 /*------------------ Includes Needed for Definitions Below ------------------*/
 
-#include <mt.h>
 #include <values.h>
 #include <math.h>
+#include <mt.h>
 
 /*-------------------------------- Constants --------------------------------*/
 
