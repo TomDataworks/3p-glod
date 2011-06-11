@@ -379,7 +379,31 @@ GLOD_Group::adaptErrorThreshold()
 
 } /* End of GLOD_Group::adaptErrorThreshold() **/
 
+bool GLOD_Group::isEndlessLoop()
+{
+	if(RefinedStatusList[0].size() != RefinedStatusList[1].size() || CoarsenedStatusList[0].size() != CoarsenedStatusList[1].size())
+	{
+		return false ;
+	}
 
+	for(unsigned int i = 0 ; i < RefinedStatusList[0].size(); i++)
+	{
+		if(RefinedStatusList[0][i] != RefinedStatusList[1][i])
+		{
+			return false ;
+		}
+	}
+
+	for(unsigned int i = 0 ; i < CoarsenedStatusList[0].size(); i++)
+	{
+		if(CoarsenedStatusList[0][i] != CoarsenedStatusList[1][i])
+		{
+			return false ;
+		}
+	}
+	
+	return true ;
+}
 
 #ifndef GLOD_USE_TILES
 
@@ -397,13 +421,11 @@ GLOD_Group::adaptTriangleBudget()
 	int TrisAfterRefine;
 	float NewError;
 
-	unsigned int LastObjectRefined = UINT_MAX - 1;
-	float LastRefineErrorTermination;
-	int LastRefineTriTermination;
-	unsigned int LastObjectCoarsened = UINT_MAX - 1;
-	float LastCoarsenErrorTermination;
-	int LastCoarsenTriTermination;
-  
+	GLOD_Object_Status LastRefinedStatus ;
+	GLOD_Object_Status LastCoarsenedStatus ;
+	LastRefinedStatus.name = UINT_MAX - 1;
+	LastCoarsenedStatus.name = UINT_MAX - 1;
+	
     if (!firstBudgetAdapt && !objectsChanged &&	!budgetChanged &&
 		(errorMode == ObjectSpace))
 	{
@@ -526,17 +548,36 @@ GLOD_Group::adaptTriangleBudget()
     printf("\n\nbeginning of adapt\n\n");
 #endif
 
-	unsigned int FirstObjectRefined = UINT_MAX - 1;
-	float FirstRefineErrorTermination;
-	int FirstRefineTriTermination;
-	unsigned int FirstObjectCoarsened = UINT_MAX - 1;
-	float FirstCoarsenErrorTermination;
-	int FirstCoarsenTriTermination;
-
+	unsigned int IterationCounter = 0 ;	
+	int CurList = -1 ;
+	
+	RefinedStatusList[0].clear() ;
+	CoarsenedStatusList[0].clear() ;
+	RefinedStatusList[1].clear() ;
+	CoarsenedStatusList[1].clear() ;
     while (roomToRefine || overBudget || !queuesBalanced)
     {		
-		bool FirstRefine = true ;
-		bool FirstCoarsen = true ;
+		IterationCounter++ ;
+		if(IterationCounter > 100) //check if there is endless loop
+		{
+			if(isEndlessLoop()) //break
+			{
+				refineQueue->clear();
+				coarsenQueue->clear();
+				return ;
+			}
+
+			if(CurList < 0)
+			{
+				CurList = 0 ;
+			}
+			else
+			{
+				CurList = !CurList ;
+			}
+			RefinedStatusList[CurList].clear() ;
+			CoarsenedStatusList[CurList].clear() ;
+		}
 
 #ifdef DEBUG_TRIADAPT
         printf("\tCurrent Num Tris: %i, TrisAfterRefine: %i, Budget: %i\n",
@@ -601,9 +642,9 @@ GLOD_Group::adaptTriangleBudget()
 			int afterTris = refineObj->cut->currentNumTris;
 			currentNumTris = currentNumTris - beforeTris + afterTris;
 
-			if ((refineObj->name == LastObjectRefined) &&
-				(triTermination == LastRefineTriTermination) &&
-				(fabs(errorTermination - LastRefineErrorTermination) < 0.0000001))
+			if ((refineObj->name == LastRefinedStatus.name) &&
+				(triTermination == LastRefinedStatus.triTermination) &&
+				(fabs(errorTermination - LastRefinedStatus.errorTermination) < 0.0000001))
 			{
 			//	printf("Duplicate refine call - euthanizing budget loop.\n");
 
@@ -613,31 +654,16 @@ GLOD_Group::adaptTriangleBudget()
 				coarsenQueue->remove(&(refineObj->budgetCoarsenHeapData));
 				refineTop= (GLOD_Object *)refineQueue->min()->userData();
 			}
-			else if(FirstRefine &&
-				(refineObj->name == FirstObjectRefined) &&
-				(triTermination == FirstRefineTriTermination) &&
-				(fabs(errorTermination - FirstRefineErrorTermination) < 0.0000001))
-			{
-				if (coarsenQueue->size() == 1)
-					return;
-
-				coarsenQueue->remove(&(refineObj->budgetCoarsenHeapData));
-				refineTop= (GLOD_Object *)refineQueue->min()->userData();
-			}
 			else
 			{
-				if(FirstRefine)
+				LastRefinedStatus.name = refineObj->name;
+				LastRefinedStatus.triTermination = triTermination;
+				LastRefinedStatus.errorTermination = errorTermination;
+
+				if(CurList >= 0)
 				{
-					FirstRefine = false ;
-					FirstObjectRefined = refineObj->name;
-					FirstRefineTriTermination = triTermination;
-					FirstRefineErrorTermination = errorTermination;
+					RefinedStatusList[CurList].push_back(LastRefinedStatus) ;
 				}
-
-				LastObjectRefined = refineObj->name;
-				LastRefineTriTermination = triTermination;
-				LastRefineErrorTermination = errorTermination;
-
 				// possible reasons that the refine terminated:
 				//
 				// a) error < errorTermination
@@ -802,42 +828,28 @@ GLOD_Group::adaptTriangleBudget()
 			currentNumTris = currentNumTris - beforeTris + afterTris;
 
 
-			if ((coarsenObj->name == LastObjectCoarsened) &&
-				(triTermination == LastCoarsenTriTermination) &&
-				(fabs(errorTermination - LastCoarsenErrorTermination) < 0.0000001))
+			if ((coarsenObj->name == LastCoarsenedStatus.name) &&
+				(triTermination == LastCoarsenedStatus.triTermination) &&
+				(fabs(errorTermination - LastCoarsenedStatus.errorTermination) < 0.0000001))
 			{
-		  //              printf("Duplicate coarsen call - euthanizing budget loop.\n");
+				//printf("Duplicate coarsen call - euthanizing budget loop.\n");
 
 				if (refineQueue->size() == 1)
 					return;
 
 				refineQueue->remove(&(coarsenObj->budgetRefineHeapData));
 				refineTop= (GLOD_Object *)refineQueue->min()->userData();
-			}
-			else if(FirstCoarsen &&
-				(coarsenObj->name == FirstObjectCoarsened) &&
-				(triTermination == FirstCoarsenTriTermination) &&
-				(fabs(errorTermination - FirstCoarsenErrorTermination) < 0.0000001))
-			{
-				if (refineQueue->size() == 1)
-					return;
-
-				refineQueue->remove(&(coarsenObj->budgetRefineHeapData));
-				refineTop= (GLOD_Object *)refineQueue->min()->userData();
-			}
+			}			
 			else
-			{
-				if(FirstCoarsen)
-				{
-					FirstCoarsen = false ;
-					FirstObjectCoarsened = coarsenObj->name;
-					FirstCoarsenTriTermination = triTermination;
-					FirstCoarsenErrorTermination = errorTermination;
-				}
+			{				
+				LastCoarsenedStatus.name = coarsenObj->name;
+				LastCoarsenedStatus.triTermination = triTermination;
+				LastCoarsenedStatus.errorTermination = errorTermination;
 
-				LastObjectCoarsened = coarsenObj->name;
-				LastCoarsenTriTermination = triTermination;
-				LastCoarsenErrorTermination = errorTermination;
+				if(CurList >= 0)
+				{
+					CoarsenedStatusList[CurList].push_back(LastCoarsenedStatus) ;
+				}
 
 				// possible reasons that the coarsen terminated:
 				//

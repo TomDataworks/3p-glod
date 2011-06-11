@@ -39,11 +39,15 @@ private:
     
     bool viewFrustumSimp;
     
+	std::vector<GLOD_Object_Status> RefinedStatusList[2] ;
+	std::vector<GLOD_Object_Status> CoarsenedStatusList[2] ;
+
 private:
     void adaptErrorThreshold();
     void adaptTriangleBudget();
     void initQueues();
     void clearQueues();
+	bool isEndlessLoop() ;
     
     //
     // triangle budget mode stuff

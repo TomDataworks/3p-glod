@@ -88,6 +88,25 @@ extern GLOD_APIState s_APIState;
 class Hierarchy;
 class GLOD_Group;
 class GLOD_Cut;
+class GLOD_Object_Status ;
+
+class GLOD_Object_Status
+{
+public:
+	unsigned int name; 
+	float errorTermination;
+	int triTermination;
+
+	bool operator==(GLOD_Object_Status& status)
+	{
+		return name == status.name && triTermination == status.triTermination && fabs(errorTermination - status.errorTermination) < 0.000001 ;
+	}
+
+	bool operator!=(GLOD_Object_Status& status)
+	{
+		return name != status.name || triTermination != status.triTermination || fabs(errorTermination - status.errorTermination) > 0.000001 ;
+	}
+} ;
 
 class GLOD_Object {
 
