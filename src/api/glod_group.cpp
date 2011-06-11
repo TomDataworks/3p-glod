@@ -644,7 +644,7 @@ GLOD_Group::adaptTriangleBudget()
 
 			if ((refineObj->name == LastRefinedStatus.name) &&
 				(triTermination == LastRefinedStatus.triTermination) &&
-				(fabs(errorTermination - LastRefinedStatus.errorTermination) < 0.0000001))
+				(errorTermination == LastRefinedStatus.errorTermination))
 			{
 			//	printf("Duplicate refine call - euthanizing budget loop.\n");
 
@@ -726,8 +726,8 @@ GLOD_Group::adaptTriangleBudget()
 				queuesBalanced = (coarsenTopError >= refineTopError);
 			}
 	    
-	 //		if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
-				//return;
+	 		if ((errorMode == ScreenSpace) && (!overBudget) && (queuesBalanced) && (refineTop->cut->currentErrorScreenSpace() < 0.0000000001))
+				return;
 
 #ifdef DEBUG_TRIADAPT
 			printf("\tCurrent Num Tris: %i, TrisAfterRefine: %i, Budget: %i\n",
@@ -830,7 +830,7 @@ GLOD_Group::adaptTriangleBudget()
 
 			if ((coarsenObj->name == LastCoarsenedStatus.name) &&
 				(triTermination == LastCoarsenedStatus.triTermination) &&
-				(fabs(errorTermination - LastCoarsenedStatus.errorTermination) < 0.0000001))
+				(errorTermination == LastCoarsenedStatus.errorTermination))
 			{
 				//printf("Duplicate coarsen call - euthanizing budget loop.\n");
 
@@ -932,8 +932,8 @@ GLOD_Group::adaptTriangleBudget()
 			}
 			*/
 	    
-		 //   if ((refineTop->cut->currentErrorScreenSpace() < 0.0000000001)&&(errorMode==ScreenSpace)&&(!overBudget)&&(queuesBalanced))
-			//return;
+		    if ((errorMode==ScreenSpace) && (!overBudget) && (queuesBalanced) && (refineTop->cut->currentErrorScreenSpace() < 0.0000000001))
+				return;
 	    
 #if 1
 			if (queuesBalanced)

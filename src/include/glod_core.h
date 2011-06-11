@@ -99,12 +99,12 @@ public:
 
 	bool operator==(GLOD_Object_Status& status)
 	{
-		return name == status.name && triTermination == status.triTermination && fabs(errorTermination - status.errorTermination) < 0.000001 ;
+		return name == status.name && triTermination == status.triTermination && errorTermination == status.errorTermination ;
 	}
 
 	bool operator!=(GLOD_Object_Status& status)
 	{
-		return name != status.name || triTermination != status.triTermination || fabs(errorTermination - status.errorTermination) > 0.000001 ;
+		return name != status.name || triTermination != status.triTermination || errorTermination != status.errorTermination ;
 	}
 } ;
 
