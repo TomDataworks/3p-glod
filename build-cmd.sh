@@ -45,12 +45,12 @@ case "$AUTOBUILD_PLATFORM" in
 			make -C src debug
 			install_name_tool -id "@executable_path/../Resources/libGLOD.dylib" "lib/libGLOD.dylib" 
 			cp "lib/libGLOD.dylib" \
-				"$libdir/debug/libglod.dylib"
+				"$libdir/debug/libGLOD.dylib"
 			make -C src clean
 			make -C src release
 			install_name_tool -id "@executable_path/../Resources/libGLOD.dylib" "lib/libGLOD.dylib" 
 			cp "lib/libGLOD.dylib" \
-				"$libdir/release/libglod.dylib"
+				"$libdir/release/libGLOD.dylib"
 		;;
         "linux")
 			libdir="$top/stage/lib"
