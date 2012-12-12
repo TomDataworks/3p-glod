@@ -60,11 +60,11 @@ case "$AUTOBUILD_PLATFORM" in
 			make -C src clean
 			make -C src debug
 			cp "lib/libGLOD.so" \
-				"$libdir/debug/libglod.so"
+				"$libdir/debug/libGLOD.so"
 			make -C src clean
 			make -C src release
 			cp "lib/libGLOD.so" \
-				"$libdir/release/libglod.so"
+				"$libdir/release/libGLOD.so"
         ;;
 esac
 mkdir -p "stage/include/glod"
