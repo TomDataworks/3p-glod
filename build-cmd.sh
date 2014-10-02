@@ -22,6 +22,12 @@ eval "$("$AUTOBUILD" source_environment)"
 set -x
 
 top="$(pwd)"
+STAGING_DIR="$(pwd)/stage"
+
+GLOD_VERSION=1.0pre4
+build=${AUTOBUILD_BUILD_ID:=0}
+echo "${GLOD_VERSION}.${build}" > "${STAGING_DIR}/VERSION.txt"
+
 case "$AUTOBUILD_PLATFORM" in
     "windows")
         build_sln "glodlib.sln" "Debug|Default"
