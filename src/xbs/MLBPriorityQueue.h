@@ -97,18 +97,6 @@
 
 #include <limits.h>
 
-// This macro works around an annoying bug/feature of the compiler
-// provided with Microsoft Visual Studio 6, which does not allow you
-// to define a loop counter variable inside a for loop and make it go
-// out of scope outside the loop. There is a flag that is supposed to
-// fix this, but it tends to cause lots of other
-// incompatibilities. The else gives the for loop its own scope.
-#ifdef _WIN32
-#ifndef for
-#define for if(false); else for
-#endif
-#endif
-
 /*-------------------------------- Constants --------------------------------*/
 
 #if 1

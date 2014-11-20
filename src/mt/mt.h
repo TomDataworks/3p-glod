@@ -38,12 +38,6 @@
 
 #endif
 
-#ifdef _WIN32
-#ifndef for
-#define for if(0); else for
-#endif
-#endif
-
 typedef float mtReal;
 
 enum mtDimension {MT_X=0, MT_Y=1, MT_Z=2};
